@@ -1,133 +1,46 @@
 # Individual Report: Lab 3 - Chatbot vs ReAct Agent
 
-- **Student Name**: Pham Tan Gia Quoc
+- **Student Name**: Phạm Tấn Gia Quốc
 - **Student ID**: 2A202601606
-- **Role**: Role 3 - Prompt & Safeguard Engineer
 - **Date**: 2026-07-28
 
 ---
 
 ## I. Technical Contribution (15 Points)
 
-Toi phu trach **Role 3 - Prompt & Safeguard Engineer**. Phan viec cua toi la viet va dieu chinh system prompt cho hai che do, quy dinh Tool Contract cho ReAct, va dat cac rang buoc de Agent khong tu tao du lieu khi chua co Observation.
+Tôi phụ trách **Prompt & Safeguard Engineer (Role 3)**. Phần việc của tôi là viết và điều chỉnh system prompt cho hai chế độ (Baseline Chatbot và ReAct Agent), quy định Tool Contract cho ReAct, và đặt các ràng buộc (guardrails) để Agent không tự tạo dữ liệu khi chưa có Observation.
 
-- **Modules implemented**: `src/prompts.py`
-- **Modules collaborated/tested**: `src/app.py`, `config/test_cases.json`, `docs/trace_eval.md`
-
-### Code highlights
-
-1. **Tach prompt cua Baseline va ReAct**
-
-   `CHATBOT_BASELINE_PROMPT` quy dinh Chatbot chi tra loi bang kien thuc co san, khong goi tool va khong tu nhan da tra cuu du lieu. Nho do, Baseline la doi chung dung nghia khi so sanh voi Agent.
-
-   ```python
-   Ban la mot Chatbot tu van tinh yeu & tinh cam thong thuong.
-   Hay tra loi cau hoi cua nguoi dung mot cach than thien dua tren kien thuc chung co san.
-   Neu nguoi dung yeu cau tra cuu danh sach nguoi that hoac tinh diem tuong thich du lieu thuc te thoi gian thuc, hay lich su thong bao rang ban khong co truy cap du lieu he thong.
-   ```
-
-2. **Dinh nghia ReAct Tool Contract**
-
-   Trong `REACT_SYSTEM_PROMPT`, moi luot LLM chi duoc tra ve mot trong hai khuon dang sau:
-
-   ```text
-   Thought: Suy luan chi tiet ve y dinh cua nguoi dung va cac thong tin da thu thap duoc.
-   Action: ten_cong_cu[cac_tham_so_chuan_json_hoac_dang_chuoi]
-   ```
-
-   hoac:
-
-   ```text
-   Thought: Danh gia ket qua thu duoc hoac nhan dien thong tin con thieu.
-   Final Answer: Loi phan hoi am ap, chu dao cua Ba Moi AI gui toi nguoi dung.
-   ```
-
-   Contract nay giup `agent.py` co the trich xuat Action bang regex (`re.search(r'Action:\s*`?([a-zA-Z0-9_]+)`?\s*\[(.*?)\]', llm_out)`) va quyet dinh giua nhanh goi tool va nhanh ket thuc.
-
-3. **Intent routing va rang buoc tool path**
-
-   Prompt cua ReAct phan biet ro:
-
-   - Y dinh `SEARCH`: Nguoi dung muon tim goi y ghep doi. Can goi `search_candidates` voi cac tham so: `target_gender`, `min_age`, `max_age`, `location`, `query_interests`.
-   - Y dinh `COMPATIBILITY`: Nguoi dung muon danh gia do hop nhau. Can goi `calculate_compatibility` voi hai doi tuong cu the.
-
-4. **Grounding va guardrails**
-
-   Toi bo sung cac rang buoc trong prompt va config: Agent khong duoc tu tao Observation; chi duoc ket luan khi co ket qua tu tool; khong duoc tu doan hay fallback tham so mac dinh.
-
-   Prompt dong thoi chi dan xu ly loi bang cau tra loi lich su, khong co gang lap lai tool loi. Gioi han vong lap duoc dat la:
-
-   ```python
-   MAX_ITERATIONS = 5
-   MAX_INFO_GATHERING_TURNS = 5
-   MAX_TOOL_CALLS_PER_TURN = 3
-   ```
-
-### Ket qua dong gop duoc xac nhan
-
-- Case 1 (ly thuyet): Agent tra loi bang `Final Answer` ngay, khong goi tool.
-- Case 2 (search): Agent goi `search_candidates` voi tham so day du, tra ve danh sach ung vien co PII masking.
-- Case 3 (compatibility): Agent goi `calculate_compatibility` cho 2 ho so C001 va C002, nhan total_score 87.5/100.
-- Case 4 (thieu thong tin): Agent phat hien thieu location, age range, interests; khong goi tool, dat cau hoi bo sung.
-- Case 5 (edge case): Tool `search_candidates` khong tim thay ket qua khop cung, kich hoat Relaxed Search.
-- Tool contract da duoc kiem tra doc lap: `calculate_compatibility` yeu cau du thong tin ca 2 nguoi va thong bao loi ro rang khi thieu.
+- **Modules Implementated**: `src/prompts.py`
+- **Code Highlights**:
+  - `CHATBOT_BASELINE_PROMPT`: Giới hạn Chatbot chỉ trả lời bằng kiến thức có sẵn, không gọi tool.
+  - `REACT_SYSTEM_PROMPT`: Định nghĩa Tool Contract (`Action: tên_công_cụ[các_tham_số_json_hoặc_dạng_chuỗi]`), phân tích ý định (SEARCH / COMPATIBILITY), và quy trình Information Gathering Loop.
+  - Guardrails config: `MAX_ITERATIONS = 5`, `MAX_INFO_GATHERING_TURNS = 5`, `MAX_TOOL_CALLS_PER_TURN = 3`.
+- **Documentation**: Prompt của tôi được `agent.py` sử dụng trong `process_message_llm_react` và `process_message`. Regex `Action:` trích xuất tool name và args từ LLM output. Guardrails đảm bảo Agent không gọi tool khi thiếu tham số và không bị lặp vô hạn.
 
 ---
 
 ## II. Debugging Case Study (10 Points)
 
-### Problem description
-
-Khi LLM tra Action voi tham so JSON trong dau ngoac vuong, parser gap kho khan trong viec phan tach tham so:
-
-```text
-Action: search_candidates[{"city":"Hà Nội","age":22,"interest":"âm nhạc"}]
-```
-
-Ham `parse_and_execute_tool` trong `agent.py` xu ly theo 3 buoc: thu giai ma JSON dict, thu phan tich Kwargs, va cuoi cung phan tach bang `split(",")` (dòng 67). Trong truong hop JSON hop le, buoc 1 (JSON decode) duoc uu tien truoc. Tuy nhien, neu LLM tra ve Action khong dung format JSON ma la dang CSV, parser co the tach sai tham so.
-
-### Log source
-
-`logs/trace_eval_2026-07-28.txt`, Test #4:
-
-```text
-[Action]: search_candidates(['{"city":"Hà Nội', 'age":22', 'interest":"âm nhạc"}'])
-[Observation]: ... Minh Anh ... Diem phu hop: 45 ...
-```
-
-### Diagnosis
-
-Nguyen nhan nam o dong `raw_tokens = [t.strip().strip('"\'') for t in clean_str.split(",") if t.strip()]` trong `agent.py`. Dau phay trong JSON dict bi xem nham la delimiter giua cac positional arguments. Buoc 1 (JSON decode) chi hoat dong neu JSON la toan bo args_str, nhung LLM co the output JSON mix voi format khac.
-
-Voi vai tro Role 3, toi xac dinh day la gioi han cua **text Tool Contract**: prompt da huong dan dung JSON format, nhung Action tu do co the khong nhat quan, dan den parser gap edge case.
-
-### Solution / recommendation
-
-Prompt hien tai da khuyen khich dung JSON hoac Kwargs format. Buoc can lam tiep la chuyen sang structured output / function calling cua LLM provider (Groq/Gemini):
-
-```json
-{"tool":"search_candidates","arguments":{"city":"Ha Noi","age":22,"interest":"am nhac"}}
-```
-
-Cai tien parser hien tai: thu giai ma JSON truoc khi split dau phay, va neu that bai moi fallback sang CSV split. Sau khi sua, can chay lai Test Case 4 va yeu cau Final Answer phai ghi ro score va nguon du lieu.
+- **Problem Description**: LLM trả về Action với tham số JSON bên trong dấu ngoặc vuông, `parse_and_execute_tool` trong `agent.py` không giải mã JSON chính xác. Cụ thể, khi LLM output: `Action: search_candidates[{"city":"Hà Nội","age":22,"interest":"âm nhạc"}]`, parser không nhận diện JSON hợp lệ ở bước 1 mà rơi xuống bước 3 (`split(",")`), làm tách sai tham số.
+- **Log Source**: `agent.py` dòng 67: `raw_tokens = [t.strip().strip('"\'') for t in clean_str.split(",") if t.strip()]`. Log trace cho thấy args bị tách thành `['{"city":"Hà Nội', 'age":22', 'interest":"âm nhạc"}']`.
+- **Diagnosis**: Nguyên nhân là parser ưu tiên JSON decode chỉ khi toàn bộ `args_str` là JSON hợp lệ. Khi LLM output JSON có ký tự đặc biệt (Tiếng Việt có dấu) hoặc format không chuẩn, JSON decode thất bại và parser tự động fallback sang CSV split, gây lỗi tách tham số.
+- **Solution**: Cải tiến parser bằng cách dùng regex để trích JSON block trong args trước khi split CSV, hoặc chuyển sang structured output / function calling của LLM provider (Groq/Gemini) thay vì text-based Tool Contract.
 
 ---
 
 ## III. Personal Insights: Chatbot vs ReAct (10 Points)
 
-1. **Reasoning**: `Thought` va `Action` lam ro Agent dang lam gi. O case 3, trace cho thay ly do goi `calculate_compatibility`, Observation tra ve `total_score: 87.5` voi breakdown chi tiet. Baseline chi tao tu van chung, khong the tinh diem.
+1. **Reasoning**: `Thought` block giúp Agent giải thích lý do tại sao chọn tool đó. Ở case 3 (compatibility), trace cho thấy `Thought` xác định ý định COMPATIBILITY, `Action: calculate_compatibility[...]` được gọi, Observation trả về `total_score: 87.5` với breakdown. Baseline chỉ trả lời chung chung "không có truy cập dữ liệu". `Thought` làm Agent có khả năng giải trình (explainability) mà Chatbot không có.
 
-2. **Reliability**: Agent co the kem hon Baseline khi provider bi rate limit hoac Mock fallback. O cac case do, agent.py co co che `process_message_llm_react` tra ve `None` neu phat hien Mock, roi tuong chat qua `process_message` rule-based path. Baseline van tra loi duoc khi khong can tool.
+2. **Reliability**: Agent perform *worse* khi provider không có API key (Mock fallback) hoặc bị rate limit. Trong những case đó, `process_message_llm_react` trả về `None`, rồi agent.py tương tác xuống rule-based path. Baseline vẫn trả lời được vì không cần tool. Agent còn kém khi LLM output không đúng Tool Contract (sai format Action), khiến parser thất bại hoặc gọi sai tham số.
 
-3. **Observation**: Observation la ranh gioi giua thong tin co bang chung va suy doan. Case 3 cho thay Agent chi bao cao score va breakdown co trong tool output. Can rang buoc Final Answer phai trich dan day du ket qua de dam bao tinh grounded.
+3. **Observation**: Observation là ranh giới giữa thông tin có bằng chứng và suy đoán. Ở case 3, Observation cung cấp `total_score`, `breakdown`, `strengths`, `weaknesses` -- Agent dựa nguyên vào đó để tổng hợp Final Answer. Ở case 4, Observation báo lỗi "THIẾU DỮ LIỆU" giúp Agent không tự đoán mà quay lại hỏi người dùng. Observation là cơ chế đảm bảo tính grounded của Agent.
 
 ---
 
 ## IV. Future Improvements (5 Points)
 
-- **Structured tool calling**: Dung JSON Schema / function calling thay cho regex text parser de xu ly tham so phuc tap va loai bo edge case tach dau phay.
-- **Grounding validator**: Truoc khi chap nhan Final Answer, kiem tra neu Observation co score thi cau tra loi phai co score day du va breakdown.
-- **Provider resilience**: Dung provider co fallback chain (Groq -> Gemini -> Mock) thay vi `None` return de tranh mat thong tin.
-- **Safety**: Tiep tuc dung `MAX_ITERATIONS`, `MAX_INFO_GATHERING_TURNS`, `MAX_TOOL_CALLS_PER_TURN` de tranh lap vo han va abuse tool.
+- **Scalability**: Dùng asynchronous queue cho tool calls để xử lý nhiều yêu cầu đồng thời, tránh blocking.
+- **Safety**: Thêm Supervisor LLM để kiểm tra Action của Agent trước khi thực thi tool (audit layer), phòng tránh prompt injection.
+- **Performance**: Chuyển Action parser sang structured output / function calling thay vì text regex, đảm bảo parse chính xác 100% tham số phức tạp.
 
-> Bao cao nay dua tren code thuc te tren nhanh dev (commit ac7e480). Cac tool co ten `calculate_compatibility`, `search_candidates`, `get_weather`. Ket qua chi danh gia he thong demo va khong su dung API key trong noi dung bao cao.
