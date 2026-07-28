@@ -315,3 +315,10 @@ Bây giờ hãy kiểm tra AGENT_RESPONSE sau đây và trả về JSON:
 
 AGENT_RESPONSE: {agent_response}
 """
+
+# ===========================================================================
+# 4. GUARDRAILS CONFIGURATION (PHANH AN TOÀN)
+# ===========================================================================
+
+MAX_ITERATIONS = 3  # Giới hạn tối đa 3 vòng lặp Thought-Action để tránh lặp vô tận
+TIMEOUT_SECONDS = 10  # Timeout cho mỗi lần gọi tool
