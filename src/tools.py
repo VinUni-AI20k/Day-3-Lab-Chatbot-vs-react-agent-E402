@@ -13,7 +13,7 @@ from typing import Any, Iterable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-WIDE_CSV_PATH = PROJECT_ROOT / "data" / "DataTPCN - Trang tính1.csv"
+WIDE_CSV_PATH = PROJECT_ROOT / "config" / "DataTPCN.csv"
 NORMALIZED_CSV_PATH = PROJECT_ROOT / "data" / "products.csv"
 CSV_PATH = WIDE_CSV_PATH if WIDE_CSV_PATH.is_file() else NORMALIZED_CSV_PATH
 
@@ -474,6 +474,87 @@ def _matrix_markdown(
     return "\n".join(lines)
 
 
+def _markdown_cell(value: Any) -> str:
+    return _clean(value).replace("\\", "\\\\").replace("|", r"\|")
+
+
+def _format_vnd(value: Any) -> str:
+    try:
+        amount = _number(value, "price_vnd")
+    except ValueError:
+        return _clean(value) or "—"
+    return f"{amount:,.0f}".replace(",", ".") + " VNĐ"
+
+
+def _comparison_markdown(
+    products: list[dict[str, Any]],
+    matrix_result: dict[str, Any],
+) -> str:
+    """Tạo đúng một bảng Markdown gồm thông tin chung và toàn bộ thành phần."""
+    headers = ["Tiêu chí", *(product["product_name"] for product in products)]
+    lines = [
+        "| " + " | ".join(_markdown_cell(value) for value in headers) + " |",
+        "|" + "|".join("---" for _ in headers) + "|",
+    ]
+
+    cost_values: list[str] = []
+    notes: list[str] = []
+    for product in products:
+        cost = calculate_cost_per_serving(
+            product["price_vnd"], product["servings_per_container"]
+        )
+        if cost.get("success"):
+            cost_values.append(_format_vnd(cost["cost_per_serving_vnd"]))
+            notes.append("TPCN không phải thuốc và không thay thế thuốc chữa bệnh.")
+        else:
+            cost_values.append("N/A — thiếu số khẩu phần/hộp")
+            notes.append(
+                "TPCN không phải thuốc; thiếu số khẩu phần/hộp nên không thể "
+                "tính chi phí chính xác."
+            )
+
+    fixed_rows = [
+        ("Mã sản phẩm", [product["product_id"] for product in products]),
+        ("Giá hộp", [_format_vnd(product["price_vnd"]) for product in products]),
+        ("Liều dùng", [product.get("dosage") or "—" for product in products]),
+        ("Cách dùng", [product.get("usage") or "—" for product in products]),
+        (
+            "Chống chỉ định",
+            [product.get("contraindication") or "—" for product in products],
+        ),
+        ("Chi phí mỗi liều", cost_values),
+        ("Chi phí mỗi ngày", cost_values),
+    ]
+
+    for label, values in fixed_rows:
+        lines.append(
+            "| "
+            + " | ".join(_markdown_cell(value) for value in [label, *values])
+            + " |"
+        )
+
+    for ingredient in matrix_result["matrix"]:
+        values = [
+            ingredient["products"].get(column) or "—"
+            for column in matrix_result["product_columns"]
+        ]
+        lines.append(
+            "| "
+            + " | ".join(
+                _markdown_cell(value)
+                for value in [ingredient["ingredient_name"], *values]
+            )
+            + " |"
+        )
+
+    lines.append(
+        "| "
+        + " | ".join(_markdown_cell(value) for value in ["Lưu ý", *notes])
+        + " |"
+    )
+    return "\n".join(lines)
+
+
 def build_comparison_matrix(
     product_ids: Iterable[str],
     csv_path: str | Path | None = None,
@@ -575,9 +656,11 @@ def compare_products(
         return matrix_result
 
     rankings: list[dict[str, Any]] = []
+    products: list[dict[str, Any]] = []
     for column in matrix_result["product_columns"]:
         product_id = column.rsplit("(", 1)[-1].rstrip(")")
         product = get_product_ingredients(product_id, csv_path)
+        products.append(product)
         cost = calculate_cost_per_serving(
             product["price_vnd"], product["servings_per_container"]
         )
@@ -602,10 +685,13 @@ def compare_products(
             else math.inf,
         )
     )
+    comparison_payload = dict(matrix_result)
+    comparison_payload.pop("markdown_table", None)
     return {
         "success": True,
-        "comparison_matrix": matrix_result,
+        "comparison_matrix": comparison_payload,
         "cost_per_serving_ranking": rankings,
+        "markdown_table": _comparison_markdown(products, matrix_result),
     }
 
 

@@ -44,6 +44,7 @@ from prompts import (
     CHATBOT_BASELINE_PROMPT,
     MAX_ITERATIONS,
     REACT_SYSTEM_PROMPT,
+    SAFE_FALLBACK_MESSAGE,
     TIMEOUT_SECONDS,
 )
 from providers import get_llm_provider
@@ -58,6 +59,23 @@ FINAL_ANSWER_PATTERN = re.compile(
     r"^Final Answer:\s*(.+)\Z",
     re.MULTILINE | re.DOTALL,
 )
+PROVIDER_ERROR_PATTERN = re.compile(
+    r"^\[[^\]]*(?:Error|Exception)[^\]]*\]:",
+    re.IGNORECASE,
+)
+MARKDOWN_SEPARATOR_PATTERN = re.compile(
+    r"^\|(?:\s*:?-+:?\s*\|)+$",
+)
+REQUIRED_COMPARISON_ROWS = {
+    "Mã sản phẩm",
+    "Giá hộp",
+    "Liều dùng",
+    "Cách dùng",
+    "Chống chỉ định",
+    "Chi phí mỗi liều",
+    "Chi phí mỗi ngày",
+    "Lưu ý",
+}
 
 
 def parse_action(response: str):
@@ -75,9 +93,51 @@ def parse_action(response: str):
     try:
         args = ast.literal_eval(f"[{raw_args}]") if raw_args.strip() else []
     except (SyntaxError, ValueError) as exc:
-        raise ValueError(f"Tham số Action không hợp lệ: {exc}") from exc
+        raise ValueError(
+            "Tham số Action không hợp lệ. Chuỗi phải đặt trong dấu nháy, "
+            f"ví dụ search_products[\"Ensure\"]. Chi tiết: {exc}"
+        ) from exc
 
     return tool_name, args
+
+
+def extract_single_markdown_table(text: str) -> str:
+    """Trích xuất đúng một bảng Markdown hợp lệ từ Final Answer."""
+    normalized_text = str(text or "").replace(r"\r\n", "\n").replace(r"\n", "\n")
+    tables = []
+    current = []
+    for line in normalized_text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") and stripped.endswith("|"):
+            current.append(stripped)
+        elif current:
+            tables.append(current)
+            current = []
+    if current:
+        tables.append(current)
+
+    valid_tables = [
+        table
+        for table in tables
+        if len(table) >= 3 and MARKDOWN_SEPARATOR_PATTERN.fullmatch(table[1])
+    ]
+    if len(valid_tables) != 1 or len(tables) != 1:
+        raise ValueError(
+            "Final Answer phải chứa đúng một bảng Markdown gồm header, "
+            "separator và ít nhất một hàng dữ liệu."
+        )
+    table = valid_tables[0]
+    row_labels = {
+        row.split("|", 2)[1].strip()
+        for row in table[2:]
+        if row.count("|") >= 2
+    }
+    missing_rows = sorted(REQUIRED_COMPARISON_ROWS - row_labels)
+    if missing_rows:
+        raise ValueError(
+            "Bảng Markdown thiếu hàng bắt buộc: " + ", ".join(missing_rows)
+        )
+    return "\n".join(table)
 
 
 def execute_tool(
@@ -110,6 +170,8 @@ def execute_tool(
     succeeded, payload = result_queue.get()
     if not succeeded:
         return f"ERROR: Tool '{tool_name}' thất bại: {payload}"
+    if isinstance(payload, (dict, list, tuple)):
+        return json.dumps(payload, ensure_ascii=False, default=str)
     return str(payload)
 
 
@@ -162,6 +224,7 @@ def run_react_agent(user_query: str, provider) -> dict:
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     trace = []
+    seen_actions = set()
 
     for step in range(1, MAX_ITERATIONS + 1):
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
@@ -191,39 +254,61 @@ def run_react_agent(user_query: str, provider) -> dict:
 
         response = str(response or "").strip()
         trace.append(response)
-        print(response)
 
-        final_match = FINAL_ANSWER_PATTERN.search(response)
-        action_matches = ACTION_PATTERN.findall(response)
-        if final_match and not action_matches:
-            final_answer = final_match.group(1).strip()
-            print(f"🏁 Final Answer: {final_answer}")
+        if PROVIDER_ERROR_PATTERN.match(response):
+            print(f"❌ LLM Provider thất bại: {response}")
             return {
-                "status": "success",
-                "final_answer": final_answer,
+                "status": "error",
+                "final_answer": response,
                 "trace": trace,
                 "iterations": step,
             }
 
-        if final_match and action_matches:
+        final_match = FINAL_ANSWER_PATTERN.search(response)
+        action_matches = ACTION_PATTERN.findall(response)
+        if final_match and not action_matches:
+            try:
+                final_answer = extract_single_markdown_table(final_match.group(1))
+            except ValueError as exc:
+                observation = f"ERROR: {exc}"
+            else:
+                print(f"🏁 Final Answer: {final_answer}")
+                return {
+                    "status": "success",
+                    "final_answer": final_answer,
+                    "trace": trace,
+                    "iterations": step,
+                }
+        elif final_match and action_matches:
             observation = (
                 "ERROR: Phản hồi không được chứa đồng thời Action và Final Answer."
             )
         else:
             try:
                 tool_name, args = parse_action(response)
-                observation = execute_tool(tool_name, args)
+                action_signature = json.dumps(
+                    [tool_name, args],
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    default=str,
+                )
+                if action_signature in seen_actions:
+                    observation = (
+                        "ERROR: Cùng một Action và tham số không được lặp lại. "
+                        "Hãy chọn bước khác hoặc trả Final Answer."
+                    )
+                else:
+                    seen_actions.add(action_signature)
+                    observation = execute_tool(tool_name, args)
             except ValueError as exc:
                 observation = f"ERROR: {exc}"
 
+        print(response)
         observation_line = f"Observation: {observation}"
         trace.append(observation_line)
         print(f"👁️ {observation_line}")
 
-    fallback = (
-        f"Không thể hoàn tất yêu cầu sau {MAX_ITERATIONS} bước vì chưa thu thập "
-        "đủ dữ liệu đáng tin cậy."
-    )
+    fallback = SAFE_FALLBACK_MESSAGE
     print(f"🛡️ GUARDRAIL TRIGGERED: {fallback}")
     return {
         "status": "guardrail",
