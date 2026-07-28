@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.venv
+__pycache__
+*.pyc
+docs
+scripts
+*.pptx
+*.md
+!README_WEB.md
