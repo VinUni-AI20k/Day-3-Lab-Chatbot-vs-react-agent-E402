@@ -1,6 +1,8 @@
-"""
-🚀 CORE AGENT APP (Dành cho Role 4: Core Agent Developer)
-File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Cases + Multi-Provider.
+"""Core demo Python gốc của Lab 3.
+
+Implementation Agent chính để trình diễn/nộp đề tài Mèo Hồng là Next.js graph:
+`frontend-next/src/lib/gift-agent.ts` → `/api/gift-agent` → UI Baseline/Agent.
+File này được giữ để chạy scaffold Python và bộ test legacy về thời tiết/chuyến bay.
 """
 
 import json

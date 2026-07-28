@@ -1,51 +1,27 @@
-# Individual Report: Lab 3 - Chatbot vs ReAct Agent
+# Individual Report: Lab 3 — Mèo Hồng
 
-- **Student Name**: Thái Hoài An
-- **Student ID**: 2A202601862
-- **Date**: 28/07/2026
+- **Student Name:** Thái Hoài An
+- **Student ID:** 2A202601862
+- **Date:** 28/07/2026
 
----
+## I. Technical contribution
 
-## I. Technical Contribution (15 Points)
+Tôi triển khai Agent graph cho Mèo Hồng tại `frontend-next/src/lib/gift-agent.ts`, API route `api/gift-agent`, cùng UI chuyển Baseline/Agent. Graph có các tool `normalize_profile`, `select_product`, `search_web` (Tavily) và `generate_recommendation` (Groq). UI hiển thị trace Thought–Action–Observation và chỉ giữ nguồn từ sàn TMĐT allow-list.
 
-*Describe your specific contribution to the codebase (e.g., implemented a specific tool, fixed the parser, etc.).*
+## II. Debugging case study
 
-- **Modules Implementated**: [e.g., `src/tools/search_tool.py`]
-- **Code Highlights**: [Copy snippets or link file lines]
-- **Documentation**: [Brief explanation of how your code interacts with the ReAct loop]
+**Sự cố:** `xem phim`, `1tr`, `1000000` không được parser regex nhận diện; Agent lặp câu hỏi nên không gọi web search.
 
----
+**Nguyên nhân:** regex thiếu intent và định dạng ngân sách phổ biến; điều kiện profile đủ không bao giờ đạt.
 
-## II. Debugging Case Study (10 Points)
+**Cách xử lý:** thêm semantic extraction qua Groq, regex fallback, intent AI/phim và chuẩn hóa đơn vị tiền. Trace và RCA chi tiết ở `docs/trace_eval.md`.
 
-*Analyze a specific failure event you encountered during the lab using the logging system.*
+## III. Insight: Baseline vs ReAct
 
-- **Problem Description**: [e.g., Agent caught in an infinite loop with `Action: search(None)`]
-- **Log Source**: [Link or snippet from `logs/YYYY-MM-DD.log`]
-- **Diagnosis**: [Why did the LLM do this? Was it the prompt, the model, or the tool spec?]
-- **Solution**: [How did you fix it? (e.g., updated `Thought` examples in the system prompt)]
+Baseline cho phản hồi mượt nhưng không có bằng chứng giá/link thời gian thực. Agent chậm hơn do nhiều tool calls, đổi lại có thể chọn sản phẩm đích, kiểm tra nguồn sàn TMĐT và dừng an toàn khi dữ liệu chưa đủ. Observation từ từng tool quyết định bước kế tiếp, đặc biệt search chỉ diễn ra sau khi profile hoàn chỉnh.
 
----
+## IV. Future improvements
 
-## III. Personal Insights: Chatbot vs ReAct (10 Points)
-
-*Reflect on the reasoning capability difference.*
-
-1.  **Reasoning**: How did the `Thought` block help the agent compared to a direct Chatbot answer?
-2.  **Reliability**: In which cases did the Agent actually perform *worse* than the Chatbot?
-3.  **Observation**: How did the environment feedback (observations) influence the next steps?
-
----
-
-## IV. Future Improvements (5 Points)
-
-*How would you scale this for a production-level AI agent system?*
-
-- **Scalability**: [e.g., Use an asynchronous queue for tool calls]
-- **Safety**: [e.g., Implement a 'Supervisor' LLM to audit the agent's actions]
-- **Performance**: [e.g., Vector DB for tool retrieval in a many-tool system]
-
----
-
-> [!NOTE]
-> Submit this report by renaming it to `REPORT_[YOUR_NAME].md` and placing it in this folder.
+- Ghi latency, token và chi phí cho từng node graph.
+- Thêm retry/backoff, cache kết quả tìm kiếm và đánh giá chất lượng URL sản phẩm.
+- Hoàn tất cross-audit với nhóm khác theo `docs/cross_audit.md`.

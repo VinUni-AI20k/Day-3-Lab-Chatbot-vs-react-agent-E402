@@ -1,6 +1,12 @@
-"""
-🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
-Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
+"""Tool registry legacy cho Lab 3.
+
+Implementation Agent chính của đề tài Mèo Hồng nằm tại
+``frontend-next/src/lib/gift-agent.ts`` và được gọi qua
+``frontend-next/src/app/api/gift-agent/route.ts``. Registry đó gồm
+normalize_profile, select_product, search_web và generate_recommendation.
+
+Các tool dưới đây được giữ lại để chạy demo Python gốc của Lab 3 và test cases
+thời tiết/chuyến bay; không phải luồng UI production của Mèo Hồng.
 """
 
 def get_weather(location: str) -> str:

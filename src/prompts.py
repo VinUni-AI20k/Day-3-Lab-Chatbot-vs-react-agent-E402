@@ -1,6 +1,8 @@
-"""
-🧠 PROMPTS & SAFEGUARDS (Dành cho Role 3: Prompt & Safeguard Engineer)
-Nơi cấu hình System Prompt và Phanh An Toàn (Guardrails) cho AI.
+"""Prompts legacy cho demo Python Lab 3.
+
+Prompt/tool graph đang chạy trong Mèo Hồng ở `frontend-next/src/lib/gift-agent.ts`.
+Nó dùng Baseline/Agent switch, Tavily, Groq và trace Thought–Action–Observation.
+Các prompt ở file này giữ lại để đối chiếu với scaffold ReAct gốc của Lab.
 """
 
 # Baseline Chatbot Prompt (Chỉ dùng LLM thông thường, không có Tool)

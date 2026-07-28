@@ -1,0 +1,17 @@
+flowchart TD
+    A[Người dùng gửi yêu cầu] --> B{Chế độ đã chọn?}
+    B -->|Baseline| C[baseline_llm]
+    C --> D[Trả lời từ kiến thức mô hình]
+    D --> E[Không web search / không tool]
+
+    B -->|Agent| F[normalize_profile]
+    F --> G{Đủ 4 trường hồ sơ?}
+    G -->|Chưa đủ| H[Hỏi đúng 1 trường thiếu]
+    H --> A
+    G -->|Đủ| I[select_product]
+    I --> J[search_web: Tavily]
+    J --> K{Có nguồn sàn TMĐT?}
+    K -->|Có| L[generate_recommendation: Groq]
+    K -->|Không / lỗi| M[Khuyến nghị thận trọng, không bịa link]
+    L --> N[Final Answer + sources + trace]
+    M --> N
