@@ -1,0 +1,317 @@
+[
+  {
+    "film_name": "Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
+    "poster_path": "/assets/conan.webp",
+    "genre": "Hoạt hình, Trinh thám, Hành động",
+    "duration_min": 110,
+    "rating": "C13",
+    "synopsis": "Phần phim thứ 29 của thương hiệu Conan đưa người xem đến bối cảnh Yokohama đầy kịch tính, xoay quanh chiếc xe phân khối lớn bí ẩn mang bí danh 'Black Angel'. Conan Edogawa sẽ phối hợp cùng nữ cảnh sát giao thông Chihaya Hagiwara và thám tử học sinh Sera Masumi để lật tẩy vụ án mạng liên hoàn trên đường cao tốc.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "19:00",
+        "seats_available": 76,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần màn hình chiếu"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Khu vực trung tâm, góc nhìn đẹp nhất"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần hệ thống loa hai bên sườn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "price": 150000,
+              "note": "Ghế đôi lãng mạn ở hàng cuối, phù hợp cho cặp đôi"
+            }
+          ],
+          "booked_seats": [
+            "D5",
+            "D6",
+            "A1",
+            "A2",
+            "A3",
+            "A4"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "20:15",
+        "seats_available": 0,
+        "seat_map": null
+      }
+    ]
+  },
+  {
+    "film_name": "Moana",
+    "poster_path": "/assets/moana.jpg",
+    "genre": "Phiêu lưu, Giả tưởng, Nhạc kịch",
+    "duration_min": 125,
+    "rating": "P",
+    "synopsis": "Phiên bản Live-Action chuyển thể từ siêu phẩm hoạt hình đình đám của Disney, đưa người xem vào cuộc hành trình đầy cảm hứng của cô gái trẻ Moana vượt đại dương bao la cùng vị á thần Maui đầy kiêu ngạo để cứu lấy hòn đảo quê hương Te Fiti.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "18:00",
+        "seats_available": 80,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 65000,
+              "note": "Ngồi gần màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 110000,
+              "note": "Trung tâm rạp, âm thanh vòm đỉnh cao"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 80000,
+              "note": "Góc sườn gần loa hiệu ứng"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "price": 180000,
+              "note": "Hàng ghế đôi sofa lãng mạn cuối phòng"
+            }
+          ],
+          "booked_seats": [
+            "A1",
+            "A2",
+            "H1",
+            "H2",
+            "H3",
+            "H4"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "21:00",
+        "seats_available": 30,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 70000,
+              "note": "Ngồi gần màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 120000,
+              "note": "Khu vực VIP đẹp nhất"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 90000,
+              "note": "Biên phòng gần hệ thống loa sườn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "price": 200000,
+              "note": "Hàng đôi Sweetbox"
+            }
+          ],
+          "booked_seats": [
+            "D1",
+            "D2",
+            "E3",
+            "E4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Minions & Quái Vật",
+    "poster_path": "/assets/minions.jpg",
+    "genre": "Hoạt hình, Hài hước, Gia đình",
+    "duration_min": 95,
+    "rating": "P",
+    "synopsis": "Các chú Minion màu vàng dễ thương và tinh nghịch vô tình giải phóng một quái vật cổ xưa khổng lồ trong hầm ngục. Cả nhóm phải bắt tay nhau tìm mọi cách để xoa dịu quái thú trước khi nó quậy tung cả thành phố.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "19:30",
+        "seats_available": 60,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 70000,
+              "note": "Ngồi gần màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 120000,
+              "note": "Khu vực VIP trung tâm"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 90000,
+              "note": "Cạnh loa hai bên"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "price": 200000,
+              "note": "Sweetbox hàng cuối"
+            }
+          ],
+          "booked_seats": [
+            "G1",
+            "G2",
+            "G3",
+            "G4",
+            "H11",
+            "H12"
+          ]
+        }
+      }
+    ]
+  }
+]

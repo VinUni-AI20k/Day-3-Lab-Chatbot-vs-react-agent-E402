@@ -3,3 +3,7 @@ openai
 anthropic
 python-dotenv
 requests
+langgraph
+langchain-openai
+python-dotenv
+langchain_core
