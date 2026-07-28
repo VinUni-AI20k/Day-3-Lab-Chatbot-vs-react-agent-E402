@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "booking_id": "BK20260728-164321",
+    "film_name": "Quỷ Bắt Hồn",
+    "cinema": "CGV Vincom Bà Triệu",
+    "time": "2026-07-28 19:00",
+    "zone": "VIP - Trung tâm",
+    "seat_ids": [
+      "D3",
+      "D4"
+    ],
+    "quantity": 2,
+    "total_price": 190000,
+    "booked_at": "2026-07-28T16:43:21.546852",
+    "status": "CONFIRMED (DEMO)"
+  }
+]
