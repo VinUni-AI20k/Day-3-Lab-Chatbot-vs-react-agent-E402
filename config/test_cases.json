@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Chính sách đổi trả thông thường của cửa hàng là gì?",
+    "expected_behavior": "Chatbot trả lời ở mức tổng quan, không khẳng định tình trạng của đơn cụ thể."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Tôi cần chuẩn bị thông tin gì khi muốn đổi trả sản phẩm?",
+    "expected_behavior": "Chatbot liệt kê các thông tin thường cần như mã đơn, sản phẩm, lý do đổi trả, hình ảnh nếu có."
   },
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "question": "Tra cứu đơn ORD1001 giúp tôi. Đơn này đã giao chưa?",
+    "expected_behavior": "Agent gọi lookup_order('ORD1001') rồi trả lời dựa trên trạng thái đơn."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "question": "Tôi muốn trả áo hoodie trong đơn ORD1001 vì bị sai size. Đơn này có đủ điều kiện đổi trả không?",
+    "expected_behavior": "Agent gọi lookup_order('ORD1001'), sau đó gọi check_return_policy('ORD1001', 'ITEM-AO-HOODIE', 'sai size') để kết luận."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Tạo yêu cầu hoàn tiền cho đơn ORD9999 và sản phẩm ITEM-UNKNOWN ngay lập tức.",
+    "expected_behavior": "Tool báo lỗi không tìm thấy đơn/sản phẩm, Agent không tạo yêu cầu đổi trả và fallback lịch sự."
   }
 ]
