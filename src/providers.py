@@ -140,7 +140,7 @@ class MockProvider(BaseLLMProvider):
         return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
 
 
-def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
+def get_llm_provider(provider_name: str = "openai") -> BaseLLMProvider:
     """Factory function tự chọn Provider từ biến môi trường LLM_PROVIDER"""
     name = (provider_name or os.getenv("LLM_PROVIDER") or "mock").lower().strip()
     
