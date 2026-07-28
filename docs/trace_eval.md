@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `4/5` | Quy trình tuyển dụng gồm nhiều bước phụ thuộc nhau: phân tích yêu cầu vị trí, đọc hồ sơ không cấu trúc, kiểm tra tiêu chí bắt buộc, đánh giá mức độ phù hợp, xếp hạng, lựa chọn người phỏng vấn và đề xuất lịch. Một số tiêu chí còn có thể thay thế hoặc bù trừ lẫn nhau. |
+| 🛠️ **Tool Interaction** | `4/5` | Trong môi trường doanh nghiệp, hệ thống phải phối hợp nhiều nguồn và công cụ như cơ sở dữ liệu tuyển dụng, kho hồ sơ, công cụ chấm điểm, lịch của ứng viên, lịch người phỏng vấn và hệ thống gửi thông báo. |
+| 🔀 **Dynamic Decision** | `4/5` | Hành động tiếp theo thay đổi theo dữ liệu quan sát được. Agent có thể phải yêu cầu bổ sung thông tin, chuyển sang ứng viên khác, chọn người phỏng vấn khác, tìm lịch khác hoặc dừng quy trình khi vi phạm tiêu chí. Số lượng nhánh lớn khiến workflow if/else cố định khó bảo trì. |
+| ⏳ **Long Horizon** | `3/5` | Quy trình có thể kéo dài qua nhiều vòng như sàng lọc, xác nhận lịch, đổi lịch và theo dõi phản hồi. Tuy nhiên, phạm vi prototype của bài thực hành chỉ mô phỏng một phần ngắn của quy trình tuyển dụng. |
+| **TỔNG ĐIỂM FIT** | **15/20** | **KẾT LUẬN: BÀI TOÁN NÊN THỬ NGHIỆM REACT AGENT.** |
 
 ---
 
