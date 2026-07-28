@@ -14,7 +14,7 @@
   {
     "id": 3,
     "category": "🟡 Multi-step (Lọc + Xếp hạng)",
-    "question": "Tìm cho tôi người phù hợp nhất để hẹn hò với tôi, dựa trên hồ sơ của tôi và sở thích của tôi.",
+    "question": "Tìm cho tôi 3 người phù hợp nhất để hẹn hò với tôi, dựa trên hồ sơ của tôi và sở thích của tôi.",
     "expected_behavior": "Agent trích xuất thông tin người dùng, gọi calculate_compatibility để lọc ứng viên phù hợp, sau đó gọi calculate_compatibility để chấm điểm từng ứng viên, xếp hạng và trả về người phù hợp nhất cùng lý do."
   },
   {
@@ -28,5 +28,23 @@
     "category": "🔴 Edge Case (Guardrail / Không có dữ liệu)",
     "question": "Hãy tìm cho tôi một bạn nam thích chơi piano, biết nấu ăn, biết đan len.",
     "expected_behavior": "không tìm được người giống yêu cầu thì thông báo không tìm thấy."
+  }
+  {
+    "id": 6,
+    "category": "⚫ Ngoài phạm vi (Irrelevant Question)",
+    "question": "Viết cho tôi một chương trình Python sắp xếp mảng bằng Quick Sort.",
+    "expected_behavior": "Agent nhận biết câu hỏi không liên quan đến chức năng của Cupid Agent và lịch sự từ chối hoặc hướng người dùng sang một trợ lý lập trình."
+  },
+  {
+    "id": 7,
+    "category": "⚫ Ngoài phạm vi (Irrelevant Question)",
+    "question": "Thời tiết ở Hà Nội hôm nay như thế nào?",
+    "expected_behavior": "Agent nhận biết yêu cầu không thuộc phạm vi tìm kiếm đối tượng hẹn hò và thông báo rằng chức năng này không được hỗ trợ."
+  }
+  {
+  "id": 8,
+  "category": "🟡 input không rõ ràng",
+  "question": "Cho tôi xem thông tin của Phương.",
+  "expected_behavior": "Agent phát hiện có nhiều người tên Phương và yêu cầu người dùng chọn đúng MSSV hoặc mã người dùng."
   }
 ]
