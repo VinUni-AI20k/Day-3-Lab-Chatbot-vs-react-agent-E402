@@ -1,7 +1,30 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+
+# Secrets & environment
 .env
-.venv/
+!.env.example
+
+# Virtual environments (project has .venv + .venv-py311 via uv)
+.venv*/
 env/
 venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local tools (per-user, not shared)
+.serena/
+*.local.yml
