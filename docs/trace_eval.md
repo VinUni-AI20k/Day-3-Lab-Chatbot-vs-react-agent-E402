@@ -1,5 +1,6 @@
 # 📊 BÁO CÁO GIÁM SÁT & ĐÁNH GIÁ (OBSERVABILITY TRACE LOGS)
-*Dành cho Role 5: Observability & Reviewer*
+
+**Chủ đề:** Hệ thống Đặt Lịch Khám Bệnh & Tư Vấn Chuyên Khoa
 
 ---
 
@@ -7,26 +8,18 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Phải phân tích triệu chứng -> Xác định chuyên khoa -> Đối soát lịch trống -> Quy trình đặt hẹn. |
+| 🛠️ **Tool Interaction** | `5/5` | Tương tác trực tiếp với Database bác sĩ, Hệ thống quản lý bệnh viện (HIS) và gửi SMS xác nhận. |
+| 🔀 **Dynamic Decision** | `4/5` | Nếu chuyên khoa yêu cầu đã hết lịch, Agent phải gợi ý chuyên khoa gần nhất hoặc bác sĩ khác. |
+| ⏳ **Long Horizon** | `4/5` | Quá trình tư vấn và lấy thông tin bệnh nhân (họ tên, SĐT, tiền sử) kéo dài qua nhiều lượt hội thoại. |
+| **TỔNG ĐIỂM FIT** | **18/20** | **KẾT LUẬN: ĐÂY LÀ BÀI TOÁN KINH ĐIỂN CHO RE-ACT AGENT!** |
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #4)
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
 
-### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
-* **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
+---
 
-### 🧠 ReAct Agent:
-* **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-* **Action 1**: `get_weather['Hà Nội']`
-* **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-* **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-* **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+## 📈 3. CHỈ SỐ GIÁM SÁT HỆ THỐNG (OBSERVABILITY)
+
