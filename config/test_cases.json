@@ -1,32 +1,165 @@
 [
   {
     "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟢 Happy path - Đủ tuổi và tính cách",
+    "title": "Đủ thông tin để đề xuất quà",
+    "question": "Tôi muốn chọn quà sinh nhật cho một người trẻ tuổi, năng động và thích trải nghiệm hơn là đồ trang trí.",
+    "expected_behavior": "Agent trích xuất đủ age_range, personality_traits và gift_style; không hỏi thêm; gọi tool để đề xuất quà phù hợp.",
+    "expected_profile_after_turn": {
+      "occasion": "sinh nhật",
+      "age_range": "trẻ tuổi",
+      "personality_traits": ["năng động", "thích trải nghiệm"],
+      "gift_style": "không thích đồ trang trí"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà phù hợp người trẻ, năng động và thích trải nghiệm."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟡 Missing info - Thiếu độ tuổi",
+    "title": "Hỏi tiếp về độ tuổi",
+    "question": "Tôi muốn chọn quà cho một người có tính cách hướng nội, thích sự bình yên và ít ồn ào.",
+    "expected_behavior": "Agent nhận ra còn thiếu age_range, hỏi một câu ngắn về độ tuổi trước khi chuyển sang tìm quà.",
+    "expected_profile_after_turn": {
+      "personality_traits": ["hướng nội", "bình yên"],
+      "gift_style": "ít ồn ào"
+    },
+    "expected_tool_calls": ["get_profile_completeness"],
+    "expected_follow_up_question": "Đối tượng của bạn ở độ tuổi nào?",
+    "expected_final_answer": "Sau khi có độ tuổi, agent mới đề xuất quà phù hợp."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Missing info - Thiếu tính cách",
+    "title": "Hỏi mở về tính cách",
+    "question": "Tôi cần chọn quà cho một người ở độ tuổi trung niên, muốn có một món quà đáng nhớ.",
+    "expected_behavior": "Agent nhận thấy thiếu personality_traits, hỏi một câu mở về phong cách và cách người đó thích được tôn trọng.",
+    "expected_profile_after_turn": {
+      "age_range": "trung niên"
+    },
+    "expected_tool_calls": ["get_profile_completeness"],
+    "expected_follow_up_question": "Người đó có tính cách như thế nào, ví dụ thực tế, tinh tế hay thích sự thoải mái?",
+    "expected_final_answer": "Sau khi có tính cách, agent mới đề xuất quà phù hợp."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Age + personality combo",
+    "title": "Người trẻ nhưng tính cách thực tế",
+    "question": "Chọn quà cho người trẻ tuổi, tính cách thực tế, không thích quà quá lãng phí và thích những món có ích.",
+    "expected_behavior": "Agent ưu tiên quà thực tế, tiện dụng và ít rủi ro thay vì quà trang trí hoặc quá sang trọng.",
+    "expected_profile_after_turn": {
+      "age_range": "trẻ tuổi",
+      "personality_traits": ["thực tế"],
+      "gift_style": "thích món có ích"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà thực tế, hữu dụng và phù hợp với người trẻ."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "🟡 Introvert vs extrovert",
+    "title": "Tính cách hướng nội",
+    "question": "Tôi muốn chọn quà cho một người hướng nội, thích không gian riêng tư và ít bị làm phiền.",
+    "expected_behavior": "Agent hiểu rằng tính cách hướng nội nên ưu tiên quà yên tĩnh, ít áp lực và có giá trị cá nhân.",
+    "expected_profile_after_turn": {
+      "personality_traits": ["hướng nội"],
+      "gift_style": "thích sự riêng tư"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà phù hợp người hướng nội, nhẹ nhàng và không quá gây chú ý."
+  },
+  {
+    "id": 6,
+    "category": "🟡 Age group change",
+    "title": "Quà cho người lớn tuổi nhưng vẫn cá tính",
+    "question": "Tôi cần chọn quà cho người lớn tuổi, tính cách cá tính nhưng vẫn thích vẻ đẹp tinh tế.",
+    "expected_behavior": "Agent không suy diễn quá mức; dùng age_range và personality_traits để đề xuất quà vừa lịch sự, vừa phù hợp cá tính.",
+    "expected_profile_after_turn": {
+      "age_range": "lớn tuổi",
+      "personality_traits": ["cá tính", "tinh tế"],
+      "gift_style": "thích vẻ đẹp tinh tế"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà vừa phù hợp tuổi tác, vừa phản ánh phong cách cá tính."
+  },
+  {
+    "id": 7,
+    "category": "🟡 Ambiguous personality",
+    "title": "Tín hiệu mơ hồ cần hỏi lại",
+    "question": "Tôi muốn tặng quà cho một người mới quen, có vẻ thích thư giãn nhưng cũng rất thực tế.",
+    "expected_behavior": "Agent không đoán mò; hỏi một câu làm rõ phong cách ưu tiên của người nhận để tránh gợi ý sai.",
+    "expected_profile_after_turn": {
+      "personality_traits": ["thư giãn", "thực tế"]
+    },
+    "expected_tool_calls": ["get_profile_completeness"],
+    "expected_follow_up_question": "Bạn muốn quà thiên về thư giãn hay thiên về tiện ích hơn?",
+    "expected_final_answer": "Sau khi có tín hiệu rõ hơn, agent mới đề xuất quà."
+  },
+  {
+    "id": 8,
+    "category": "🔴 Fallback - Thiếu cả tuổi và tính cách",
+    "title": "Không đủ dữ liệu để đề xuất",
+    "question": "Tôi muốn tặng một món quà đáng nhớ cho người này.",
+    "expected_behavior": "Agent không đoán mò; hỏi lại về độ tuổi và tính cách trước khi đưa ra gợi ý.",
+    "expected_profile_after_turn": {},
+    "expected_tool_calls": ["get_profile_completeness"],
+    "expected_follow_up_question": "Bạn có thể cho mình biết độ tuổi và tính cách của người nhận không?",
+    "expected_final_answer": "Không đề xuất quà cho đến khi có đủ thông tin cơ bản về tuổi và tính cách."
+  },
+  {
+    "id": 9,
+    "category": "🔴 Edge case - Cập nhật state",
+    "title": "Đổi sang người nhận khác",
+    "question": "Ban đầu tôi nói về một người trẻ tuổi, năng động. Bây giờ đổi lại là một người lớn tuổi, calm và thích sự tiện lợi.",
+    "expected_behavior": "Agent cập nhật lại hồ sơ mới cho tuổi và tính cách, không dùng dữ liệu cũ sai ngữ cảnh.",
+    "expected_profile_after_turn": {
+      "age_range": "lớn tuổi",
+      "personality_traits": ["calm", "thích tiện lợi"],
+      "gift_style": "thích sự tiện lợi"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Phản hồi theo hồ sơ mới, ưu tiên quà phù hợp với người lớn tuổi và tính cách calm."
+  },
+  {
+    "id": 10,
+    "category": "🟢 Occasion-aware profile",
+    "title": "Kết hợp dịp tặng và tính cách",
+    "question": "Tôi cần mua quà kỷ niệm cho người trẻ tuổi, khá tinh tế và thích những món có ý nghĩa.",
+    "expected_behavior": "Agent kết hợp occasion, age_range và personality_traits để ưu tiên quà có ý nghĩa và không quá lố lăng.",
+    "expected_profile_after_turn": {
+      "occasion": "kỷ niệm",
+      "age_range": "trẻ tuổi",
+      "personality_traits": ["tinh tế", "thích ý nghĩa"],
+      "gift_style": "món có ý nghĩa"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà có ý nghĩa, phù hợp với người trẻ tuổi và phong cách tinh tế."
+  },
+  {
+    "id": 11,
+    "category": "🟡 One-question follow-up",
+    "title": "Chỉ hỏi một câu ưu tiên cao nhất",
+    "question": "Tôi cần chọn quà cho một người ở độ tuổi teen, có vẻ rất thích sự sáng tạo.",
+    "expected_behavior": "Agent chỉ hỏi một câu ưu tiên nhất về tính cách hoặc phong cách quà, không làm khảo sát dài.",
+    "expected_profile_after_turn": {
+      "age_range": "teen"
+    },
+    "expected_tool_calls": ["get_profile_completeness"],
+    "expected_follow_up_question": "Bạn muốn quà thiên về sáng tạo, nghệ thuật hay trải nghiệm thực tế hơn?",
+    "expected_final_answer": "Sau khi người dùng trả lời, agent mới chuyển sang đề xuất quà."
+  },
+  {
+    "id": 12,
+    "category": "🟢 Balanced recommendation",
+    "title": "Kết hợp tuổi và tính cách cho gợi ý tốt nhất",
+    "question": "Tôi muốn tặng quà cho người trung niên, tính cách thoải mái, không thích thứ quá cầu kỳ nhưng vẫn cần có chút tinh tế.",
+    "expected_behavior": "Agent dùng cả age_range và personality_traits để chọn quà vừa phù hợp tuổi, vừa không quá rườm rà.",
+    "expected_profile_after_turn": {
+      "age_range": "trung niên",
+      "personality_traits": ["thoải mái", "tinh tế"],
+      "gift_style": "không cầu kỳ"
+    },
+    "expected_tool_calls": ["get_profile_completeness", "search_gifts"],
+    "expected_final_answer": "Đề xuất quà đơn giản, tinh tế và phù hợp với người trung niên."
   }
 ]
