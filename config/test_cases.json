@@ -14,25 +14,25 @@
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Phim Avatar 3 tối nay chiếu lúc mấy giờ ở CGV?",
-    "expected_behavior": "Agent gọi tool get_showtimes('Avatar 3', 'CGV') rồi trả lời danh sách giờ chiếu lấy từ movies_cache.json."
+    "question": "Phim Obsession tối nay chiếu lúc mấy giờ ở CGV?",
+    "expected_behavior": "Agent gọi tool get_showtimes('Obsession', 'CGV') rồi trả lời danh sách giờ chiếu lấy từ movies_cache.json."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi nhiều Tools)",
-    "question": "Suất 19h phim Avatar 3 ở CGV còn ghế gần màn hình không? Đặt giúp tôi 2 vé loại đó.",
-    "expected_behavior": "Agent gọi get_showtimes -> get_seat_map để kiểm tra zone 'Thường - Gần màn hình' còn trống -> book_ticket(film_name='Avatar 3', cinema='CGV', time='19:00', zone='Thường - Gần màn hình', quantity=2). Trả lời kèm mã ghế cụ thể, tổng tiền và mã đặt vé, có ghi chú [DEMO]."
+    "question": "Suất 19h phim Odyssey ở CGV còn ghế gần màn hình không? Đặt giúp tôi 2 vé loại đó.",
+    "expected_behavior": "Agent gọi get_showtimes -> get_seat_map để kiểm tra zone 'Thường - Gần màn hình' còn trống -> book_ticket(film_name='Obsession', cinema='CGV', time='19:00', zone='Thường - Gần màn hình', quantity=2). Trả lời kèm mã ghế cụ thể, tổng tiền và mã đặt vé, có ghi chú [DEMO]."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Đặt giúp tôi 5 vé Sweetbox suất 19h phim Avatar 3 ở CGV.",
+    "question": "Đặt giúp tôi 5 vé Sweetbox suất 19h phim minions và quái vật ở CGV.",
     "expected_behavior": "Zone 'Sweetbox - Ghế đôi' chỉ có số lượng ghế đôi giới hạn (ít hơn 5 vé) dù suất phim nói chung vẫn còn ghế ở zone khác. Tool book_ticket trả về lỗi rõ ràng (không đủ ghế trong zone này), Guardrail ngắt sau MAX_ITERATIONS bước nếu Agent cứ thử lại, và trả lời lịch sự (có thể gợi ý zone khác còn trống)."
   },
   {
     "id": 6,
     "category": "🔴 Edge Case (Đặt trùng ghế)",
-    "question": "Đặt cho tôi ghế D5 suất 19h phim Avatar 3 ở CGV.",
+    "question": "Đặt cho tôi ghế D5 suất 19h phim quỷ bắt hồn ở CGV.",
     "expected_behavior": "Ghế D5 đã nằm trong booked_seats gốc (hoặc đã bị đặt qua bookings_local.json trước đó) của zone 'VIP - Trung tâm'. Tool book_ticket phải phát hiện ghế đã có người đặt, từ chối gán trùng ghế, trả lỗi rõ ràng và gợi ý ghế trống khác cùng zone thay vì âm thầm ghi đè lên booking cũ."
   },
   {
@@ -62,14 +62,14 @@
   {
     "id": 11,
     "category": "🟡 Multi-step (Cần Tool - get_film_details)",
-    "question": "Phim Avatar 3 nói về nội dung gì, thời lượng và độ tuổi phù hợp ra sao?",
-    "expected_behavior": "Agent gọi get_film_details('Avatar 3') và trả lời dựa đúng vào synopsis/duration_min/rating lấy từ cache, không tự sáng tác thêm tình tiết phim không có trong dữ liệu."
+    "question": "Phim Odyssey nói về nội dung gì, thời lượng và độ tuổi phù hợp ra sao?",
+    "expected_behavior": "Agent gọi get_film_details('Odyssey') và trả lời dựa đúng vào synopsis/duration_min/rating lấy từ cache, không tự sáng tác thêm tình tiết phim không có trong dữ liệu."
   },
   {
     "id": 12,
     "category": "🟡 Multi-step (Cần Tool - get_showtimes nhiều rạp)",
-    "question": "Tối nay phim Avatar 3 chiếu ở những rạp CGV nào, mấy giờ?",
-    "expected_behavior": "Agent gọi get_showtimes('Avatar 3') không giới hạn cinema, liệt kê đầy đủ các suất ở từng rạp có trong cache (kể cả suất đã hết vé seats_available=0), không chỉ trả về đúng 1 rạp mặc định."
+    "question": "Tối nay phim Odyssey chiếu ở những rạp CGV nào, mấy giờ?",
+    "expected_behavior": "Agent gọi get_showtimes('Odyssey') không giới hạn cinema, liệt kê đầy đủ các suất ở từng rạp có trong cache (kể cả suất đã hết vé seats_available=0), không chỉ trả về đúng 1 rạp mặc định."
   },
   {
     "id": 13,
@@ -128,13 +128,19 @@
   {
     "id": 22,
     "category": "🔴 Edge Case (Giờ chiếu không có thật)",
-    "question": "Phim Avatar 3 suất 25:00 tối nay ở CGV còn vé không?",
+    "question": "Phim Odyssey suất 25:00 tối nay ở CGV còn vé không?",
     "expected_behavior": "'25:00' không phải giờ hợp lệ (giờ chỉ trong khoảng 00-23). get_showtimes không khớp được suất nào với giờ này trong cache — đây là lỗi giờ không tồn tại, khác với lỗi 'hết vé'. Tool phải trả lỗi rõ ràng kèm danh sách giờ chiếu thực tế trong ngày, Agent không được tự làm tròn/gán về suất gần nhất mà không hỏi lại người dùng, và hệ thống không được crash khi parse giờ sai định dạng."
   },
   {
     "id": 23,
     "category": "🔴 Edge Case (Ngày không có thật trên lịch)",
-    "question": "Phim Avatar 3 chiếu lúc mấy giờ ở CGV ngày 30/02/2026?",
+    "question": "Phim Odyssey chiếu lúc mấy giờ ở CGV ngày 30/02/2026?",
     "expected_behavior": "Ngày 30/02 không tồn tại trên lịch (tháng 2 tối đa 28-29 ngày). Đây là lỗi validate đầu vào trước cả khi tra cứu cache, khác với case #18 (ngày hợp lệ nhưng không có trong cache). Agent/tool phải phát hiện ngày không hợp lệ và hỏi lại người dùng ngày chính xác thay vì cố tra cứu hoặc bịa suất chiếu cho một ngày không có thật."
+  },
+  {
+    "id": 24,
+    "category": "🟡 Multi-step (Nhận diện tên series/thương hiệu phim)",
+    "question": "Rạp có đang chiếu phim Conan không?",
+    "expected_behavior": "Người dùng chỉ nhắc tên series ('Conan') chứ không gõ đúng tên phim đầy đủ trong cache. Agent phải gọi search_now_showing_films(keyword='Conan') để tự đối chiếu và nhận ra phim đang chiếu thuộc series này là 'PHIM ĐIỆN ẢNH THÁM TỬ LỪNG DANH CONAN: THIÊN THẦN SA NGÃ TRÊN XA LỘ' (khớp theo từ khóa/tên rút gọn, không cần khớp tuyệt đối chuỗi), rồi trả lời đúng tên phim đầy đủ lấy từ movies_cache.json kèm gợi ý hỏi thêm suất chiếu/rạp nếu người dùng muốn đặt vé. Không được trả lời 'không tìm thấy phim' chỉ vì tên gõ không khớp y hệt, và không được bịa thêm phim khác trong series mà cache không có."
   }
 ]
