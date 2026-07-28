@@ -5,14 +5,20 @@ Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể g�
 """
 
 def get_order_info(order_id: str) -> str:
-    """
-    Tra cứu thông tin chi tiết của một đơn hàng theo Mã đơn hàng (order_id).
-    
+    """Tra cứu thông tin chi tiết của một đơn hàng theo Mã đơn hàng (order_id).
+
+    Dùng khi người dùng muốn biết trạng thái giao hàng, ngành hàng sản phẩm,
+    ngày nhận hàng và khả năng đổi trả của đơn hàng.
+
     Args:
-        order_id (str): Mã đơn hàng cần tra cứu (Ví dụ: 'ORD-123', 'HD98765')
-        
+        order_id (str): Mã đơn hàng cần tra cứu (Ví dụ: 'ORD-123', 'HD98765').
+
     Returns:
-        str: Thông tin chi tiết hệ thống trả về cho mã đơn hàng tương ứng.
+        str: Chuỗi định dạng thông tin chi tiết đơn hàng hoặc thông báo lỗi nếu mã đơn không hợp lệ.
+
+    Example:
+        >>> get_order_info('ORD-123')
+        "📦 THÔNG TIN ĐƠN HÀNG [ORD-123]:..."
     """
     order_clean = order_id.strip().upper()
     if not order_clean:
@@ -28,15 +34,21 @@ def get_order_info(order_id: str) -> str:
 
 
 def check_return_policy(category: str, days_since_purchase: int) -> str:
-    """
-    Tra cứu quy định và điều kiện đổi trả theo Ngành hàng và Số ngày kể từ khi nhận hàng.
-    
+    """Tra cứu quy định và điều kiện đổi trả theo Ngành hàng và Số ngày kể từ khi nhận hàng.
+
+    Dùng để kiểm tra xem đơn hàng có thuộc danh mục được phép đổi trả hay không,
+    và có nằm trong khoảng thời gian quy định (VD: Điện tử 7 ngày, Thời trang 14 ngày).
+
     Args:
-        category (str): Ngành hàng của sản phẩm (Ví dụ: 'Điện tử', 'Thời trang', 'Thực phẩm tươi sống', 'Mỹ phẩm')
-        days_since_purchase (int): Số ngày tính từ khi khách nhận hàng đến thời điểm hiện tại.
-        
+        category (str): Ngành hàng sản phẩm (Ví dụ: 'Điện tử', 'Thời trang', 'Thực phẩm tươi sống', 'Mỹ phẩm').
+        days_since_purchase (int): Số ngày tính từ ngày nhận hàng đến hiện tại (Ví dụ: 3, 10, 20).
+
     Returns:
-        str: Kết quả kiểm tra quy định đổi trả chi tiết.
+        str: Thông báo xác nhận đủ điều kiện hoặc lý do bị từ chối đổi trả kèm theo yêu cầu (nguyên tem/tag).
+
+    Example:
+        >>> check_return_policy('Điện tử', 5)
+        "✅ ĐỦ ĐIỀU KIỆN: Ngành 'Điện tử' cho phép đổi trả trong 7 ngày..."
     """
     cat_lower = category.lower()
     
@@ -63,16 +75,22 @@ def check_return_policy(category: str, days_since_purchase: int) -> str:
 
 
 def calculate_refund_amount(order_id: str, product_price: float, reason: str) -> str:
-    """
-    Tính toán số tiền hoàn lại cho khách hàng dựa trên giá trị sản phẩm và lý do đổi trả.
-    
+    """Tính toán số tiền hoàn lại dự kiến dựa trên giá trị sản phẩm và lý do đổi trả.
+
+    Hệ thống sẽ tự động trừ phí thu hồi hàng (30.000 VNĐ) nếu lý do từ phía khách hàng (đổi ý),
+    hoặc miễn phí 100% chi phí thu hồi nếu do lỗi từ sản phẩm/nhà cung cấp.
+
     Args:
-        order_id (str): Mã đơn hàng
-        product_price (float): Giá trị sản phẩm (VNĐ)
-        reason (str): Lý do trả hàng (Ví dụ: 'Lỗi nhà sản xuất', 'Giao sai hàng', 'Đổi ý không thích')
-        
+        order_id (str): Mã đơn hàng (Ví dụ: 'ORD-123').
+        product_price (float): Giá trị tiền của sản phẩm hoàn trả tính bằng VNĐ (Ví dụ: 500000.0).
+        reason (str): Lý do trả hàng (Ví dụ: 'Lỗi nhà sản xuất', 'Giao sai hàng', 'Đổi ý không thích').
+
     Returns:
-        str: Số tiền hoàn lại dự kiến và các khoản phí trừ (nếu có).
+        str: Bảng tổng kết số tiền hoàn dự kiến kèm chi tiết khấu trừ phí vận chuyển (nếu có).
+
+    Example:
+        >>> calculate_refund_amount('ORD-123', 500000.0, 'Sản phẩm bị lỗi')
+        "💰 BẢNG TÍNH TIỀN HOÀN DỰ KIẾN [ORD-123]:..."
     """
     order_clean = order_id.strip().upper()
     reason_lower = reason.lower()
@@ -98,17 +116,22 @@ def calculate_refund_amount(order_id: str, product_price: float, reason: str) ->
 
 
 def create_return_request(order_id: str, items_to_return: str, reason: str, bank_account: str) -> str:
-    """
-    Khởi tạo yêu cầu đổi/trả hàng chính thức trên hệ thống và cấp mã vận đơn gửi hàng trả.
-    
+    """Khởi tạo yêu cầu đổi/trả hàng chính thức trên hệ thống và cấp mã RMA / mã thu hồi.
+
+    Dùng khi khách hàng đồng ý tạo đơn đổi trả và cung cấp đầy đủ lý do cũng như thông tin nhận tiền hoàn.
+
     Args:
-        order_id (str): Mã đơn hàng
-        items_to_return (str): Sản phẩm cần đổi/trả
-        reason (str): Lý do đổi trả
-        bank_account (str): Số tài khoản nhận tiền hoàn (Ví dụ: 'MBBank - 0987654321 - NGUYEN VAN A')
-        
+        order_id (str): Mã đơn hàng cần đổi trả (Ví dụ: 'ORD-123').
+        items_to_return (str): Tên hoặc danh sách sản phẩm cần trả (Ví dụ: 'Tai nghe Bluetooth Sony').
+        reason (str): Lý do trả hàng (Ví dụ: 'Hàng bị vỡ màn hình').
+        bank_account (str): Thông tin tài khoản ngân hàng nhận tiền (Ví dụ: 'MBBank - 0987654321 - NGUYEN VAN A').
+
     Returns:
-        str: Kết quả tạo yêu cầu đổi trả, mã RMA và mã vận đơn gửi trả.
+        str: Xác nhận khởi tạo thành công kèm Mã RMA, Mã vận đơn thu hồi và hướng dẫn đóng gói.
+
+    Example:
+        >>> create_return_request('ORD-123', 'Tai nghe Sony', 'Lỗi kết nối', 'MBBank 0987654321')
+        "🎉 THÀNH CÔNG: Đã khởi tạo yêu cầu đổi trả cho đơn hàng [ORD-123]!..."
     """
     order_clean = order_id.strip().upper()
     if not order_clean:
@@ -129,14 +152,17 @@ def create_return_request(order_id: str, items_to_return: str, reason: str, bank
 
 
 def track_shipping_status(tracking_number: str) -> str:
-    """
-    Tra cứu tiến trình vận chuyển của một mã vận đơn (kiện giao đi hoặc kiện thu hồi đổi trả).
-    
+    """Tra cứu tiến trình vận chuyển của một mã vận đơn (giao hàng hoặc thu hồi đổi trả).
+
     Args:
-        tracking_number (str): Mã vận đơn cần tra cứu (Ví dụ: 'GHN987654', 'RET-GHN-ORD123')
-        
+        tracking_number (str): Mã vận đơn cần kiểm tra (Ví dụ: 'GHN987654', 'RET-GHN-ORD123').
+
     Returns:
-        str: Trạng thái chi tiết hành trình vận chuyển.
+        str: Thông tin trạng thái và bưu cục hiện tại của kiện hàng.
+
+    Example:
+        >>> track_shipping_status('GHN987654')
+        "🚚 HÀNH TRÌNH VẬN CHUYỂN [GHN987654]:..."
     """
     tn_clean = tracking_number.strip().upper()
     if not tn_clean:
