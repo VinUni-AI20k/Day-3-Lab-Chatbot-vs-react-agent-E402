@@ -272,11 +272,11 @@ def main():
         except Exception as exc:
             print(f"❌ Baseline thất bại ở test case {case_id}: {exc}")
 
-        # print("\n--- VERSION 2: REACT AGENT ---")
-        # try:
-        #     run_react_agent(user_query, provider)
-        # except Exception as exc:
-        #     print(f"❌ ReAct Agent thất bại ở test case {case_id}: {exc}")
+        print("\n--- VERSION 2: REACT AGENT ---")
+        try:
+            run_react_agent(user_query, provider)
+        except Exception as exc:
+            print(f"❌ ReAct Agent thất bại ở test case {case_id}: {exc}")
 
 
 if __name__ == "__main__":
