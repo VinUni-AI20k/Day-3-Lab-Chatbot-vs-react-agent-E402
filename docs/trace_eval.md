@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Phải thực hiện chuỗi tư duy đa bước: Đọc & phân tích yêu cầu công việc (JD) ➔ Trích xuất thông tin kỹ năng/kinh nghiệm trong CV ➔ Đối sánh & chấm điểm độ phù hợp (Skill Matching Gap) ➔ Quyết định Đạt/Không đạt. |
+| 🛠️ **Tool Interaction** | `5/5` | Bắt buộc tương tác với nhiều công cụ và hệ thống dữ liệu thực tế: tra cứu thông tin CV (parse_cv), lấy yêu cầu công việc (get_jd), tra cứu lịch rảnh người phỏng vấn (check_calendar), và đặt lịch/gửi email hẹn phỏng vấn (book_interview_slot). |
+| 🔀 **Dynamic Decision** | `5/5` | Kết quả bước trước quyết định trực tiếp luồng xử lý bước sau: Nếu CV Đạt ➔ Chuyển sang tìm slot rảnh và gửi thư mời phỏng vấn. Nếu CV Không đạt ➔ Chuyển nhánh tạo email từ chối lịch sự (Rejection Email) kèm lý do cụ thể. Nếu trùng lịch ➔ Đề xuất slot dự phòng. |
+| ⏳ **Long Horizon** | `4/5` | Quy trình trải dài qua chuỗi 4–5 bước nối tiếp nhau độc lập (Lấy thông tin CV ➔ Phân tích JD ➔ Đánh giá/Scoring ➔ Check Calendar ➔ Gửi mail xác nhận lịch hẹn). |
+| **TỔNG ĐIỂM FIT** | **19/20** | **KẾT LUẬN: BÀI TOÁN CỰC KỲ PHÙ HỢP ĐỂ DÙNG REACT AGENT!** |
 
 ---
 
