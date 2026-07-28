@@ -1,32 +1,523 @@
-[
-  {
-    "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
-  },
-  {
-    "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
-  },
-  {
-    "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
-  },
-  {
-    "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
-  },
-  {
-    "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
-  }
-]
+{
+    "suite_name": "test_grading_json",
+    "grading_rubric": {
+        "preferred_title": 15,
+        "skills_and_tasks": 40,
+        "work_experience": 30,
+        "domain_fit": 10,
+        "location_fit": 5,
+        "total": 100
+    },
+    "scoring_note": "expected_grade = expected_total_100 / 10",
+    "test_cases": [
+        {
+            "id": 1,
+            "JD": {
+                "Title": "Backend Engineer (Python)",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["Python", "FastAPI", "PostgreSQL", "Docker", "CI/CD"],
+                    "Domain": "Backend Development"
+                }
+            },
+            "candidate": {
+                "preferred title": "Backend Engineer",
+                "location": "Hà Nội",
+                "experience": [
+                    {
+                        "role": "Python Backend Engineer",
+                        "duration": "3 năm",
+                        "mission": "Xây API với FastAPI, tối ưu PostgreSQL, triển khai Docker + GitHub Actions CI/CD."
+                    }
+                ],
+                "education": "Cử nhân Khoa học Máy tính",
+                "project": [
+                    {
+                        "name": "Order Service",
+                        "description": "Microservice xử lý đơn hàng realtime",
+                        "technologies": ["Python", "FastAPI", "PostgreSQL", "Redis", "Docker", "CI/CD"]
+                    }
+                ],
+                "skills": ["Python", "FastAPI", "PostgreSQL", "Docker", "CI/CD", "Redis"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 15,
+                "skills_and_tasks": 38,
+                "work_experience": 28,
+                "domain_fit": 10,
+                "location_fit": 5
+            },
+            "expected_total_100": 96,
+            "expected_grade": 9.6,
+            "category": "Easy 🟢"
+        },
+        {
+            "id": 2,
+            "JD": {
+                "Title": "Data Analyst",
+                "location": "TP.HCM",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["SQL", "Python", "Power BI", "A/B Testing", "Stakeholder Communication"],
+                    "Domain": "E-commerce Analytics"
+                }
+            },
+            "candidate": {
+                "preferred title": "Data Analyst",
+                "location": "TP.HCM",
+                "experience": [
+                    {
+                        "role": "Data Analyst",
+                        "duration": "2.5 năm",
+                        "mission": "Phân tích funnel, thiết kế A/B test, làm dashboard Power BI cho team growth."
+                    }
+                ],
+                "education": "Cử nhân Toán - Tin",
+                "project": [
+                    {
+                        "name": "Conversion Uplift",
+                        "description": "Tối ưu checkout bằng SQL + Python + A/B testing",
+                        "technologies": ["SQL", "Python", "Power BI"]
+                    }
+                ],
+                "skills": ["SQL", "Python", "Power BI", "A/B Testing", "Communication"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 15,
+                "skills_and_tasks": 36,
+                "work_experience": 27,
+                "domain_fit": 10,
+                "location_fit": 5
+            },
+            "expected_total_100": 93,
+            "expected_grade": 9.3,
+            "category": "Easy 🟢"
+        },
+        {
+            "id": 3,
+            "JD": {
+                "Title": "Frontend Engineer (React)",
+                "location": "Đà Nẵng",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["React", "TypeScript", "Redux", "Unit Test", "REST API"],
+                    "Domain": "Web Product"
+                }
+            },
+            "candidate": {
+                "preferred title": "Frontend Engineer",
+                "location": "Đà Nẵng",
+                "experience": [
+                    {
+                        "role": "React Developer",
+                        "duration": "3 năm",
+                        "mission": "Xây SPA React + TypeScript, viết test với Vitest/Jest, phối hợp backend API."
+                    }
+                ],
+                "education": "Cử nhân CNTT",
+                "project": [
+                    {
+                        "name": "Merchant Portal",
+                        "description": "Portal quản trị cho seller",
+                        "technologies": ["React", "TypeScript", "Redux", "REST API", "Jest"]
+                    }
+                ],
+                "skills": ["React", "TypeScript", "Redux", "Jest", "REST API"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 15,
+                "skills_and_tasks": 37,
+                "work_experience": 27,
+                "domain_fit": 10,
+                "location_fit": 5
+            },
+            "expected_total_100": 94,
+            "expected_grade": 9.4,
+            "category": "Easy 🟢"
+        },
+        {
+            "id": 4,
+            "JD": {
+                "Title": "DevOps Engineer",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 3,
+                    "Skills": ["Docker", "Kubernetes", "CI/CD", "AWS", "Monitoring"],
+                    "Domain": "Cloud Infrastructure"
+                }
+            },
+            "candidate": {
+                "preferred title": "Platform/DevOps Engineer",
+                "location": "Hà Nội",
+                "experience": [
+                    {
+                        "role": "DevOps Engineer",
+                        "duration": "4 năm",
+                        "mission": "Thiết kế CI/CD, vận hành Kubernetes, giám sát Prometheus/Grafana."
+                    }
+                ],
+                "education": "Kỹ sư Hệ thống Thông tin",
+                "project": [
+                    {
+                        "name": "Infra Automation",
+                        "description": "Chuẩn hóa pipeline deploy đa môi trường",
+                        "technologies": ["Docker", "Kubernetes", "GitLab CI", "AWS", "Prometheus"]
+                    }
+                ],
+                "skills": ["Docker", "Kubernetes", "CI/CD", "AWS", "Monitoring", "Terraform"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 14,
+                "skills_and_tasks": 36,
+                "work_experience": 28,
+                "domain_fit": 10,
+                "location_fit": 5
+            },
+            "expected_total_100": 93,
+            "expected_grade": 9.3,
+            "category": "Easy 🟢"
+        },
+        {
+            "id": 5,
+            "JD": {
+                "Title": "Backend Engineer (Python)",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["Python", "FastAPI or Django", "PostgreSQL / Redis", "Docker", "CI/CD"],
+                    "Domain": "Backend Development"
+                }
+            },
+            "candidate": {
+                "preferred title": "QA",
+                "location": "Hà Nội",
+                "experience": [
+                    {
+                        "role": "Junior Python Developer",
+                        "duration": "1 năm",
+                        "mission": "Viết script tự động hóa kiểm thử và xử lý dữ liệu."
+                    }
+                ],
+                "education": "Cử nhân Công nghệ Thông tin",
+                "project": [
+                    {
+                        "name": "Tool tự động hóa báo cáo",
+                        "description": "Thu thập và tổng hợp báo cáo từ nhiều nguồn.",
+                        "technologies": ["Python", "Django", "Selenium"]
+                    }
+                ],
+                "skills": ["Python", "Django", "Selenium"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 4,
+                "skills_and_tasks": 20,
+                "work_experience": 10,
+                "domain_fit": 5,
+                "location_fit": 5
+            },
+            "expected_total_100": 44,
+            "expected_grade": 4.4,
+            "category": "Medium 🟡"
+        },
+        {
+            "id": 6,
+            "JD": {
+                "Title": "Product Manager",
+                "location": "TP.HCM",
+                "Requirements": {
+                    "YOE": 3,
+                    "Skills": ["Product Discovery", "Roadmap Planning", "SQL", "A/B Testing", "Stakeholder Management"],
+                    "Domain": "Fintech"
+                }
+            },
+            "candidate": {
+                "preferred title": "Business Analyst",
+                "location": "TP.HCM",
+                "experience": [
+                    {
+                        "role": "Business Analyst",
+                        "duration": "2 năm",
+                        "mission": "Viết BRD, phối hợp dev, theo dõi KPI vận hành sản phẩm nội bộ."
+                    }
+                ],
+                "education": "Cử nhân Quản trị Kinh doanh",
+                "project": [
+                    {
+                        "name": "Payment Reconciliation",
+                        "description": "Tối ưu quy trình đối soát giao dịch",
+                        "technologies": ["SQL", "Excel", "Looker"]
+                    }
+                ],
+                "skills": ["Requirement Gathering", "SQL", "Communication", "Backlog"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 9,
+                "skills_and_tasks": 21,
+                "work_experience": 16,
+                "domain_fit": 6,
+                "location_fit": 5
+            },
+            "expected_total_100": 57,
+            "expected_grade": 5.7,
+            "category": "Medium 🟡"
+        },
+        {
+            "id": 7,
+            "JD": {
+                "Title": "Mobile Engineer (Flutter)",
+                "location": "Đà Nẵng",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["Flutter", "Dart", "REST API", "Firebase", "State Management"],
+                    "Domain": "Consumer App"
+                }
+            },
+            "candidate": {
+                "preferred title": "Android Developer",
+                "location": "Huế",
+                "experience": [
+                    {
+                        "role": "Android Developer",
+                        "duration": "2.5 năm",
+                        "mission": "Xây ứng dụng native Android, tích hợp API và push notification."
+                    }
+                ],
+                "education": "Cử nhân CNTT",
+                "project": [
+                    {
+                        "name": "E-wallet Android",
+                        "description": "Ứng dụng ví điện tử Android native",
+                        "technologies": ["Kotlin", "REST API", "Firebase"]
+                    }
+                ],
+                "skills": ["Kotlin", "Android", "REST API", "Firebase"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 8,
+                "skills_and_tasks": 18,
+                "work_experience": 22,
+                "domain_fit": 6,
+                "location_fit": 1
+            },
+            "expected_total_100": 55,
+            "expected_grade": 5.5,
+            "category": "Medium 🟡"
+        },
+        {
+            "id": 8,
+            "JD": {
+                "Title": "Cybersecurity Analyst",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["SIEM", "Incident Response", "Network Security", "Threat Hunting", "Python"],
+                    "Domain": "Security Operations"
+                }
+            },
+            "candidate": {
+                "preferred title": "System Administrator",
+                "location": "Hà Nội",
+                "experience": [
+                    {
+                        "role": "System Administrator",
+                        "duration": "3 năm",
+                        "mission": "Quản trị server Linux/Windows, giám sát uptime, xử lý sự cố hạ tầng."
+                    }
+                ],
+                "education": "Cử nhân Mạng máy tính",
+                "project": [
+                    {
+                        "name": "SOC Support",
+                        "description": "Hỗ trợ SOC trực đêm, phân loại cảnh báo cơ bản",
+                        "technologies": ["ELK", "Firewall", "Linux"]
+                    }
+                ],
+                "skills": ["Linux", "Monitoring", "Firewall", "ELK cơ bản"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 6,
+                "skills_and_tasks": 17,
+                "work_experience": 23,
+                "domain_fit": 5,
+                "location_fit": 5
+            },
+            "expected_total_100": 56,
+            "expected_grade": 5.6,
+            "category": "Medium 🟡"
+        },
+        {
+            "id": 9,
+            "JD": {
+                "Title": "Senior Backend Engineer (Go)",
+                "location": "TP.HCM",
+                "Requirements": {
+                    "YOE": 5,
+                    "Skills": ["Go", "Microservices", "Kafka", "Kubernetes", "Distributed Systems"],
+                    "Domain": "High-scale Fintech"
+                }
+            },
+            "candidate": {
+                "preferred title": "Senior Backend Engineer",
+                "location": "TP.HCM",
+                "experience": [
+                    {
+                        "role": "Backend Engineer",
+                        "duration": "5 năm",
+                        "mission": "Xây API thương mại điện tử với Node.js và MongoDB."
+                    }
+                ],
+                "education": "Cử nhân CNTT",
+                "project": [
+                    {
+                        "name": "Keyword-heavy CV",
+                        "description": "CV liệt kê Go, Kafka, K8s nhưng không có dự án minh chứng hoặc nhiệm vụ cụ thể.",
+                        "technologies": ["Go", "Kafka", "Kubernetes", "Microservices"]
+                    }
+                ],
+                "skills": ["Go", "Kafka", "Kubernetes", "Microservices", "Node.js"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 15,
+                "skills_and_tasks": 18,
+                "work_experience": 20,
+                "domain_fit": 4,
+                "location_fit": 5
+            },
+            "expected_total_100": 62,
+            "expected_grade": 6.2,
+            "category": "Edge Case 🔴"
+        },
+        {
+            "id": 10,
+            "JD": {
+                "Title": "AI Engineer (LLM Applications)",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 3,
+                    "Skills": ["Python", "LLM", "RAG", "Vector DB", "MLOps"],
+                    "Domain": "GenAI Product"
+                }
+            },
+            "candidate": {
+                "preferred title": "Machine Learning Engineer",
+                "location": "Remote - Singapore",
+                "experience": [
+                    {
+                        "role": "ML Engineer",
+                        "duration": "4 năm",
+                        "mission": "Triển khai chatbot RAG với Python, LangChain, Pinecone, monitoring pipeline model."
+                    }
+                ],
+                "education": "Thạc sĩ Khoa học Dữ liệu",
+                "project": [
+                    {
+                        "name": "Enterprise QA Bot",
+                        "description": "RAG cho tài liệu nội bộ, đánh giá hallucination, triển khai CI/CD model",
+                        "technologies": ["Python", "LLM", "RAG", "Vector DB", "MLOps"]
+                    }
+                ],
+                "skills": ["Python", "LLM", "RAG", "Vector DB", "MLOps"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 13,
+                "skills_and_tasks": 40,
+                "work_experience": 29,
+                "domain_fit": 10,
+                "location_fit": 0
+            },
+            "expected_total_100": 92,
+            "expected_grade": 9.2,
+            "category": "Edge Case 🔴"
+        },
+        {
+            "id": 11,
+            "JD": {
+                "Title": "Finance Analyst",
+                "location": "TP.HCM",
+                "Requirements": {
+                    "YOE": 2,
+                    "Skills": ["Financial Modeling", "Excel", "SQL", "Forecasting", "Presentation"],
+                    "Domain": "Corporate Finance"
+                }
+            },
+            "candidate": {
+                "preferred title": "Finance Analyst",
+                "location": "TP.HCM",
+                "experience": [
+                    {
+                        "role": "Kế toán tổng hợp",
+                        "duration": "2 năm",
+                        "mission": "Lập báo cáo tài chính định kỳ và kiểm soát chứng từ."
+                    },
+                    {
+                        "role": "Freelance Trader",
+                        "duration": "1 năm",
+                        "mission": "Tự giao dịch và theo dõi danh mục cá nhân."
+                    }
+                ],
+                "education": "Cử nhân Tài chính",
+                "project": [
+                    {
+                        "name": "Budget Tracking",
+                        "description": "Thiết lập báo cáo theo dõi ngân sách bằng Excel",
+                        "technologies": ["Excel"]
+                    }
+                ],
+                "skills": ["Excel", "Accounting", "Presentation"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 15,
+                "skills_and_tasks": 18,
+                "work_experience": 17,
+                "domain_fit": 8,
+                "location_fit": 5
+            },
+            "expected_total_100": 63,
+            "expected_grade": 6.3,
+            "category": "Edge Case 🔴"
+        },
+        {
+            "id": 12,
+            "JD": {
+                "Title": "Clinical Data Manager",
+                "location": "Hà Nội",
+                "Requirements": {
+                    "YOE": 3,
+                    "Skills": ["Clinical Trial Data", "SQL", "CDISC", "Data Validation", "Regulatory Compliance"],
+                    "Domain": "Healthcare / Life Sciences"
+                }
+            },
+            "candidate": {
+                "preferred title": "Data Engineer",
+                "location": "Hải Phòng",
+                "experience": [
+                    {
+                        "role": "Data Engineer",
+                        "duration": "4 năm",
+                        "mission": "Xây ETL pipeline cho dữ liệu bán lẻ bằng Airflow và Spark."
+                    }
+                ],
+                "education": "Cử nhân Kỹ thuật Phần mềm",
+                "project": [
+                    {
+                        "name": "Retail Data Lake",
+                        "description": "Hệ thống lưu trữ và xử lý dữ liệu lớn ngành bán lẻ",
+                        "technologies": ["SQL", "Spark", "Airflow"]
+                    }
+                ],
+                "skills": ["SQL", "ETL", "Spark", "Airflow"]
+            },
+            "expected_score_breakdown": {
+                "preferred_title": 6,
+                "skills_and_tasks": 14,
+                "work_experience": 22,
+                "domain_fit": 1,
+                "location_fit": 1
+            },
+            "expected_total_100": 44,
+            "expected_grade": 4.4,
+            "category": "Edge Case 🔴"
+        }
+    ]
+}

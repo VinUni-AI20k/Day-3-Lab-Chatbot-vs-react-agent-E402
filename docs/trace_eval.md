@@ -1,32 +1,43 @@
-# 📊 BÁO CÁO GIÁM SÁT & ĐÁNH GIÁ (OBSERVABILITY TRACE LOGS)
-*Dành cho Role 5: Observability & Reviewer*
+# Bao cao Trace va Danh gia
 
----
+## Agentic Fit
 
-## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
+| Tieu chi | Diem | Ly do |
+|---|---:|---|
+| Multi-step reasoning | 5/5 | Doc JD, doc ho so, cham diem va tong hop. |
+| Tool interaction | 5/5 | Du lieu job va ung vien nam trong hai CSV rieng. |
+| Dynamic decision | 4/5 | Observation loi ID bat buoc doi huong hoac fallback. |
+| Long horizon | 3/5 | Flow cham diem can ba Action lien tiep. |
+| Tong | 17/20 | Bai toan phu hop voi ReAct Agent. |
 
-| Tiêu chí | Điểm (1-5) | Lý do đánh giá |
-| :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+## So sanh Test Case 4
 
----
+Cau hoi: Danh gia muc do phu hop cua ung vien UserID 983877 voi cong viec JobID 0.
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+### Chatbot Baseline
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
+Chatbot chi tu van chung va tu choi xac nhan JobID, UserID hay diem phu hop
+vi khong co tool truy cap CSV.
 
-### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
-* **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
+### ReAct Agent mock
 
-### 🧠 ReAct Agent:
-* **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-* **Action 1**: `get_weather['Hà Nội']`
-* **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-* **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-* **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+    Thought: Can doc yeu cau cong viec truoc.
+    Action: get_job_description[0]
+    Observation: JOB [0]: Sale Admin Website ...
+
+    Thought: Can doc ho so ung vien truoc khi cham.
+    Action: get_candidate_profile[983877]
+    Observation: Da doc ho so UserID 983877 de phuc vu cham diem.
+
+    Thought: Da co JD va ho so, can cham muc phu hop.
+    Action: score_candidate[0, 983877]
+    Observation: Diem heuristic va cac tieu chi vi tri, ky nang,
+    Work Experience, nganh, dia diem.
+
+    Final Answer: HR dung ket qua de xem xet ho so goc.
+
+## Edge Case 5
+
+Voi UserID 99999999, Agent goi get_candidate_profile[99999999], nhan
+Observation LOI: Khong tim thay UserID, sau do tra loi an toan. Agent khong
+lap lai Action va khong tu tao du lieu ung vien.

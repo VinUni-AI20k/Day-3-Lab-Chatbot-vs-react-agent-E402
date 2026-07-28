@@ -1,41 +1,24 @@
-"""
-🚀 CẤP ĐỘ 4: AUTONOMOUS AGENT (Agent tự chủ với Planning & Memory)
-Tự chia nhỏ mục tiêu phức tạp thành nhiều bước, duy trì bộ nhớ (Memory) và tự đánh giá tiến độ.
-"""
+"""Level 4: planning and memory example for candidate screening."""
+
 
 class AutonomousGoalAgent:
-    def __init__(self, goal: str, max_steps: int = 4):
+    def __init__(self, goal: str) -> None:
         self.goal = goal
-        self.max_steps = max_steps
-        self.memory = []  # Bộ nhớ lưu vết các bước đã thực hiện
-        
-    def execute(self):
-        print(f"🚀 === Bắt đầu Autonomous Goal: {self.goal} ===")
-        
-        for step in range(1, self.max_steps + 1):
-            print(f"\n--- Vòng lặp tự chủ Planning & Action (Step {step}/{self.max_steps}) ---")
-            
-            if step == 1:
-                plan = "Bước 1: Tra cứu lịch rảnh và thời tiết điểm đến"
-                action = "Call Tool: get_weather('Hà Nội')"
-                result = "Hà Nội 28°C, nắng nhẹ."
-            elif step == 2:
-                plan = "Bước 2: Tìm chuyến bay phù hợp với ngân sách"
-                action = "Call Tool: search_flights('TP.HCM', 'Hà Nội')"
-                result = "Chuyến bay VN123 giá 1.500.000 VNĐ."
-            elif step == 3:
-                plan = "Bước 3: Tổng hợp lập lịch trình 3 ngày 2 đêm"
-                action = "Generate Itinerary"
-                result = "Lịch trình hoàn tất: Khách sạn + Quán cafe sống ảo."
-            else:
-                print("🎯 [Goal Evaluation]: Mục tiêu đã hoàn thành 100%!")
-                break
-                
-            self.memory.append({"step": step, "plan": plan, "result": result})
-            print(f"📋 [Planning]: {plan}")
-            print(f"🛠️ [Execution]: {action} ➔ {result}")
-            print(f"💾 [Memory Saved]: Logged step {step} to memory.")
+        self.memory: list[dict[str, str]] = []
+
+    def execute(self) -> None:
+        plan = (
+            ("Doc JD", "get_job_description[0]"),
+            ("Doc ho so", "get_candidate_profile[976112]"),
+            ("Cham diem", "score_candidate[0, 976112]"),
+        )
+        print(f"Goal: {self.goal}")
+        for step, (thought, action) in enumerate(plan, start=1):
+            result = f"Da hoan thanh {action}"
+            self.memory.append({"step": str(step), "thought": thought, "result": result})
+            print(f"Step {step}: {thought} -> {action} -> {result}")
+        print("Goal Evaluation: HR can xem ho so goc truoc quyet dinh.")
+
 
 if __name__ == "__main__":
-    agent = AutonomousGoalAgent("Lên kế hoạch du lịch Hà Nội 3 ngày 2 đêm")
-    agent.execute()
+    AutonomousGoalAgent("Danh gia ung vien cho JobID 0").execute()

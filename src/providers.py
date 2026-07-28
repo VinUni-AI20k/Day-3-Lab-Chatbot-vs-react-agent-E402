@@ -6,6 +6,8 @@ Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằ
 import os
 import sys
 import json
+import re
+import unicodedata
 import requests
 from dotenv import load_dotenv
 
@@ -17,6 +19,16 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 load_dotenv()
+
+
+def _fold_text(value: str) -> str:
+    """Lowercase and remove Vietnamese accents for keyword guardrails."""
+    decomposed = unicodedata.normalize("NFD", value.casefold())
+    without_marks = "".join(
+        char for char in decomposed if unicodedata.category(char) != "Mn"
+    )
+    return without_marks.replace("đ", "d")
+
 
 class BaseLLMProvider:
     """Interface cơ sở cho tất cả các LLM Provider"""
@@ -132,12 +144,61 @@ class OpenRouterProvider(BaseLLMProvider):
 
 
 class MockProvider(BaseLLMProvider):
-    """Offline Mock Provider (Cho bài test không cần kết nối API)"""
+    """Offline deterministic provider for the recruitment test cases."""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
-        return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
+        text = prompt.casefold()
+        normalized_text = _fold_text(prompt)
+        baseline = system_prompt.casefold()
+
+        if "không có khả năng truy cập cơ sở dữ liệu" in baseline:
+            return (
+                "Tôi có thể tư vấn chung về tuyển dụng, nhưng không thể xác nhận "
+                "dữ liệu JobID, UserID hoặc điểm phù hợp khi chưa được cấp tool."
+            )
+
+        if "gioi tinh" in normalized_text or "gender" in normalized_text or "tuoi" in normalized_text:
+            return (
+                "Thought: Yêu cầu dùng thuộc tính nhạy cảm không phù hợp.\n"
+                "Final Answer: Tôi không thể chấm hoặc xếp hạng theo giới tính hay tuổi. "
+                "Tôi có thể đánh giá theo kỹ năng, kinh nghiệm, ngành và địa điểm."
+            )
+
+        score_request = re.search(r"userid\s+(\d+).*?jobid\s+(\d+)", text)
+        if score_request:
+            user_id, job_id = score_request.groups()
+            if "observation: lỗi:" in text:
+                return (
+                    "Thought: Dữ liệu đầu vào không hợp lệ.\n"
+                    "Final Answer: Tôi không thể chấm điểm vì không tìm thấy JobID hoặc UserID. "
+                    "Vui lòng kiểm tra lại mã dữ liệu."
+                )
+            if f"observation: job [{job_id}]" not in text:
+                return f"Thought: Cần đọc yêu cầu công việc trước.\nAction: get_job_description[{job_id}]"
+            if f"observation: ứng viên [{user_id}]" not in text:
+                return f"Thought: Cần đọc hồ sơ ứng viên trước khi chấm.\nAction: get_candidate_profile[{user_id}]"
+            if "observation: đánh giá hỗ trợ hr" not in text:
+                return f"Thought: Đã có JD và hồ sơ, cần chấm mức phù hợp.\nAction: score_candidate[{job_id}, {user_id}]"
+            return (
+                "Thought: Đã có kết quả chấm từ dữ liệu.\n"
+                f"Final Answer: Tôi đã chấm điểm UserID {user_id} theo JobID {job_id}. "
+                "HR cần xem hồ sơ gốc trước quyết định."
+            )
+
+        job_request = re.search(r"jobid\s+(\d+)", text)
+        if job_request:
+            job_id = job_request.group(1)
+            if f"observation: job [{job_id}]" not in text:
+                return f"Thought: Cần tra cứu JobID được yêu cầu.\nAction: get_job_description[{job_id}]"
+            return (
+                "Thought: Đã có mô tả công việc.\n"
+                f"Final Answer: Tôi đã lấy thông tin chi tiết của công việc JobID {job_id} từ dữ liệu."
+            )
+
+        return (
+            "Thought: Câu hỏi này không cần tra cứu dữ liệu.\n"
+            "Final Answer: Hãy trình bày kinh nghiệm, kỹ năng liên quan và thành tựu cụ thể; "
+            "đồng thời chuẩn bị ví dụ thực tế trước buổi phỏng vấn."
+        )
 
 
 def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
