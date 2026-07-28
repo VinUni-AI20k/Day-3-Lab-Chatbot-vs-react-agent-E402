@@ -154,82 +154,22 @@
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-on-surface bg-background">
-    
-    <!-- Sidebar Navigation for Desktop -->
-    <aside class="w-[320px] bg-surface-container-low h-full flex-col border-r border-outline-variant transition-all hidden md:flex shrink-0">
-        <!-- Header: Logo & New Chat -->
-        <div class="p-md flex flex-col gap-md">
-            <div class="flex items-center gap-sm px-xs pt-xs">
-                <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-on-primary shadow-sm">
-                    <span class="material-symbols-outlined fill text-[22px]" data-icon="explore">explore</span>
-                </div>
-                <h1 class="text-[20px] font-semibold tracking-tight text-on-surface">CareerWay</h1>
-            </div>
-            <button class="mt-xs flex items-center justify-center gap-xs w-full bg-primary text-on-primary py-2.5 px-md rounded-lg hover:brightness-110 transition-all font-medium active:scale-95 shadow-sm text-[15px]">
-                <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
-                Đoạn chat mới
-            </button>
-        </div>
-
-        <!-- Chat History -->
-        <div class="flex-1 overflow-y-auto chat-scroll px-sm py-xs flex flex-col gap-1">
-            <h3 class="text-[13px] font-medium text-on-surface-variant px-sm mb-2 mt-2">Hôm nay</h3>
-            <!-- History Item (Active) -->
-            <button class="w-full flex items-center gap-sm px-sm py-2.5 bg-secondary-container text-on-secondary-container rounded-lg transition-colors text-left group">
-                <span class="material-symbols-outlined text-[20px] fill" data-icon="chat_bubble">chat_bubble</span>
-                <span class="text-[14px] truncate flex-1 font-medium">Lộ trình Frontend Developer</span>
-            </button>
-            <!-- History Item -->
-            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
-                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
-                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Kỹ năng mềm cần thiết</span>
-            </button>
-            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
-                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
-                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Tư vấn viết CV ngành IT</span>
-            </button>
-            
-            <h3 class="text-[13px] font-medium text-on-surface-variant px-sm mb-2 mt-4">Hôm qua</h3>
-            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
-                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
-                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Khám phá ngành Data Science</span>
-            </button>
-            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
-                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
-                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Nên học Java hay C++?</span>
-            </button>
-        </div>
-
-        <!-- User Profile / Footer -->
-        <div class="p-sm border-t border-outline-variant">
-            <button class="w-full flex items-center gap-sm p-sm hover:bg-surface-container rounded-xl transition-colors text-left">
-                <div class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-[15px]">NA</div>
-                <div class="flex-1 truncate">
-                    <p class="text-[14px] font-semibold text-on-surface">Nhật Anh</p>
-                    <p class="text-[12px] text-on-surface-variant">Sinh viên IT</p>
-                </div>
-                <span class="material-symbols-outlined text-[20px] text-on-surface-variant" data-icon="settings">settings</span>
-            </button>
-        </div>
-    </aside>
-
     <!-- Main Chat Area -->
-    <main class="flex-1 flex flex-col relative bg-surface">
-        
-        <!-- Mobile Header (Visible only on small screens) -->
-        <header class="h-16 flex md:hidden items-center justify-between px-md bg-surface-container-lowest border-b border-outline-variant z-10">
+    <main class="flex-1 flex flex-col relative bg-background w-full">
+        <!-- Chat Header -->
+        <header class="h-16 flex items-center justify-between px-lg bg-surface border-b border-outline-variant z-10">
             <div class="flex items-center gap-sm">
-                <button class="p-2 -ml-2 text-on-surface-variant rounded-full hover:bg-surface-container">
-                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
-                </button>
-                <div class="w-8 h-8 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
-                    <span class="material-symbols-outlined fill text-[18px]" data-icon="smart_toy">smart_toy</span>
+                <div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+                    <span class="material-symbols-outlined fill" data-icon="smart_toy">smart_toy</span>
                 </div>
-                <h2 class="text-[16px] font-semibold text-on-surface">CareerWay AI</h2>
+                <div>
+                    <h2 class="font-semibold text-[16px] text-on-surface flex items-center gap-xs">
+                        CareerWay - Trợ lý CareerWay
+                        <span class="w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+                    </h2>
+                    <p class="text-[12px] font-medium text-on-surface-variant">Online</p>
+                </div>
             </div>
-            <button class="p-2 -mr-2 text-on-surface-variant rounded-full hover:bg-surface-container">
-                <span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-            </button>
         </header>
 
         <!-- Messages Canvas -->
@@ -248,7 +188,7 @@
                     </div>
                     <div class="flex flex-col gap-1 items-start">
                         <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm">
-                            <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Chào mừng bạn đến với <strong>CareerWay</strong>! Tôi là cố vấn sự nghiệp ảo của bạn. 🌟</p>
+                            <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Chào mừng bạn đến với CareerWay! Tôi là cố vấn sự nghiệp ảo của bạn. 🌟</p>
                         </div>
                         <span class="text-[12px] text-on-surface-variant ml-1 font-medium">10:00 AM</span>
                     </div>
@@ -271,21 +211,21 @@
         </section>
 
         <!-- Input Area -->
-        <footer class="px-md md:px-lg pb-md md:pb-lg pt-2 flex flex-col items-center w-full bg-gradient-to-t from-surface via-surface to-transparent">
+        <footer class="px-md md:px-lg pb-md md:pb-lg pt-2 flex flex-col items-center w-full bg-gradient-to-t from-background via-background to-transparent">
             <div class="w-full max-w-4xl flex flex-col items-center">
                 
                 <!-- Quick Reply Chips -->
-                <div class="flex gap-sm mb-md overflow-x-auto no-scrollbar w-full pb-2 snap-x">
-                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                <div id="quick-replies" class="flex gap-sm mb-md overflow-x-auto no-scrollbar w-full pb-2 snap-x transition-all">
+                    <button onclick="sendQuickReply(this.innerText)" class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
                         Tìm hiểu ngành IT
                     </button>
-                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                    <button onclick="sendQuickReply(this.innerText)" class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
                         Kỹ năng mềm cần thiết
                     </button>
-                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                    <button onclick="sendQuickReply(this.innerText)" class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
                         Tư vấn viết CV
                     </button>
-                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                    <button onclick="sendQuickReply(this.innerText)" class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
                         Lộ trình Frontend
                     </button>
                 </div>
@@ -300,12 +240,12 @@
                         id="chat-input"
                         rows="1"
                         class="flex-1 bg-transparent border-none focus:ring-0 text-[15px] md:text-[16px] py-3.5 px-2 placeholder:text-outline resize-none max-h-32 chat-scroll" 
-                        placeholder="Nhập tin nhắn đến CareerWay..." 
+                        placeholder="Nhập câu hỏi của bạn..." 
                         style="min-height: 52px;"
                     ></textarea>
                     
                     <button class="p-2.5 mb-1 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-full transition-colors shrink-0">
-                        <span class="material-symbols-outlined text-[22px]" data-icon="mic">mic</span>
+                        <span class="material-symbols-outlined text-[22px]" data-icon="mood">mood</span>
                     </button>
                     <button id="send-btn" class="w-11 h-11 mb-1 bg-surface-container-high text-on-surface-variant rounded-[16px] flex items-center justify-center transition-all shrink-0 mr-0.5">
                         <span class="material-symbols-outlined text-[20px] fill" data-icon="send">send</span>
@@ -338,14 +278,14 @@
         });
 
         // Send message function
-        function sendMessage() {
-            const message = input.value.trim();
+        function sendMessage(overrideText) {
+            const message = (typeof overrideText === 'string') ? overrideText.trim() : input.value.trim();
             if (message === '') return;
             
             // Append User Message
             const userMsg = `
                 <div class="flex gap-sm max-w-[90%] md:max-w-[85%] self-end flex-row-reverse message-in">
-                    <div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 mt-1 text-on-primary-fixed font-bold text-[14px] shadow-sm">NA</div>
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1 text-on-primary font-bold text-[14px] shadow-sm">S</div>
                     <div class="flex flex-col gap-1 items-end">
                         <div class="bg-primary text-on-primary p-4 rounded-[20px] rounded-tr-[4px] shadow-sm">
                             <p class="text-[15px] md:text-[16px] leading-relaxed whitespace-pre-wrap">${message}</p>
@@ -401,7 +341,7 @@
                         </div>
                         <div class="flex flex-col gap-1 items-start">
                             <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm">
-                                <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Đây là phản hồi mẫu từ CareerWay AI. Hệ thống đang trong quá trình phát triển.</p>
+                                <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Đây là phản hồi mẫu từ CareerWay AI. Hãy kết nối với Backend để nhận tư vấn thực tế.</p>
                             </div>
                             <span class="text-[12px] text-on-surface-variant ml-1 font-medium">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                         </div>
@@ -411,6 +351,25 @@
                 wrapper.scrollTop = wrapper.scrollHeight;
             }, 1500);
         }
+
+        function sendQuickReply(text) {
+            sendMessage(text);
+        }
+
+        // Expose function for AI to update chips dynamically
+        window.setQuickReplies = function(repliesArray) {
+            const quickRepliesContainer = document.getElementById('quick-replies');
+            if (!quickRepliesContainer) return;
+            
+            quickRepliesContainer.innerHTML = '';
+            repliesArray.forEach(reply => {
+                const btn = document.createElement('button');
+                btn.className = 'snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm';
+                btn.innerText = reply;
+                btn.onclick = function() { sendQuickReply(reply); };
+                quickRepliesContainer.appendChild(btn);
+            });
+        };
 
         sendBtn.addEventListener('click', sendMessage);
 
