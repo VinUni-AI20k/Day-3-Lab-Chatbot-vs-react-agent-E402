@@ -321,3 +321,22 @@ if __name__ == "__main__":
 
     print("\n--- DEMO 3: EDGE CASE / SAFE FALLBACK ---")
     run_react_agent(tests[4]["question"], provider)
+
+    print("\n" + "=" * 50)
+    print("💬 CHẾ ĐỘ CHAT TƯƠNG TÁC TRỰC TIẾP (INTERACTIVE CLI MODE)")
+    print("Gõ câu hỏi bất kỳ để chat trực tiếp với ReAct Agent, hoặc gõ 'exit' / 'quit' để thoát.")
+    print("=" * 50)
+
+    while True:
+        try:
+            user_input = input("\n👤 Khách hàng: ").strip()
+            if not user_input:
+                continue
+            if user_input.lower() in ["exit", "quit", "thoat", "q"]:
+                print("👋 Cảm ơn bạn đã sử dụng Trợ lý ReAct Agent!")
+                break
+            run_react_agent(user_input, provider)
+        except (KeyboardInterrupt, EOFError):
+            print("\n👋 Đã thoát chương trình.")
+            break
+
