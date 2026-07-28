@@ -23,7 +23,7 @@ if sys.stdout.encoding != "utf-8":
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
 from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
-from providers import get_llm_provider
+from providers import get_llm_provider, MockProvider
 
 load_dotenv()
 
@@ -245,15 +245,33 @@ def run_react_agent(user_query: str, provider=None):
     """
     Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
     """
+    if provider is None:
+        provider = get_llm_provider()
+
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     observations = []
     action_history = set()
     finished = False
+    is_mock = isinstance(provider, MockProvider)
 
     for step in range(1, MAX_ITERATIONS + 1):
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
 
-        agent_output = plan_next_step(user_query, observations)
+        if not is_mock:
+            # Gửi câu hỏi + lịch sử Observation sang LLM thật
+            history_prompt = f"User Question: {user_query}\n"
+            for obs in observations:
+                history_prompt += f"\nAction: {obs['tool_name']}{obs['args']}\nObservation: {obs['raw']}\n"
+            agent_output = provider.generate(history_prompt, system_prompt=REACT_SYSTEM_PROMPT) or ""
+            # Nếu LLM báo lỗi API hoặc trả về rỗng -> fallback planner
+            if not agent_output or (agent_output.startswith("[") and ("Exception" in agent_output or "Error" in agent_output)):
+                if agent_output:
+                    print(f"⚠️  API Error: {agent_output}")
+                print("🔄 Fallback về Mock Planner...")
+                agent_output = plan_next_step(user_query, observations)
+        else:
+            agent_output = plan_next_step(user_query, observations)
+
         print(agent_output)
 
         if "Final Answer:" in agent_output:
