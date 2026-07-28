@@ -110,15 +110,33 @@ def search_rentals(location: str = None, max_price: float = None, room_type: str
     if not _RENTALS:
         return "LỖI: Không tải được dữ liệu nhà trọ/căn hộ (data/datamock.json)."
 
-    loc_query = _normalize(location)
+    def parse_loc(text):
+        text = text.lower().replace(",", " ").replace("-", " ")
+        for prefix in ["quận", "huyện", "thành phố", "tp", "tỉnh", "phường", "xã"]:
+            # Dùng regex hoặc thay thế cẩn thận để không cắt nhầm chữ
+            text = re.sub(rf"\b{prefix}\b", "", text)
+        return [w for w in text.split() if w]
+
+    loc_tokens = parse_loc(location)
+    
     results = []
     for r in _RENTALS:
         if r.get("status") != "available":
             continue
+            
         addr = r.get("address", {})
         haystack = _normalize(" ".join([addr.get("ward", ""), addr.get("district", ""), addr.get("city", "")]))
-        if loc_query not in haystack:
+        
+        # Tất cả các token của khu vực phải xuất hiện trong địa chỉ (haystack)
+        match_loc = True
+        for token in loc_tokens:
+            if token not in haystack:
+                match_loc = False
+                break
+                
+        if not match_loc:
             continue
+            
         if max_price is not None and r.get("price", 0) > max_price:
             continue
         if room_type is not None and _normalize(room_type) not in _normalize(r.get("type", "")):
