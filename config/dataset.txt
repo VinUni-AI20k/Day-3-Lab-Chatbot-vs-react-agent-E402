@@ -1,1 +1,11 @@
+# Nguồn dataset thật (Hugging Face)
+# tools.py sẽ đọc URL này, tải subset, map sang jobs/candidates rồi merge với data.json
 DATASET = "https://huggingface.co/datasets/cnamuangtoun/resume-job-description-fit"
+
+# Tuỳ chọn cấu hình (có thể sửa)
+SPLIT = train
+# Số mẫu mỗi nhãn: Good Fit / Potential Fit / No Fit  -> tổng ~ 3 * LIMIT_PER_LABEL
+LIMIT_PER_LABEL = 8
+SEED = 42
+# Cache local để không tải lại HF mỗi lần import tools
+CACHE_FILE = hf_data_cache.json

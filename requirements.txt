@@ -3,6 +3,7 @@ openai
 anthropic
 python-dotenv
 requests
+litellm==1.74.9
 guardrails-ai
 langgraph
 streamlit

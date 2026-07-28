@@ -229,9 +229,133 @@ def schedule_interview(candidate_name: str, date: str, time: str) -> str:
     return f"Đã đặt lịch phỏng vấn cho {candidate_name.strip()} vào {slot} ngày {key}."
 
 
-# Danh sách các tool được đăng ký để Agent sử dụng
+# ==========================================================
+# 🛠️ TOOL 7: Gửi email cho ứng viên
+# ==========================================================
+
+def send_candidate_email(candidate_id: str, template: str) -> str:
+    """
+    Gửi email thông báo cho ứng viên theo mẫu có sẵn.
+
+    DÙNG KHI: cần mời phỏng vấn ('invite'), từ chối lịch sự ('reject'),
+    hoặc nhắc lịch ('reminder'). Đây là hành động GỬI THẬT, chỉ gọi 1 lần cho mỗi mục đích.
+
+    Args:
+        candidate_id (str): Mã hồ sơ ứng viên (VD: 'CV101').
+        template (str): Mẫu email. Hợp lệ: 'invite', 'reject', 'reminder'.
+
+    Returns:
+        str: Xác nhận đã gửi, hoặc chuỗi bắt đầu bằng 'LỖI:' nếu mã/mẫu sai
+             hoặc gửi thư mời khi chưa có lịch phỏng vấn.
+    """
+    cv_key = str(candidate_id).strip().upper()
+    c = CANDIDATE_DATABASE.get(cv_key)
+    if not c:
+        return (
+            f"LỖI: Không tìm thấy hồ sơ '{candidate_id}'. "
+            f"Các mã hợp lệ: {_fmt_id_list(CANDIDATE_DATABASE.keys())}."
+        )
+
+    tpl = str(template).strip().lower()
+    if tpl not in EMAIL_TEMPLATES:
+        return (
+            f"LỖI: Mẫu email '{template}' không tồn tại. "
+            f"Các mẫu hợp lệ: {', '.join(EMAIL_TEMPLATES.keys())}."
+        )
+
+    # 🛡️ GUARDRAIL: không mời/nhắc phỏng vấn khi chưa có lịch
+    if tpl in ("invite", "reminder") and c["status"] != "INTERVIEW_SCHEDULED":
+        return (
+            f"LỖI: Chưa có lịch phỏng vấn cho {cv_key}. "
+            f"Hãy gọi schedule_interview trước khi gửi mẫu '{tpl}'."
+        )
+
+    detail = ""
+    if tpl in ("invite", "reminder"):
+        itv = next((i for i in reversed(SCHEDULED_INTERVIEWS) if i["candidate_id"] == cv_key), None)
+        if itv:
+            detail = f" Nội dung: {itv['time']} ngày {itv['date']} với {itv['interviewer']}."
+
+    return (
+        f"📧 ĐÃ GỬI '{EMAIL_TEMPLATES[tpl]}' tới {c['name']} <{c['email']}>.{detail}"
+    )
+
+
+# ==========================================================
+# 📋 TOOL REGISTRY (Role 4 & Role 3 dùng dict này)
+# ==========================================================
+
 AVAILABLE_TOOLS = {
     "screen_resume": screen_resume,
     "check_calendar_availability": check_calendar_availability,
     "schedule_interview": schedule_interview,
 }
+
+
+def get_tools_description() -> str:
+    """
+    Sinh khối text mô tả toàn bộ tool để Role 3 chèn vào REACT_SYSTEM_PROMPT.
+
+    Returns:
+        str: Danh sách 'tên_tool(tham số): mô tả ngắn' của tất cả tool đã đăng ký.
+    """
+    import inspect
+
+    lines = []
+    for name, fn in AVAILABLE_TOOLS.items():
+        sig = str(inspect.signature(fn))
+        doc = (fn.__doc__ or "").strip().split("\n")[0]
+        lines.append(f"- {name}{sig}: {doc}")
+    return "\n".join(lines)
+
+
+# ==========================================================
+# 🧪 SELF-TEST: chạy `python src/tools.py` để nghiệm thu tool
+# ==========================================================
+
+if __name__ == "__main__":
+    import sys
+
+    if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
+    print("=" * 60)
+    print("🧪 SELF-TEST TOOLS - ĐỀ TÀI 9: SÀNG LỌC CV & HẸN PHỎNG VẤN")
+    print("=" * 60)
+    print(f"📦 DB: {len(JOB_DATABASE)} jobs | {len(CANDIDATE_DATABASE)} candidates")
+
+    checks = [
+        ("Happy path: xem JD", lambda: get_job_requirements("JD001")),
+        ("Happy path: lọc ứng viên có python, >=2 năm", lambda: search_candidates("JD001", 2, "python")),
+        ("Happy path: xem hồ sơ", lambda: get_candidate_profile("CV101")),
+        ("Happy path: chấm điểm PASS", lambda: score_candidate("CV101", "JD001")),
+        ("Happy path: xem lịch trống", lambda: check_interview_slots("05/08/2026")),
+        ("Happy path: đặt lịch", lambda: schedule_interview("CV101", "05/08/2026", "10:00", "Mr. Hùng")),
+        ("Happy path: gửi thư mời", lambda: send_candidate_email("CV101", "invite")),
+        ("HF path: xem JD HF", lambda: get_job_requirements("HFJD001") if "HFJD001" in JOB_DATABASE else "SKIP: chưa load HF"),
+        ("HF path: xem CV HF", lambda: get_candidate_profile("HFCV001") if "HFCV001" in CANDIDATE_DATABASE else "SKIP: chưa load HF"),
+        ("Edge: mã CV không tồn tại", lambda: get_candidate_profile("CV999")),
+        ("Edge: ngày 32/13/2026 vô lý", lambda: check_interview_slots("32/13/2026")),
+        ("Edge: ngày cuối tuần", lambda: check_interview_slots("08/08/2026")),
+        ("Edge: chấm điểm FAIL", lambda: score_candidate("CV104", "JD002")),
+        ("Edge: đặt lịch cho người FAIL", lambda: schedule_interview("CV104", "05/08/2026", "10:00", "Ms. Lan")),
+        ("Edge: chưa sàng lọc đã đặt lịch", lambda: schedule_interview("CV102", "05/08/2026", "09:00", "Mr. Hùng")),
+        ("Edge: trùng slot đã đặt", lambda: schedule_interview("CV103", "05/08/2026", "10:00", "Mr. Hùng")),
+        ("Edge: mẫu email không tồn tại", lambda: send_candidate_email("CV101", "khen_thuong")),
+    ]
+
+    failed = 0
+    for title, fn in checks:
+        try:
+            print(f"\n▶️ {title}\n{fn()}")
+        except Exception as e:  # Tool KHÔNG được phép crash
+            failed += 1
+            print(f"\n❌ {title} -> CRASH: {type(e).__name__}: {e}")
+
+    print("\n" + "=" * 60)
+    print(f"{'✅ TẤT CẢ TOOL AN TOÀN, KHÔNG CRASH.' if failed == 0 else f'❌ Có {failed} tool bị crash!'}")
+    print(f"📋 Đã đăng ký {len(AVAILABLE_TOOLS)} tools:")
+    print(get_tools_description())

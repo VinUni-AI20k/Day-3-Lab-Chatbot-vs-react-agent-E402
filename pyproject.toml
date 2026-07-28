@@ -1,0 +1,7 @@
+[project]
+name = "day03-recruitment-agent"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.60.0",
+]
