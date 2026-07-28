@@ -57,7 +57,7 @@ class OpenAIProvider(BaseLLMProvider):
             return "[OpenAI Error]: Chưa cấu hình OPENAI_API_KEY trong file .env!"
         try:
             import openai
-            client = openai.OpenAI(api_key=self.api_key)
+            client = openai.OpenAI(api_key=self.api_key, base_url="https://api.groq.com/openai/v1")
             messages = []
             if system_prompt:
                 messages.append({"role": "system", "content": system_prompt})
