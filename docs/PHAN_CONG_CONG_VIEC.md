@@ -30,12 +30,12 @@ _Note: Nếu nhóm 6 người, Role 5 tách thành 5A (Trace Analyst) và 5B (Fl
 _Mục tiêu: Chứng minh bài toán này CẦN dùng Agent chứ không chỉ Chatbot._
 
 - [ ] **Role 1 & Cả nhóm**: **Tự do lựa chọn 1 chủ đề bài toán thực tế** mà nhóm hào hứng nhất (Xem 10 đề tài gợi ý tại: [DANH_SACH_DE_TAI.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/DANH_SACH_DE_TAI.md)).
-- [ ] **Role 5**: Điền bảng **Scoring Matrix** (chấm 1–5 điểm cho 4 tiêu chí) vào `docs/trace_eval.md`.
-- [ ] **Role 2**: Liệt kê tên các công cụ sẽ tạo trong `src/tools.py` phù hợp với chủ đề nhóm đã chọn.
-- [ ] **Role 3**: Xác định các trường hợp tool có thể bị lỗi (Failure Modes).
-- [ ] **Role 4**: Mở Terminal gõ `python src/app.py` kiểm tra xem môi trường sẵn sàng chưa.
-- [ ] 🤝 **Cả nhóm**: Gật đầu thống nhất bài toán trước khi sang Mốc 2.
-- [ ] 🔄 **Đồng bộ Git Mốc 1**: Cả nhóm lưu file, đẩy code lên Git: `git add .` ➔ `git commit -m "Moc 1: Scoring Matrix & Dinh hinh"` ➔ `git push`.
+- [x] **Role 5**: Điền bảng **Scoring Matrix** (chấm 1–5 điểm cho 4 tiêu chí) vào `docs/trace_eval.md`.
+- [x] **Role 2**: Liệt kê tên các công cụ sẽ tạo trong `src/tools.py` phù hợp với chủ đề nhóm đã chọn.
+- [x] **Role 3**: Xác định các trường hợp tool có thể bị lỗi (Failure Modes).
+- [x] **Role 4**: Mở Terminal gõ `python src/app.py` kiểm tra xem môi trường sẵn sàng chưa.
+- [x] 🤝 **Cả nhóm**: Gật đầu thống nhất bài toán trước khi sang Mốc 2.
+- [x] 🔄 **Đồng bộ Git Mốc 1**: Cả nhóm lưu file, đẩy code lên Git: `git add .` ➔ `git commit -m "Moc 1: Scoring Matrix & Dinh hinh"` ➔ `git push`.
 
 ---
 
