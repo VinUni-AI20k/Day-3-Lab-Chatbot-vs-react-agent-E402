@@ -3,6 +3,8 @@
 Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
 """
 
+from datetime import datetime
+
 
 def _error(message: str) -> str:
     """Chuẩn hóa lỗi nghiệp vụ để Agent nhận Observation thay vì bị crash."""
@@ -14,6 +16,24 @@ def _required_text(value: object, field_name: str) -> str | None:
     if not isinstance(value, str) or not value.strip():
         return None
     return value.strip()
+
+
+def _valid_date(value: str) -> bool:
+    """Kiểm tra ngày theo định dạng YYYY-MM-DD và ngày lịch hợp lệ."""
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
+
+
+def _valid_time(value: str) -> bool:
+    """Kiểm tra giờ theo định dạng 24 giờ HH:MM."""
+    try:
+        datetime.strptime(value, "%H:%M")
+        return True
+    except ValueError:
+        return False
 
 
 # ---------------------------------------------------------------------------
@@ -191,6 +211,8 @@ def check_calendar(interviewer_id: str, date: str) -> str:
     date = _required_text(date, "date")
     if interviewer_id is None or date is None:
         return _error("interviewer_id và date phải là chuỗi không rỗng.")
+    if not _valid_date(date):
+        return _error("date phải là ngày hợp lệ theo định dạng YYYY-MM-DD.")
 
     slots_by_date = _CALENDAR_DATABASE.get(interviewer_id.lower())
     if slots_by_date is None:
@@ -228,6 +250,10 @@ def book_interview_slot(
     time = _required_text(time, "time")
     if None in (candidate_id, interviewer_id, date, time):
         return _error("candidate_id, interviewer_id, date và time đều bắt buộc.")
+    if not _valid_date(date):
+        return _error("date phải là ngày hợp lệ theo định dạng YYYY-MM-DD.")
+    if not _valid_time(time):
+        return _error("time phải là giờ hợp lệ theo định dạng HH:MM.")
 
     if candidate_id.lower() not in _CV_DATABASE:
         return _error(f"Không thể đặt lịch: không tìm thấy ứng viên '{candidate_id}'.")
@@ -251,4 +277,76 @@ AVAILABLE_TOOLS = {
     "score_candidate": score_candidate,
     "check_calendar": check_calendar,
     "book_interview_slot": book_interview_slot,
+}
+
+
+# Tool Specification: contract input/output để Role 3 và Role 4 dùng khi
+# viết prompt, parser và vòng lặp ReAct.
+TOOL_SCHEMAS = {
+    "parse_cv": {
+        "purpose": "Tra cứu thông tin CV của ứng viên.",
+        "input": {"candidate_id": "str, bắt buộc"},
+        "output": "str: tên, kỹ năng và số năm kinh nghiệm.",
+        "error": "str bắt đầu bằng 'LỖI:' nếu mã ứng viên không tồn tại hoặc input rỗng.",
+        "example": {
+            "input": {"candidate_id": "candidate_001"},
+            "output": "CV candidate_001: Nguyễn Văn An; Kỹ năng: Python, SQL, REST API; Kinh nghiệm: 3 năm.",
+        },
+    },
+    "get_jd": {
+        "purpose": "Tra cứu yêu cầu của vị trí tuyển dụng.",
+        "input": {"job_id": "str, bắt buộc"},
+        "output": "str: chức danh, kỹ năng bắt buộc và kinh nghiệm tối thiểu.",
+        "error": "str bắt đầu bằng 'LỖI:' nếu mã JD không tồn tại hoặc input rỗng.",
+        "example": {
+            "input": {"job_id": "python_backend"},
+            "output": "JD python_backend: Python Backend Developer; Kỹ năng bắt buộc: Python, SQL, REST API; Kinh nghiệm tối thiểu: 2 năm.",
+        },
+    },
+    "score_candidate": {
+        "purpose": "Đối sánh CV với JD và chấm điểm mức độ phù hợp.",
+        "input": {
+            "candidate_id": "str, bắt buộc",
+            "job_id": "str, bắt buộc",
+        },
+        "output": "str: kỹ năng khớp/thiếu, điểm kỹ năng /70, điểm kinh nghiệm /30, tổng điểm /100 và quyết định.",
+        "error": "str bắt đầu bằng 'LỖI:' nếu CV/JD không tồn tại hoặc input không hợp lệ.",
+        "example": {
+            "input": {"candidate_id": "candidate_001", "job_id": "python_backend"},
+            "output": "Tổng điểm: 100/100; Quyết định: ĐẠT.",
+        },
+    },
+    "check_calendar": {
+        "purpose": "Tra cứu slot rảnh của người phỏng vấn.",
+        "input": {
+            "interviewer_id": "str, bắt buộc",
+            "date": "str YYYY-MM-DD, bắt buộc",
+        },
+        "output": "str: danh sách giờ rảnh trong ngày được yêu cầu.",
+        "error": "str bắt đầu bằng 'LỖI:' nếu người phỏng vấn/ngày không có dữ liệu hoặc input rỗng.",
+        "example": {
+            "input": {"interviewer_id": "interviewer_001", "date": "2026-08-01"},
+            "output": "Slot rảnh: 09:00, 14:00.",
+        },
+    },
+    "book_interview_slot": {
+        "purpose": "Đặt lịch phỏng vấn và mô phỏng tạo email mời.",
+        "input": {
+            "candidate_id": "str, bắt buộc",
+            "interviewer_id": "str, bắt buộc",
+            "date": "str YYYY-MM-DD, bắt buộc",
+            "time": "str HH:MM, bắt buộc",
+        },
+        "output": "str: xác nhận ứng viên, người phỏng vấn, ngày/giờ và email mock đã tạo.",
+        "error": "str bắt đầu bằng 'LỖI:' nếu ứng viên/người phỏng vấn/slot không hợp lệ.",
+        "example": {
+            "input": {
+                "candidate_id": "candidate_001",
+                "interviewer_id": "interviewer_001",
+                "date": "2026-08-01",
+                "time": "09:00",
+            },
+            "output": "Đã đặt lịch phỏng vấn; Email mời phỏng vấn đã được tạo (mock).",
+        },
+    },
 }
