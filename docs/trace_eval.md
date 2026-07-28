@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `4/5` | Cần hiểu nhu cầu người thuê, chuyển thành tiêu chí tìm kiếm, lọc và xếp hạng phòng phù hợp, sau đó thu thập thời gian mong muốn, đối chiếu lịch trống và xác nhận lịch xem nhà. |
+| 🛠️ **Tool Interaction** | `4/5` | Cần phối hợp nhiều thao tác như tra cứu dữ liệu phòng, kiểm tra tình trạng còn phòng, lấy lịch trống và tạo lịch hẹn; có thể cần thêm công cụ lịch hoặc gửi thông báo xác nhận. |
+| 🔀 **Dynamic Decision** | `4/5` | Kết quả ở mỗi bước ảnh hưởng trực tiếp đến bước tiếp theo: phòng không phù hợp phải tìm phương án khác, khung giờ bị trùng phải đề xuất giờ thay thế, và chỉ được đặt lịch sau khi người dùng xác nhận. |
+| ⏳ **Long Horizon** | `3/5` | Quy trình gồm nhiều bước liên tiếp từ làm rõ nhu cầu đến hoàn tất lịch hẹn và cần duy trì trạng thái trong phiên, nhưng chưa phải tác vụ kéo dài hoặc tự vận hành qua nhiều ngày. |
+| **TỔNG ĐIỂM FIT** | **15/20** | **KẾT LUẬN: BÀI TOÁN PHÙ HỢP VỚI REACT AGENT.** |
 
 ---
 
