@@ -1,0 +1,72 @@
+%% Hybrid Chatbot–ReAct routing for the Rental Viewing Assistant
+%% Role 5: Observability / Flowchart Architect
+flowchart TD
+    U["Người dùng gửi câu hỏi"] --> R{"Câu hỏi có cần dữ liệu phòng hiện tại,<br/>kiểm tra lịch, gọi tool, nhiều bước<br/>hoặc thực hiện đặt lịch không?"}
+
+    %% Simple-question path
+    R -- "Không: kiến thức hoặc tư vấn chung" --> C["CHATBOT PATH"]
+    C --> C1["Một lần gọi LLM<br/>Không sử dụng tool"]
+    C1 --> C2["Trả lời kiến thức chung<br/>Ví dụ: lưu ý khi xem nhà, hợp đồng, tiền cọc"]
+    C2 --> END["Kết thúc"]
+
+    %% Complex-question path
+    R -- "Có: tìm phòng, xem chi tiết hoặc đặt lịch" --> A["REACT AGENT PATH"]
+    A --> I{"Đã đủ thông tin bắt buộc?<br/>Khu vực, ngân sách;<br/>và tên/ngày/giờ nếu muốn đặt lịch"}
+    I -- "Chưa đủ" --> ASK["Hỏi người dùng bổ sung thông tin<br/>Không tự suy đoán"]
+    ASK --> END
+
+    I -- "Đã đủ" --> T["Thought:<br/>Xác định bước nghiệp vụ tiếp theo"]
+    T --> AC{"Chọn Action"}
+
+    AC -- "Tìm phòng" --> S["search_rooms<br/>location, max_price"]
+    AC -- "Kiểm tra phòng và lịch" --> D["get_room_details<br/>room_id"]
+    AC -- "Đặt lịch đã được yêu cầu rõ ràng" --> B["book_viewing_appointment<br/>room_id, customer_name, date, time"]
+
+    S --> O["Observation từ tool thật"]
+    D --> O
+    B --> BO{"Booking Observation có<br/>status=success và appointment_id?"}
+    BO -- "Có" --> F2["Final Answer xác nhận lịch hẹn<br/>kèm mã lịch, phòng, tên, ngày và giờ"]
+    F2 --> END
+    BO -- "Không" --> G
+
+    O --> E{"Tool trả lỗi hoặc<br/>dữ liệu rỗng?"}
+    E -- "Có" --> G{"Có thể phục hồi an toàn<br/>và chưa chạm MAX_ITERATIONS?"}
+    G -- "Có" --> REC["Sửa tham số có căn cứ<br/>hoặc chọn bước phù hợp khác"]
+    REC --> T
+    G -- "Không" --> SAFE["Safe fallback / Guardrail<br/>Không crash, không lặp vô hạn"]
+    SAFE --> END
+
+    E -- "Không" --> ENOUGH{"Đã đủ bằng chứng<br/>để trả lời chưa?"}
+    ENOUGH -- "Chưa" --> T
+    ENOUGH -- "Đủ" --> INTENT{"Người dùng có yêu cầu<br/>đặt lịch không?"}
+
+    INTENT -- "Không" --> F1["Final Answer có grounding<br/>từ Observation"]
+    F1 --> END
+
+    INTENT -- "Có" --> SLOT{"Ngày và giờ yêu cầu có hợp lệ<br/>theo viewing_schedule không?"}
+    SLOT -- "Không" --> ALT["Đề xuất khung giờ khả dụng<br/>và chờ người dùng xác nhận<br/>Không tự ý đặt giờ khác"]
+    ALT --> END
+
+    SLOT -- "Có" --> CONF{"Đã có yêu cầu đặt lịch rõ ràng<br/>và đủ tên, ngày, giờ chưa?"}
+    CONF -- "Chưa" --> ASKCONF["Yêu cầu bổ sung hoặc xác nhận<br/>Không gọi tool đặt lịch"]
+    ASKCONF --> END
+    CONF -- "Rồi" --> B
+
+    %% Evidence from trace_eval.md test case #3
+    TRACE["Minh chứng Test Case #3:<br/>15:00 không có trong lịch<br/>Agent đề xuất 14:00 hoặc 19:00<br/>và không tự đặt lịch"] -.-> ALT
+
+    classDef startEnd fill:#263238,color:#ffffff,stroke:#101719,stroke-width:2px;
+    classDef decision fill:#fff3cd,color:#3d3200,stroke:#d6a700,stroke-width:2px;
+    classDef chatbot fill:#d8ecff,color:#073763,stroke:#3d85c6,stroke-width:2px;
+    classDef agent fill:#e6dcff,color:#351c75,stroke:#674ea7,stroke-width:2px;
+    classDef tool fill:#d9ead3,color:#274e13,stroke:#6aa84f,stroke-width:2px;
+    classDef guard fill:#f4cccc,color:#660000,stroke:#cc0000,stroke-width:2px;
+    classDef evidence fill:#fce5cd,color:#783f04,stroke:#e69138,stroke-width:2px;
+
+    class U,END startEnd;
+    class R,I,AC,BO,E,G,ENOUGH,INTENT,SLOT,CONF decision;
+    class C,C1,C2 chatbot;
+    class A,T,ASK,REC,F1,ALT,ASKCONF,F2 agent;
+    class S,D,B,O tool;
+    class SAFE guard;
+    class TRACE evidence;
