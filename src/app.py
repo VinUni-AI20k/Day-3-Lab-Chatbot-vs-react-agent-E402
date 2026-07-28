@@ -19,11 +19,19 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
+
+MOCK_DATA_RULES = '''
+For this baseline demo, mock profiles supplied in the user message are allowed context.
+Use only those profiles; do not claim access to real users or external systems.
+Do not call tools. Explain that matching scores are illustrative, not scientific.
+Answer in Vietnamese.
+'''
+CHATBOT_BASELINE_PROMPT = MOCK_DATA_RULES
 
 def load_test_cases():
     """Đọc bộ test cases từ config/test_cases.json của Role 1"""
@@ -38,6 +46,16 @@ def load_test_cases():
         return json.load(f)
 
 
+def load_mock_profiles():
+    data_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        'cupid_data',
+        'cupid_profiles.json',
+    )
+    with open(data_path, 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+
 def run_baseline_chatbot(user_query: str, provider):
     """
     Dựng Chatbot gốc (Baseline) không có công cụ.
@@ -46,8 +64,16 @@ def run_baseline_chatbot(user_query: str, provider):
     print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
     
     # Gọi LLM Provider thực hiện sinh câu trả lời
-    response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
+    profiles = load_mock_profiles()
+    grounded_query = user_query + '\n\nMOCK_PROFILES:\n' + json.dumps(
+        profiles, ensure_ascii=False
+    )
+    response = provider.generate(
+        grounded_query,
+        system_prompt=MOCK_DATA_RULES,
+    )
     print(f"🤖 Chatbot trả lời:\n{response}")
+    return response
 
 
 def run_react_agent(user_query: str, provider):
@@ -96,6 +122,8 @@ if __name__ == "__main__":
     
     print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
     run_baseline_chatbot(sample_query, provider)
+    raise SystemExit(0)
     
     print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
-    run_react_agent(sample_query, provider)
+    # ReAct integration belongs to milestone 3.
+    # run_react_agent(sample_query, provider)
