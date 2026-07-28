@@ -1,0 +1,34 @@
+%% Hybrid Decision Flowchart for Cupid Agent
+%% Phân luồng quyết định: Chatbot Path vs ReAct Agent Path
+%% Role 3: Prompt & Safeguard Engineer (Nguyễn Tuấn Vũ)
+
+flowchart TD
+    A["👤 User Input (Câu hỏi của người dùng)"] --> B{"Phân loại câu hỏi"}
+    
+    %% Đường đi Chatbot Path (Lời khuyên tâm lý / Lời khuyên chung)
+    B -- "Lời khuyên tâm lý / Tư vấn tình cảm chung<br/>(Không cần tra cứu dữ liệu thực tế)" --> C["🤖 Chatbot Baseline Path"]
+    C --> C1["System Prompt: CHATBOT_BASELINE_PROMPT"]
+    C1 --> C2["Một LLM Call (0 Tool)"]
+    C2 --> C3["💬 Final Answer (Tư vấn tâm lý chung)"]
+    
+    %% Đường đi ReAct Agent Path (Tra cứu Cung / MBTI / Tuổi âm / Tìm nơi hẹn hò)
+    B -- "Cần tra cứu Hoàng Đạo / MBTI / Tuổi âm / Tìm nơi hẹn hò<br/>(Cần dữ liệu thời gian thực & 4 Tools)" --> D["🧠 ReAct Agent Path"]
+    D --> D1["System Prompt: REACT_SYSTEM_PROMPT"]
+    D1 --> D2["Thought: Suy luận bước tiếp theo"]
+    D2 --> D3{"Cần gọi Tool?"}
+    
+    D3 -- "Có (Cần data)" --> E["🛠️ Action: Gọi 1 trong 4 Tools<br/>(check_horoscope / calculate_mbti / check_lunar_age / search_date_ideas)"]
+    E --> E1{"Kiểm tra Tool Status"}
+    E1 -- "Thành công" --> E2["👁️ Observation: Trả về dữ liệu thực tế"]
+    E1 -- "Lỗi / Tham số sai" --> E3["⚠️ Observation: Thông báo lỗi tham số"]
+    E2 --> F{"Kiểm tra phanh Guardrails<br/>Step < MAX_ITERATIONS?"}
+    E3 --> F
+    F -- "Còn budget (step < 3)" --> D2
+    F -- "Đạt MAX_ITERATIONS (step >= 3)" --> G["🛡️ Guardrail Safe Fallback<br/>(Thông báo lịch sự ngắt lặp an toàn)"]
+    
+    D3 -- "Đủ data" --> H["🏁 Final Answer (Lời tư vấn Cupid ghép đôi hoàn chỉnh)"]
+    
+    %% Kết quả gửi cho người dùng
+    C3 --> Z["📩 Gửi phản hồi cho người dùng"]
+    H --> Z
+    G --> Z
