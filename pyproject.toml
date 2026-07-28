@@ -1,0 +1,13 @@
+[project]
+name = "day03-2a202601230-lemaiviethoang"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "anthropic>=0.120.0",
+    "google-genai>=2.14.0",
+    "openai>=2.49.0",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+]

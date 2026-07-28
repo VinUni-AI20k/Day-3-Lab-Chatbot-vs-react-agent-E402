@@ -5,17 +5,17 @@
 
 ## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
 
-| Tiêu chí | Điểm (1-5) | Lý do đánh giá |
+| Tiêu chí | Điểm (1-5) | Lý do đánh giá (Áp dụng cho bài toán Tìm & Đặt lịch thuê nhà) |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `4/5` | Phải phân tích yêu cầu (vị trí, giá cả), chọn lọc kết quả, rồi tiếp tục lấy listing_id để tìm lịch trống. |
+| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực từ 3 công cụ: `search_rentals`, `get_viewing_slots`, `book_viewing`. |
+| 🔀 **Dynamic Decision** | `5/5` | Quyết định bước tiếp theo (xem lịch/đặt lịch) phụ thuộc hoàn toàn vào dữ liệu phòng trống trả về ở bước trước. |
+| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước liên tiếp, chưa yêu cầu ghi nhớ ngữ cảnh quá phức tạp hay lập kế hoạch (Planning) dài hạn. |
+| **TỔNG ĐIỂM FIT** | **17/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #4)
 
 💬 [CHATBOT BASELINE] Câu hỏi: Tôi nên chuẩn bị những giấy tờ và thông tin gì trước khi đi xem nhà trọ?
 🤖 Chatbot trả lời:
