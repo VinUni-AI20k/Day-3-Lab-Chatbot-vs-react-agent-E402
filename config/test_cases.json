@@ -75,121 +75,121 @@
     "id": 13,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Tìm phòng trọ ở Quận Cầu Giấy, Hà Nội giá dưới 4 triệu/tháng.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Hà Nội', district='Cầu Giấy', type='phòng trọ', max_price=4000000) và trả về danh sách các phòng phù hợp."
+    "expected_behavior": "Agent gọi search_rentals(location='Cầu Giấy, Hà Nội', max_price=4000000, room_type='phòng trọ') và trả về danh sách các phòng phù hợp từ dữ liệu hiện tại."
   },
   {
     "id": 14,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Tôi muốn tìm chỗ ở dạng Sleepbox tại Đà Nẵng với mức giá rẻ nhất dưới 2 triệu.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Đà Nẵng', type='sleepbox', max_price=2000000) và trả về danh sách sleepbox khả dụng như PROP-0005."
+    "expected_behavior": "Agent gọi search_rentals(location='Đà Nẵng', max_price=2000000, room_type='sleepbox') và trả về danh sách được sắp theo giá tăng dần, trong đó có PROP-0005 nếu còn trống."
   },
   {
     "id": 15,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Lọc danh sách các căn hộ mini có khóa vân tay và thang máy tại Thành phố Thủ Đức.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Hồ Chí Minh', district='Thành phố Thủ Đức', type='căn hộ mini', amenities=['khóa vân tay', 'thang máy']) để hiển thị kết quả."
+    "expected_behavior": "Agent gọi search_rentals với location='Thành phố Thủ Đức, Hồ Chí Minh', room_type='căn hộ mini' và amenities=['khóa vân tay', 'thang máy']; dữ liệu hiện tại trả về PROP-0342."
   },
   {
     "id": 16,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Xem thông tin chi tiết và kiểm tra lịch xem phòng của mã bất động sản PROP-0001.",
-    "expected_behavior": "Agent gọi tool get_property_detail(property_id='PROP-0001') để hiển thị đầy đủ thông tin nhà nguyên căn tại Mai Dịch, Cầu Giấy kèm các khung giờ xem phòng khả dụng."
+    "expected_behavior": "Agent gọi get_rental_details('PROP-0001'), sau đó gọi check_viewing_availability('PROP-0001') để hiển thị chi tiết và toàn bộ khung giờ còn trống."
   },
   {
     "id": 17,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Tra cứu các căn hộ chung cư tại Nam Từ Liêm có trang bị phòng gym và bảo vệ 24/7.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Hà Nội', district='Nam Từ Liêm', type='căn hộ chung cư', amenities=['phòng gym', 'bảo vệ 24/7']) để tổng hợp danh sách."
+    "expected_behavior": "Agent gọi search_rentals với location='Nam Từ Liêm, Hà Nội', room_type='căn hộ chung cư' và đủ hai tiện nghi; nếu dữ liệu hiện tại không có kết quả thì phải thông báo rõ, không tự bỏ bớt tiện nghi."
   },
   {
     "id": 18,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Tôi muốn tìm Homestay tại Quận Hai Bà Trưng, Hà Nội giá từ 3 đến 6 triệu.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Hà Nội', district='Hai Bà Trưng', type='homestay', min_price=3000000, max_price=6000000) và trả về danh sách như PROP-0014."
+    "expected_behavior": "Agent gọi search_rentals với location='Hai Bà Trưng, Hà Nội', min_price=3000000, max_price=6000000, room_type='homestay' và trả về PROP-0014 nếu còn trống."
   },
   {
     "id": 19,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Tìm phòng trọ ở Sơn Trà, Đà Nẵng giá dưới 3 triệu có ban công và chỗ để xe.",
-    "expected_behavior": "Agent gọi tool search_rentals(city='Đà Nẵng', district='Sơn Trà', type='phòng trọ', max_price=3000000, amenities=['ban công', 'chỗ để xe']) như mã PROP-0010."
+    "expected_behavior": "Agent gọi search_rentals với location='Sơn Trà, Đà Nẵng', max_price=3000000, room_type='phòng trọ', amenities=['ban công', 'chỗ để xe']; dữ liệu hiện tại trả về PROP-0090."
   },
   {
     "id": 20,
     "category": "🟡 Multi-step (Cần Tool)",
     "question": "Kiểm tra danh sách các khung giờ còn trống để đi xem căn hộ PROP-0005 tại Phước Mỹ, Sơn Trà.",
-    "expected_behavior": "Agent gọi tool get_viewing_slots(property_id='PROP-0005') để trích xuất danh sách lịch hẹn như '2026-08-01T14:00:00'."
+    "expected_behavior": "Agent gọi check_viewing_availability('PROP-0005') không truyền ngày và trả toàn bộ lịch còn trống, trong đó có 14:00 ngày 01/08/2026 nếu chưa được đặt."
   },
   {
     "id": 21,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm phòng trọ ở Quận 10, TP.HCM giá dưới 3.5 triệu, sau đó xem chi tiết phòng PROP-0020.",
-    "expected_behavior": "Agent gọi search_rentals để tìm danh sách, sau đó gọi get_property_detail(property_id='PROP-0020') để hiển thị đầy đủ tiện nghi và thông tin liên hệ Chị Nga."
+    "expected_behavior": "Agent gọi search_rentals để tìm danh sách, sau đó gọi get_rental_details('PROP-0020') và tổng hợp đầy đủ dữ liệu thực tế."
   },
   {
     "id": 22,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Kiểm tra phòng trọ mã PROP-0051 ở Hai Bà Trưng còn trống không và đặt lịch xem vào lúc 2026-08-03T17:00:00 cho người tên Nam.",
-    "expected_behavior": "Agent gọi get_property_detail kiểm tra trạng thái available và viewing_slots, sau đó gọi book_viewing(property_id='PROP-0051', slot='2026-08-03T17:00:00', name='Nam')."
+    "expected_behavior": "Agent gọi get_rental_details và check_viewing_availability cho PROP-0051. Dữ liệu hiện tại không có slot 17:00 ngày 03/08/2026 và yêu cầu cũng thiếu số điện thoại, nên Agent không được đặt lịch và phải đề nghị chọn slot hợp lệ/cung cấp số điện thoại."
   },
   {
     "id": 23,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm căn hộ mini tại Thành phố Thủ Đức có hồ bơi, sau đó lấy lịch xem phòng của mã PROP-0015.",
-    "expected_behavior": "Agent gọi search_rentals lọc căn hộ mini có hồ bơi, sau đó gọi get_viewing_slots('PROP-0015') để hiển thị các khung giờ khả dụng."
+    "expected_behavior": "Agent gọi search_rentals lọc căn hộ mini có hồ bơi, sau đó có thể gọi check_viewing_availability('PROP-0015') vì mã đã có trong yêu cầu; phải giữ riêng kết quả tìm kiếm và lịch của PROP-0015, không khẳng định PROP-0015 có hồ bơi."
   },
   {
     "id": 24,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Hãy tìm sleepbox ở Thanh Xuân giá dưới 2 triệu và kiểm tra số điện thoại liên hệ chủ nhà của bất động sản PROP-0041.",
-    "expected_behavior": "Agent gọi search_rentals tìm sleepbox, sau đó gọi get_property_detail('PROP-0041') để lấy thông tin liên hệ chủ nhà."
+    "expected_behavior": "Agent gọi search_rentals tìm sleepbox ở Thanh Xuân, sau đó gọi get_rental_details('PROP-0041') vì mã có trong yêu cầu; phải nêu đúng địa chỉ thực tế của PROP-0041 nếu mã này không thuộc kết quả tìm kiếm."
   },
   {
     "id": 25,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Đặt lịch xem nhà nguyên căn PROP-0001 tại Cầu Giấy vào lúc 2026-08-26T15:30:00 cho anh Hoàng (SDT 0912345678).",
-    "expected_behavior": "Agent kiểm tra slot trống của PROP-0001 bằng get_viewing_slots hoặc get_property_detail, sau đó tiến hành đặt lịch qua book_viewing."
+    "expected_behavior": "Agent gọi check_viewing_availability('PROP-0001', '26/08/2026'), sau đó book_viewing với 15:30, tên Hoàng và số điện thoại đã cung cấp; chỉ xác nhận khi tool trả mã BK-."
   },
   {
     "id": 26,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm homestay tại Hải Châu, Đà Nẵng dưới 2.5 triệu và cho tôi biết diện tích cùng địa chỉ cụ thể của mã PROP-0012.",
-    "expected_behavior": "Agent gọi search_rentals để lọc danh sách homestay, sau đó dùng get_property_detail('PROP-0012') lấy diện tích (28m2) và địa chỉ chi tiết."
+    "expected_behavior": "Agent gọi search_rentals để lọc homestay, sau đó dùng get_rental_details('PROP-0012') và trả đúng dữ liệu hiện tại: diện tích 17m², địa chỉ Số 155 ngõ 8 Thạch Thang, Thạch Thang, Hải Châu, Đà Nẵng."
   },
   {
     "id": 27,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm nhà nguyên căn tại Sơn Trà, Đà Nẵng giá dưới 12 triệu và đặt lịch xem mã PROP-0061 vào ngày 2026-08-15T09:00:00.",
-    "expected_behavior": "Agent gọi search_rentals tìm nhà nguyên căn, sau đó xác nhận và gọi book_viewing cho PROP-0061."
+    "expected_behavior": "Agent gọi search_rentals và check_viewing_availability('PROP-0061', '15/08/2026'). Dữ liệu hiện tại không có slot 09:00 ngày đó và yêu cầu thiếu tên/số điện thoại, nên không được gọi book_viewing."
   },
   {
     "id": 28,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm homestay ở Quận 7, TP.HCM giá khoảng 6 triệu và kiểm tra danh sách các tiện ích có trong phòng PROP-0101.",
-    "expected_behavior": "Agent dùng search_rentals để tìm homestay tại Quận 7, sau đó gọi get_property_detail('PROP-0101') để liệt kê đầy đủ tiện ích."
+    "expected_behavior": "Agent dùng search_rentals để tìm homestay tại Quận 7, sau đó gọi get_rental_details('PROP-0101') để liệt kê đầy đủ tiện ích thực tế."
   },
   {
     "id": 29,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tôi muốn xem lịch rảnh của căn hộ chung cư PROP-0002 ở Cầu Giấy và đặt lịch xem lúc 2026-08-25T15:00:00.",
-    "expected_behavior": "Agent gọi get_viewing_slots('PROP-0002') xác nhận khung giờ 2026-08-25T15:00:00 hợp lệ, sau đó gọi book_viewing."
+    "expected_behavior": "Agent gọi check_viewing_availability('PROP-0002', '25/08/2026') và xác nhận 15:00 còn trống, nhưng phải hỏi tên và số điện thoại trước khi gọi book_viewing."
   },
   {
     "id": 30,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Lọc các phòng trọ ở Ngũ Hành Sơn, Đà Nẵng dưới 2.5 triệu và kiểm tra thời gian có thể chuyển vào ở (available_from) của PROP-0027.",
-    "expected_behavior": "Agent gọi search_rentals lọc phòng trọ, sau đó dùng get_property_detail('PROP-0027') để trả lời ngày nhận phòng."
+    "expected_behavior": "Agent gọi search_rentals lọc phòng trọ, sau đó dùng get_rental_details('PROP-0027') để trả lời trường available_from từ dữ liệu hiện tại."
   },
   {
     "id": 31,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Tìm căn hộ mini tại Quận 10, TP.HCM và lấy thông tin tên người liên hệ chủ nhà của PROP-0008.",
-    "expected_behavior": "Agent gọi search_rentals lọc căn hộ mini tại Quận 10, sau đó dùng get_property_detail('PROP-0008') để tra cứu thông tin chủ nhà."
+    "expected_behavior": "Agent gọi search_rentals lọc căn hộ mini tại Quận 10, sau đó dùng get_rental_details('PROP-0008') để tra cứu tên người liên hệ thực tế."
   },
   {
     "id": 32,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
     "question": "Đặt lịch hẹn xem phòng trọ PROP-0020 vào khung giờ 2026-08-08T09:00:00 cho chị Mai và trả về mã xác nhận đặt lịch.",
-    "expected_behavior": "Agent xác thực thông tin phòng PROP-0020 và tiến hành gọi book_viewing để trả về mã đặt lịch thành công."
+    "expected_behavior": "Agent gọi check_viewing_availability('PROP-0020', '08/08/2026') để xác nhận 09:00 còn trống, nhưng phải hỏi số điện thoại của chị Mai trước khi gọi book_viewing."
   },
   {
     "id": 33,

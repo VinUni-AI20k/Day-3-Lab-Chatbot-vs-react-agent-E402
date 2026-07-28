@@ -7,7 +7,6 @@ Giao diện được xây dựng bằng Streamlit.
 import os
 import sys
 import json
-import re
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -15,8 +14,15 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from tools import AVAILABLE_TOOLS
-from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
+from prompts import (
+    CHATBOT_BASELINE_PROMPT,
+    REACT_SYSTEM_PROMPT,
+    MAX_ITERATIONS,
+    MAX_REPEATED_ACTIONS,
+    SAFE_FALLBACK_MESSAGE,
+)
 from providers import get_llm_provider
+from agent_protocol import extract_final_answer, extract_thoughts, parse_action
 
 load_dotenv()
 
@@ -76,38 +82,10 @@ def run_baseline_chatbot(user_query: str, provider):
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
     return response
 
-def parse_action(text: str):
-    """Trích xuất Action từ response của LLM. Vd: search_rentals[{"location":"Cầu Giấy"}] hoặc search_rentals['Cầu Giấy']"""
-    pattern = r"Action:\s*(\w+)\[(.*)\]"
-    match = re.search(pattern, text, re.DOTALL)
-    if match:
-        tool_name = match.group(1)
-        params_str = match.group(2).strip()
-        params = {}
-        if params_str:
-            try:
-                # Thử parse như JSON
-                params = json.loads(params_str)
-            except:
-                # Fallback sang ast.literal_eval cho cú pháp Python (mặc định của System Prompt)
-                import ast
-                try:
-                    parsed = ast.literal_eval(params_str)
-                    if isinstance(parsed, (dict, list, tuple)):
-                        params = parsed
-                    else:
-                        params = ast.literal_eval(f"[{params_str}]")
-                except:
-                    try:
-                        params = ast.literal_eval(f"[{params_str}]")
-                    except:
-                        params = [p.strip().strip("'").strip('"') for p in params_str.split(',')]
-        return tool_name, params
-    return None, {}
-
 def run_react_agent(user_query: str, provider):
     """Vòng lặp ReAct Agent"""
     history_prompt = f"User: {user_query}\n"
+    action_counts = {}
     
     with st.status("Agent đang xử lý...", expanded=True) as status:
         for step in range(1, MAX_ITERATIONS + 1):
@@ -117,18 +95,28 @@ def run_react_agent(user_query: str, provider):
             response = provider.generate(history_prompt, system_prompt=REACT_SYSTEM_PROMPT)
             history_prompt += f"{response}\n"
             
-            # In ra các dòng Thought / Final Answer
-            lines = response.split('\n')
-            for line in lines:
-                if line.startswith("Thought:"):
-                    st.info(f"🧠 {line}")
-                elif line.startswith("Final Answer:"):
-                    status.update(label="Hoàn tất!", state="complete", expanded=False)
-                    return line.replace("Final Answer:", "").strip()
+            # Hiển thị Thought, nhưng luôn giữ nguyên TOÀN BỘ nội dung sau
+            # marker Final Answer (bao gồm các dòng Markdown tiếp theo).
+            for thought in extract_thoughts(response):
+                st.info(f"🧠 Thought: {thought}")
+
+            final_answer = extract_final_answer(response)
+            if final_answer is not None:
+                if not final_answer:
+                    status.update(label="Câu trả lời cuối bị rỗng!", state="error", expanded=False)
+                    return SAFE_FALLBACK_MESSAGE
+                status.update(label="Hoàn tất!", state="complete", expanded=False)
+                return final_answer
             
             # Tìm Action
             tool_name, params = parse_action(response)
             if tool_name:
+                action_key = (tool_name, repr(params))
+                action_counts[action_key] = action_counts.get(action_key, 0) + 1
+                if action_counts[action_key] > MAX_REPEATED_ACTIONS:
+                    status.update(label="Agent lặp lại cùng thao tác!", state="error", expanded=False)
+                    return SAFE_FALLBACK_MESSAGE
+
                 params_display = json.dumps(params, ensure_ascii=False) if isinstance(params, dict) else str(params)
                 st.warning(f"🛠️ **Action**: `{tool_name}({params_display})`")
                 
@@ -143,17 +131,16 @@ def run_react_agent(user_query: str, provider):
                         else:
                             obs = tool_func()
                     except Exception as e:
-                        obs = f"Lỗi khi chạy tool {tool_name}: {str(e)}"
+                        obs = f"LỖI: Không thể chạy tool {tool_name}: {str(e)}"
                 else:
-                    obs = f"Lỗi: Tool '{tool_name}' không tồn tại."
+                    obs = f"LỖI: Tool '{tool_name}' không tồn tại."
                 
                 st.success(f"👁️ **Observation**: \n{obs}")
                 history_prompt += f"Observation: {obs}\n"
             else:
                 # Nếu LLM không ra lệnh gì và không Final Answer, ép kết thúc
-                if "Final Answer:" not in response:
-                    status.update(label="Hoàn tất!", state="complete", expanded=False)
-                    return response
+                status.update(label="Agent trả sai giao thức!", state="error", expanded=False)
+                return response.strip() or SAFE_FALLBACK_MESSAGE
                     
         status.update(label="Đã quá giới hạn bước!", state="error", expanded=False)
         return "🛡️ GUARDRAIL TRIGGERED: Vượt quá số bước suy luận tối đa."

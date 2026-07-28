@@ -14,6 +14,8 @@ tìm thấy dữ liệu phải trả về chuỗi bắt đầu bằng "LỖI:" �
 import os
 import json
 import re
+import unicodedata
+from datetime import datetime
 
 # ============================================================
 # 🗄️ NẠP DỮ LIỆU THẬT TỪ data/datamock.json
@@ -48,15 +50,29 @@ def _normalize(text: str) -> str:
     return (text or "").lower().strip()
 
 
+def _normalize_search_text(text: str) -> str:
+    """Normalize accents, punctuation and common Vietnamese city aliases."""
+    text = unicodedata.normalize("NFD", str(text or "").lower())
+    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
+    text = re.sub(r"[^a-z0-9]+", " ", text).strip()
+
+    aliases = (
+        (r"\b(?:tp\s*hcm|tphcm|hcm|sai gon)\b", "ho chi minh"),
+        (r"\b(?:tp\s*hn|hn)\b", "ha noi"),
+        (r"\b(?:tp\s*dn)\b", "da nang"),
+    )
+    for pattern, replacement in aliases:
+        text = re.sub(pattern, replacement, text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def _is_valid_date(date: str):
     """Kiểm tra & parse ngày DD/MM/YYYY. Trả về (year, month, day) hoặc None."""
-    match = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", (date or "").strip())
-    if not match:
+    try:
+        parsed = datetime.strptime((date or "").strip(), "%d/%m/%Y")
+    except (TypeError, ValueError):
         return None
-    day, month, year = (int(x) for x in match.groups())
-    if month < 1 or month > 12 or day < 1 or day > 31:
-        return None
-    return year, month, day
+    return parsed.year, parsed.month, parsed.day
 
 
 def _is_valid_time(time: str) -> bool:
@@ -79,7 +95,13 @@ def _available_slots(rental: dict, date_tuple=None):
 # 🛠️ TOOL 1: TÌM KIẾM NHÀ TRỌ / CĂN HỘ
 # ============================================================
 
-def search_rentals(location: str = None, max_price: float = None, room_type: str = None) -> str:
+def search_rentals(
+    location: str = None,
+    max_price: float = None,
+    room_type: str = None,
+    min_price: float = None,
+    amenities=None,
+) -> str:
     """
     Tìm kiếm các tin đăng phòng trọ / căn hộ đang còn trống (status = available)
     theo khu vực (phường/quận/thành phố), mức giá tối đa và loại phòng.
@@ -90,30 +112,56 @@ def search_rentals(location: str = None, max_price: float = None, room_type: str
         max_price (float, optional): Mức giá thuê tối đa (VNĐ/tháng).
         room_type (str, optional): Loại phòng (Ví dụ: 'phòng trọ', 'căn hộ mini',
             'homestay', 'sleepbox', 'nhà nguyên căn', 'căn hộ chung cư').
+        min_price (float, optional): Mức giá thuê tối thiểu (VNĐ/tháng).
+        amenities (list[str], optional): Các tiện nghi bắt buộc phải có.
 
     Returns:
         str: Danh sách tối đa 10 tin phù hợp nhất (kèm `rental_id` để tra cứu
         chi tiết / đặt lịch), hoặc chuỗi "LỖI:" nếu không có kết quả hoặc
         tham số không hợp lệ.
     """
-    if not location or not location.strip():
+    if not isinstance(location, str) or not location.strip():
         return "LỖI: Thiếu tham số 'location' — vui lòng cung cấp khu vực cần tìm."
 
-    if max_price is not None:
+    def parse_price(value, name):
+        if value is None:
+            return None, None
         try:
-            max_price = float(max_price)
-            if max_price <= 0:
-                return "LỖI: 'max_price' phải là một số dương."
+            value = float(value)
+            if value < 0:
+                return None, f"LỖI: '{name}' phải là một số không âm."
         except (ValueError, TypeError):
-            return f"LỖI: 'max_price' không hợp lệ ('{max_price}'). Vui lòng nhập một con số."
+            return None, f"LỖI: '{name}' không hợp lệ ('{value}'). Vui lòng nhập một con số."
+        return value, None
+
+    max_price, error = parse_price(max_price, "max_price")
+    if error:
+        return error
+    min_price, error = parse_price(min_price, "min_price")
+    if error:
+        return error
+    if min_price is not None and max_price is not None and min_price > max_price:
+        return "LỖI: 'min_price' không được lớn hơn 'max_price'."
+
+    if amenities is None:
+        required_amenities = []
+    elif isinstance(amenities, str):
+        required_amenities = [amenities]
+    elif isinstance(amenities, (list, tuple)) and all(isinstance(item, str) for item in amenities):
+        required_amenities = list(amenities)
+    else:
+        return "LỖI: 'amenities' phải là một chuỗi hoặc danh sách chuỗi."
+
+    required_amenities = [
+        _normalize_search_text(item) for item in required_amenities if item.strip()
+    ]
 
     if not _RENTALS:
         return "LỖI: Không tải được dữ liệu nhà trọ/căn hộ (data/datamock.json)."
 
     def parse_loc(text):
-        text = text.lower().replace(",", " ").replace("-", " ")
-        for prefix in ["quận", "huyện", "thành phố", "tp", "tỉnh", "phường", "xã"]:
-            # Dùng regex hoặc thay thế cẩn thận để không cắt nhầm chữ
+        text = _normalize_search_text(text)
+        for prefix in ["quan", "huyen", "thanh pho", "tp", "tinh", "phuong", "xa"]:
             text = re.sub(rf"\b{prefix}\b", "", text)
         return [w for w in text.split() if w]
 
@@ -125,7 +173,9 @@ def search_rentals(location: str = None, max_price: float = None, room_type: str
             continue
             
         addr = r.get("address", {})
-        haystack = _normalize(" ".join([addr.get("ward", ""), addr.get("district", ""), addr.get("city", "")]))
+        haystack = _normalize_search_text(
+            " ".join([addr.get("ward", ""), addr.get("district", ""), addr.get("city", "")])
+        )
         
         # Tất cả các token của khu vực phải xuất hiện trong địa chỉ (haystack)
         match_loc = True
@@ -139,13 +189,21 @@ def search_rentals(location: str = None, max_price: float = None, room_type: str
             
         if max_price is not None and r.get("price", 0) > max_price:
             continue
-        if room_type is not None and _normalize(room_type) not in _normalize(r.get("type", "")):
+        if min_price is not None and r.get("price", 0) < min_price:
+            continue
+        if room_type is not None and _normalize_search_text(room_type) not in _normalize_search_text(r.get("type", "")):
+            continue
+        rental_amenities = {
+            _normalize_search_text(item) for item in r.get("amenities", [])
+        }
+        if any(item not in rental_amenities for item in required_amenities):
             continue
         results.append(r)
 
     if not results:
         return f"LỖI: Không tìm thấy phòng trọ/căn hộ nào còn trống khớp với khu vực '{location}' và điều kiện đã cho."
 
+    results.sort(key=lambda item: (item.get("price", 0), item.get("id", "")))
     shown = results[:10]
     lines = [f"Tìm thấy {len(results)} kết quả phù hợp (hiển thị {len(shown)} đầu tiên):"]
     for r in shown:
@@ -175,7 +233,7 @@ def get_rental_details(rental_id: str = None) -> str:
         str: Thông tin chi tiết của tin đăng, hoặc chuỗi "LỖI:" nếu mã tin
         không tồn tại.
     """
-    if not rental_id:
+    if not isinstance(rental_id, str) or not rental_id.strip():
         return "LỖI: Thiếu tham số 'rental_id'."
 
     rental_id = rental_id.strip().upper()
@@ -211,32 +269,41 @@ def check_viewing_availability(rental_id: str = None, date: str = None) -> str:
 
     Args:
         rental_id (str): Mã tin đăng (Ví dụ: 'PROP-0001').
-        date (str): Ngày muốn xem nhà, định dạng 'DD/MM/YYYY' (Ví dụ: '26/08/2026').
+        date (str, optional): Ngày muốn xem nhà, định dạng 'DD/MM/YYYY'
+            (Ví dụ: '26/08/2026'). Nếu bỏ trống, trả toàn bộ khung giờ còn trống.
 
     Returns:
         str: Danh sách giờ còn trống trong ngày đó, hoặc chuỗi "LỖI:" nếu mã
         tin/ngày không hợp lệ hoặc không có giờ trống nào trong ngày đó.
     """
-    if not rental_id:
+    if not isinstance(rental_id, str) or not rental_id.strip():
         return "LỖI: Thiếu tham số 'rental_id'."
-    if not date:
-        return "LỖI: Thiếu tham số 'date'."
-
     rental_id = rental_id.strip().upper()
     r = _RENTALS_BY_ID.get(rental_id)
     if not r:
         return f"LỖI: Không tìm thấy tin đăng với mã '{rental_id}'."
 
-    date_tuple = _is_valid_date(date)
-    if not date_tuple:
-        return f"LỖI: Ngày '{date}' không đúng định dạng DD/MM/YYYY hoặc không hợp lệ."
+    date_tuple = None
+    if date:
+        date_tuple = _is_valid_date(date)
+        if not date_tuple:
+            return f"LỖI: Ngày '{date}' không đúng định dạng DD/MM/YYYY hoặc không hợp lệ."
 
     slots = _available_slots(r, date_tuple)
-    if not slots:
+    if not slots and date:
         return f"LỖI: Tin [{rental_id}] không có khung giờ xem nhà nào trống vào ngày {date}. Vui lòng thử ngày khác."
+    if not slots:
+        return f"LỖI: Tin [{rental_id}] hiện không có khung giờ xem nhà nào còn trống."
 
-    times = [s.split("T")[1][:5] for s in slots]
-    return f"Khung giờ còn trống để xem nhà [{rental_id}] vào {date}: {', '.join(times)}."
+    if date:
+        times = [s.split("T")[1][:5] for s in slots]
+        return f"Khung giờ còn trống để xem nhà [{rental_id}] vào {date}: {', '.join(times)}."
+
+    formatted_slots = []
+    for slot in slots:
+        parsed = datetime.fromisoformat(slot)
+        formatted_slots.append(parsed.strftime("%H:%M ngày %d/%m/%Y"))
+    return f"Các khung giờ còn trống để xem nhà [{rental_id}]: {', '.join(formatted_slots)}."
 
 
 # ============================================================
@@ -259,12 +326,16 @@ def book_viewing(rental_id: str = None, date: str = None, time: str = None, cust
         str: Xác nhận đặt lịch kèm `booking_id`, hoặc chuỗi "LỖI:" nếu thông
         tin không hợp lệ, tin đã ngừng cho thuê, hoặc giờ đã có người đặt.
     """
-    if not rental_id:
+    if not isinstance(rental_id, str) or not rental_id.strip():
         return "LỖI: Thiếu tham số 'rental_id'."
-    if not customer_name or not customer_name.strip():
+    if not isinstance(customer_name, str) or not customer_name.strip():
         return "LỖI: Thiếu tham số 'customer_name'."
-    if not phone_number or not re.match(r"^0\d{9,10}$", phone_number.strip()):
+    if not isinstance(phone_number, str) or not re.match(r"^0\d{9,10}$", phone_number.strip()):
         return f"LỖI: Số điện thoại '{phone_number}' không hợp lệ (cần bắt đầu bằng 0 và có 10-11 chữ số)."
+    if not date:
+        return "LỖI: Thiếu tham số 'date'."
+    if not isinstance(time, str) or not time.strip():
+        return "LỖI: Thiếu tham số 'time'."
 
     rental_id = rental_id.strip().upper()
     r = _RENTALS_BY_ID.get(rental_id)
@@ -333,7 +404,7 @@ def cancel_viewing(booking_id: str = None) -> str:
         str: Thông báo huỷ thành công, hoặc chuỗi "LỖI:" nếu mã lịch hẹn
         không tồn tại.
     """
-    if not booking_id:
+    if not isinstance(booking_id, str) or not booking_id.strip():
         return "LỖI: Thiếu tham số 'booking_id'."
 
     booking_id = booking_id.strip().upper()
