@@ -3,3 +3,5 @@ openai
 anthropic
 python-dotenv
 requests
+datasets
+pandas
