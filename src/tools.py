@@ -1,105 +1,49 @@
-"""Công cụ mô phỏng cho Trợ lý sàng lọc hồ sơ & hẹn phỏng vấn.
-
-Dữ liệu chỉ là dữ liệu mẫu đã ẩn danh, không dùng để ra quyết định tuyển dụng thật.
+"""
+🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
+Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
 """
 
-from __future__ import annotations
-
-from typing import Dict
-
-
-CANDIDATES: Dict[str, Dict[str, object]] = {
-    "UV001": {"skills": ["Python", "SQL", "FastAPI"], "years": 2, "role": "Backend Developer", "status": "new"},
-    "UV002": {"skills": ["Figma", "UI/UX", "User Research"], "years": 3, "role": "UI/UX Designer", "status": "new"},
-    "UV003": {"skills": ["HTML", "CSS"], "years": 0, "role": "Backend Developer", "status": "new"},
-}
-
-ROLE_REQUIREMENTS = {
-    "backend developer": {"skills": {"python", "sql"}, "min_years": 1},
-    "ui/ux designer": {"skills": {"figma", "ui/ux"}, "min_years": 2},
-}
-
-INTERVIEW_SLOTS = {
-    "SLOT01": {"role": "Backend Developer", "time": "09:00, 30/07/2026", "available": True},
-    "SLOT02": {"role": "Backend Developer", "time": "14:00, 30/07/2026", "available": True},
-    "SLOT03": {"role": "UI/UX Designer", "time": "10:00, 31/07/2026", "available": True},
-}
-
-
-def get_candidate_profile(candidate_id: str) -> str:
-    """Tra cứu hồ sơ ứng viên đã ẩn danh.
-
-    Input: mã ứng viên, ví dụ ``UV001``. Output: kỹ năng, kinh nghiệm, vị trí ứng tuyển;
-    không trả về dữ liệu nhạy cảm. Error: trả chuỗi ``LỖI`` nếu mã không tồn tại.
-    Side effect: không có.
+def get_weather(location: str) -> str:
     """
-    candidate = CANDIDATES.get(candidate_id.upper())
-    if not candidate:
-        return f"LỖI: Không tìm thấy hồ sơ ứng viên '{candidate_id}'."
-    return (f"Hồ sơ {candidate_id.upper()}: vị trí {candidate['role']}; "
-            f"kỹ năng {', '.join(candidate['skills'])}; kinh nghiệm {candidate['years']} năm.")
-
-
-def evaluate_candidate(candidate_id: str, position: str) -> str:
-    """Đối chiếu hồ sơ với tiêu chí công việc minh bạch đã định nghĩa.
-
-    Input: mã ứng viên và vị trí. Output: PASS/CHƯA ĐẠT cùng lý do dựa trên kỹ năng,
-    kinh nghiệm. Không dùng tuổi, giới tính, ảnh, quê quán hay thuộc tính nhạy cảm.
-    Side effect: không có; kết quả chỉ hỗ trợ HR, quyết định cuối cùng do con người.
+    Tra cứu thời tiết hiện tại của một thành phố.
+    
+    Args:
+        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
+        
+    Returns:
+        str: Thông tin thời tiết chi tiết
     """
-    candidate = CANDIDATES.get(candidate_id.upper())
-    req = ROLE_REQUIREMENTS.get(position.lower())
-    if not candidate:
-        return f"LỖI: Không tìm thấy hồ sơ ứng viên '{candidate_id}'."
-    if not req:
-        return f"LỖI: Chưa có bộ tiêu chí cho vị trí '{position}'."
-    skills = {skill.lower() for skill in candidate["skills"]}
-    missing = sorted(req["skills"] - skills)
-    years_ok = candidate["years"] >= req["min_years"]
-    if not missing and years_ok:
-        return (f"ĐÁNH GIÁ: PASS. {candidate_id.upper()} đáp ứng kỹ năng và tối thiểu "
-                f"{req['min_years']} năm kinh nghiệm. Cần HR xác nhận trước khi mời phỏng vấn.")
-    reasons = []
-    if missing:
-        reasons.append("thiếu kỹ năng: " + ", ".join(missing))
-    if not years_ok:
-        reasons.append(f"kinh nghiệm {candidate['years']} năm, yêu cầu {req['min_years']} năm")
-    return "ĐÁNH GIÁ: CHƯA ĐẠT. " + "; ".join(reasons) + "."
+    loc_lower = location.lower()
+    if "hà nội" in loc_lower or "ha noi" in loc_lower:
+        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
+    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
+        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
+    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
+        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
+    else:
+        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
 
 
-def get_interview_slots(position: str) -> str:
-    """Tra cứu các khung giờ phỏng vấn còn trống cho một vị trí.
-
-    Input: tên vị trí. Output: mã slot và thời gian; Error: ``LỖI`` khi không có slot.
-    Side effect: không có.
+def search_flights(origin: str, destination: str) -> str:
     """
-    slots = [(slot_id, item) for slot_id, item in INTERVIEW_SLOTS.items()
-             if item["role"].lower() == position.lower() and item["available"]]
-    if not slots:
-        return f"LỖI: Không có lịch phỏng vấn trống cho vị trí '{position}'."
-    return "Lịch trống: " + "; ".join(f"{slot_id} - {item['time']}" for slot_id, item in slots) + "."
-
-
-def schedule_interview(candidate_id: str, slot_id: str) -> str:
-    """Đặt lịch phỏng vấn mô phỏng sau khi HR đã xác nhận và ứng viên đồng ý.
-
-    Input: mã ứng viên, mã slot. Output: xác nhận/lỗi. Side effect: đánh dấu slot đã dùng
-    trong phiên chạy hiện tại. Tool từ chối nếu slot không tồn tại hoặc đã được đặt.
+    Tra cứu chuyến bay giữa hai địa điểm.
+    
+    Args:
+        origin (str): Nơi đi (Ví dụ: 'TP.HCM')
+        destination (str): Nơi đến (Ví dụ: 'Hà Nội')
+        
+    Returns:
+        str: Danh sách chuyến bay khả dụng và giá vé
     """
-    if candidate_id.upper() not in CANDIDATES:
-        return f"LỖI: Không tìm thấy hồ sơ ứng viên '{candidate_id}'."
-    slot = INTERVIEW_SLOTS.get(slot_id.upper())
-    if not slot:
-        return f"LỖI: Không tìm thấy mã lịch '{slot_id}'."
-    if not slot["available"]:
-        return f"LỖI: Lịch '{slot_id.upper()}' không còn trống."
-    slot["available"] = False
-    return f"ĐÃ ĐẶT LỊCH (mô phỏng): {candidate_id.upper()} vào {slot['time']} ({slot['role']})."
+    return (
+        f"Chuyến bay từ {origin} -> {destination} ngày mai:\n"
+        f"1. VN123 (08:00) - Giá: 1,500,000 VNĐ (Còn vé)\n"
+        f"2. VJ456 (14:30) - Giá: 1,200,000 VNĐ (Còn vé)"
+    )
 
 
+# Danh sách các tool được đăng ký để Agent sử dụng
 AVAILABLE_TOOLS = {
-    "get_candidate_profile": get_candidate_profile,
-    "evaluate_candidate": evaluate_candidate,
-    "get_interview_slots": get_interview_slots,
-    "schedule_interview": schedule_interview,
+    "get_weather": get_weather,
+    "search_flights": search_flights,
 }
