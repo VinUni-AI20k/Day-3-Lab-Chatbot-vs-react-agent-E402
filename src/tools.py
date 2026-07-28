@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 
-DATA_FILE = Path(__file__).resolve().parents[1] / "cupid_data" / "profiles.json"
+DATA_FILE = Path(__file__).resolve().parents[1] / "cupid_data" / "cupid_profiles.json"
 
 
 def _load_profiles() -> dict[str, dict]:
