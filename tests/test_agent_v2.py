@@ -134,7 +134,10 @@ check("V2: không crash khi sai arity", isinstance(v2.get("final_answer"), str))
 section("FAILURE MODE 3 — Repeated Action (lặp cùng tool + cùng tham số)")
 # ============================================================================
 # Agent kẹt: cứ gọi mãi 1 ngày không hợp lệ, không bao giờ ra Final Answer
-REPEAT_SCRIPT = ["Thought: Thử lại lần nữa.\nAction: check_calendar_availability[\"32/13/2026\"]"]
+REPEAT_SCRIPT = [
+    "Thought: Kiểm tra hồ sơ trước.\nAction: screen_resume[]",
+    "Thought: Thử lại lần nữa.\nAction: check_calendar_availability[\"32/13/2026\"]",
+]
 
 reset_calendar()
 p = ScriptedProvider(REPEAT_SCRIPT)

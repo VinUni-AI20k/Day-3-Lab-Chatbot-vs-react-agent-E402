@@ -6,3 +6,4 @@ requests
 guardrails-ai
 langgraph
 streamlit
+pytest

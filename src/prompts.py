@@ -5,6 +5,7 @@ System Prompt (XML tags theo chuẩn Anthropic) + Guardrails.
 """
 
 import os
+import re
 
 CHATBOT_BASELINE_PROMPT = """<role>
 Bạn là Chatbot tư vấn tuyển dụng, không có quyền truy cập dữ liệu/hệ thống thực tế.
@@ -101,7 +102,7 @@ FAILURE_MODES = [
     "Prompt injection gián tiếp qua Observation (hồ sơ chèn lệnh giả 'SYSTEM: ...') -> kiểm tra bằng contains_prompt_injection() trước khi đưa vào lịch sử hội thoại.",
 ]
 
-# 🛡️ PROMPT INJECTION — Guardrails AI (LLM-based, không heuristic/regex)
+# 🛡️ PROMPT INJECTION — Guardrails AI + deterministic fallback cho lab/offline
 # Setup 1 lần cho cả nhóm:
 #   pip install guardrails-ai
 #   guardrails configure                              # API key free tại hub.guardrailsai.com/keys
@@ -118,6 +119,15 @@ _PROVIDER_TO_LITELLM_MODEL = {
 _injection_guard = None
 _injection_guard_error = None
 _GuardrailsValidationError = None
+_DETERMINISTIC_INJECTION_PATTERNS = (
+    "ignore all previous instructions",
+    "ignore previous instructions",
+    "reveal the system prompt",
+    "tiết lộ system prompt",
+    "bỏ qua hướng dẫn trước",
+    "bỏ qua guardrail",
+    "bỏ qua quy tắc an toàn",
+)
 
 
 def _get_injection_guard():
@@ -146,14 +156,23 @@ def _get_injection_guard():
 
 
 def contains_prompt_injection(text: str) -> bool:
-    """Phát hiện prompt injection/jailbreak trong text (input user hoặc Observation) qua
-    Guardrails AI. Fail-open (trả False + cảnh báo) nếu Guardrails chưa cài/cấu hình hoặc
-    lỗi hệ thống (network, sai key...); chỉ trả True khi validator thực sự từ chối nội dung."""
+    """Phát hiện prompt injection trong input user hoặc Observation.
+
+    Guardrails AI được ưu tiên khi validator khả dụng. Với lab/offline hoặc khi
+    validator không tương thích, fallback deterministic vẫn chặn các mẫu injection
+    rõ ràng mà không làm hỏng happy path.
+    """
     if not text:
         return False
+
+    lowered = text.casefold()
+    if any(pattern in lowered for pattern in _DETERMINISTIC_INJECTION_PATTERNS):
+        return True
+    if re.search(r"\bsystem\s*:\s*(ignore|reveal|disclose|bỏ qua|tiết lộ)", lowered):
+        return True
+
     guard = _get_injection_guard()
     if guard is None:
-        print(f"⚠️ Guardrails AI chưa sẵn sàng ({_injection_guard_error}) — bỏ qua kiểm tra lượt này.")
         return False
     try:
         guard.validate(text)
@@ -161,8 +180,14 @@ def contains_prompt_injection(text: str) -> bool:
     except _GuardrailsValidationError:
         return True
     except Exception as e:
-        print(f"⚠️ Guardrails AI gặp lỗi khi kiểm tra ({e}) — bỏ qua kiểm tra injection lượt này.")
+        global _injection_guard_error
+        _injection_guard_error = str(e)
         return False
+
+
+def injection_guard_status() -> str:
+    """Trả về cơ chế đang bảo vệ input để app/health-check hiển thị rõ ràng."""
+    return "guardrails-ai" if _get_injection_guard() is not None else "deterministic-fallback"
 
 
 INJECTION_REFUSAL_MESSAGE = (

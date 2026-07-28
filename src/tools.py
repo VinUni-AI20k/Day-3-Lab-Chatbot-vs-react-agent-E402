@@ -66,6 +66,12 @@ def _parse_date(date_str: str):
     return parsed, None
 
 
+def normalize_date(date_str: str):
+    """Chuẩn hóa ngày hợp lệ về dạng dd/mm/yyyy để dùng làm calendar key."""
+    parsed, error = _parse_date(date_str)
+    return parsed.strftime("%d/%m/%Y") if not error else None
+
+
 def screen_resume(resume_text: str, job_description_text: str) -> str:
     """
     So khớp CV ứng viên với JD của vị trí đang tuyển và trích email hai bên.
@@ -161,7 +167,7 @@ def check_calendar_availability(date: str) -> str:
     if parsed < _date.today():
         return f"LỖI: Ngày {date.strip()} đã ở trong quá khứ, không thể xếp lịch phỏng vấn."
 
-    key = date.strip()
+    key = parsed.strftime("%d/%m/%Y")
     booked = _BOOKED.get(key, set())
     free = [t for t in INTERVIEW_SLOTS if t not in booked]
     if not free:
@@ -208,7 +214,7 @@ def schedule_interview(candidate_name: str, date: str, time: str) -> str:
     if parsed < _date.today():
         return f"LỖI: Ngày {date.strip()} đã ở trong quá khứ, không thể xếp lịch phỏng vấn."
 
-    key = date.strip()
+    key = parsed.strftime("%d/%m/%Y")
     slot = time.strip()
     if slot not in INTERVIEW_SLOTS:
         return f"LỖI: Khung giờ '{slot}' không hợp lệ. Các giờ hợp lệ: {', '.join(INTERVIEW_SLOTS)}."

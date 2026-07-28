@@ -32,13 +32,14 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
-from tools import AVAILABLE_TOOLS
+from tools import AVAILABLE_TOOLS, INTERVIEW_SLOTS, normalize_date
 from prompts import (
     CHATBOT_BASELINE_PROMPT,
     REACT_SYSTEM_PROMPT,
     MAX_ITERATIONS,
     MAX_REPEATED_ACTION,
     contains_prompt_injection,
+    injection_guard_status,
     INJECTION_REFUSAL_MESSAGE,
 )
 from providers import get_llm_provider
@@ -100,6 +101,12 @@ class AgentState(TypedDict):
     action_counts: dict
     repeated_blocked: bool
     tool_calls: int
+    screening_passed: bool
+    screening_completed: bool
+    calendar_checked: bool
+    checked_date: Optional[str]
+    available_slots: List[str]
+    booking_confirmed: bool
 
 
 _THOUGHT_RE = re.compile(r"Thought:\s*(.*)")
@@ -107,6 +114,11 @@ _ACTION_RE = re.compile(r"Action:\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\[(.*?)\]", re.DO
 # V2: vá Action thiếu ngoặc đóng, VD: check_calendar_availability['05/08/2026
 _ACTION_UNCLOSED_RE = re.compile(r"Action:\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\[([^\]\n]*)$", re.MULTILINE)
 _FINAL_RE = re.compile(r"Final Answer:\s*(.*)", re.DOTALL)
+
+
+def _claims_booking_success(answer: str) -> bool:
+    lowered = answer.casefold()
+    return any(marker in lowered for marker in ("đã đặt lịch", "đặt lịch thành công", "đã hẹn lịch"))
 
 
 def _split_args(args_str: str) -> List[str]:
@@ -180,13 +192,14 @@ def guard_input(state: AgentState) -> dict:
         state["job_description_text"], state.get("preferred_date", ""),
     ])
     if contains_prompt_injection(combined):
+        guard_mode = injection_guard_status()
         return {
             "final_answer": INJECTION_REFUSAL_MESSAGE,
             "stopped": True,
             "stop_reason": "injection",
             "trace": state["trace"] + [{
                 "type": "blocked",
-                "text": "Guardrails AI phát hiện dấu hiệu prompt injection trong CV/JD/đầu vào — dừng ngay, không gọi LLM/tool.",
+                "text": f"{guard_mode} phát hiện dấu hiệu prompt injection trong CV/JD/đầu vào — dừng ngay, không gọi LLM/tool.",
             }],
         }
     return {}
@@ -203,12 +216,22 @@ def call_llm_node(provider):
             trace.append({"type": "thought", "text": parsed["thought"]})
 
         if parsed["final_answer"] is not None:
-            trace.append({"type": "final", "text": parsed["final_answer"]})
+            final_answer = parsed["final_answer"]
+            if _claims_booking_success(final_answer) and not state["booking_confirmed"]:
+                final_answer = (
+                    "Tôi chưa thể xác nhận lịch phỏng vấn vì hệ thống chưa nhận được "
+                    "Observation đặt lịch thành công."
+                )
+                trace.append({
+                    "type": "system",
+                    "text": "Final Answer xác nhận đặt lịch nhưng chưa có booking Observation — đã chặn claim.",
+                })
+            trace.append({"type": "final", "text": final_answer})
             return {
                 "trace": trace,
                 "history": state["history"] + parsed["raw_block"] + "\n",
                 "step": state["step"] + 1,
-                "final_answer": parsed["final_answer"],
+                "final_answer": final_answer,
                 "stopped": True, "stop_reason": "final",
                 "pending_action": None, "parse_failed": False,
             }
@@ -259,11 +282,22 @@ def execute_tool(state: AgentState) -> dict:
     args = action["args"]
     is_v2 = state["version"] == "v2"
 
+    expected_args = {"screen_resume": 0, "check_calendar_availability": 1, "schedule_interview": 3}
+    if tool_name in expected_args and len(args) != expected_args[tool_name]:
+        if is_v2:
+            return {
+                "last_observation": (
+                    f"LỖI: Sai số lượng/kiểu tham số khi gọi {tool_name}. "
+                    f"Cú pháp đúng: {_syntax_hint(tool_name)}."
+                ),
+                "action_counts": dict(state.get("action_counts") or {}),
+            }
+
     # --- Agent V2: Repeated Action detection (phanh sớm hơn MAX_ITERATIONS) ---
     action_key = f"{tool_name}[{'|'.join(args)}]"
     counts = dict(state.get("action_counts") or {})
     counts[action_key] = counts.get(action_key, 0) + 1
-    if is_v2 and counts[action_key] > MAX_REPEATED_ACTION:
+    if is_v2 and counts[action_key] >= MAX_REPEATED_ACTION:
         return {
             "action_counts": counts,
             "repeated_blocked": True,
@@ -272,6 +306,21 @@ def execute_tool(state: AgentState) -> dict:
                 "phát hiện kẹt vòng lặp, dừng an toàn."
             ),
         }
+
+    if tool_name == "check_calendar_availability" and not state["screening_completed"]:
+        return {"last_observation": "LỖI: Phải chạy screen_resume trước khi kiểm tra lịch.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
+    if tool_name == "check_calendar_availability" and not state["screening_passed"]:
+        return {"last_observation": "LỖI: Ứng viên chưa đạt yêu cầu, không được kiểm tra hoặc đặt lịch.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
+    if tool_name == "schedule_interview":
+        if not state["screening_completed"] or not state["screening_passed"]:
+            return {"last_observation": "LỖI: Ứng viên phải đạt screen_resume trước khi đặt lịch.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
+        if not state["calendar_checked"]:
+            return {"last_observation": "LỖI: Phải kiểm tra lịch trống trước khi đặt lịch.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
+        requested_date = normalize_date(args[1])
+        if requested_date != state["checked_date"]:
+            return {"last_observation": "LỖI: Ngày đặt lịch phải trùng với ngày vừa kiểm tra.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
+        if args[2].strip() not in state["available_slots"]:
+            return {"last_observation": "LỖI: Khung giờ chưa được xác nhận là còn trống.", "action_counts": counts, "stopped": True, "stop_reason": "workflow_blocked"}
 
     tool_fn = AVAILABLE_TOOLS.get(tool_name)
 
@@ -306,7 +355,19 @@ def execute_tool(state: AgentState) -> dict:
     except Exception as e:
         obs = f"LỖI: {tool_name} gặp sự cố không mong muốn: {e}"
 
-    return {"action_counts": counts, "last_observation": obs, "tool_calls": tool_calls}
+    updates = {"action_counts": counts, "last_observation": obs, "tool_calls": tool_calls}
+    if tool_name == "screen_resume":
+        updates["screening_completed"] = True
+        updates["screening_passed"] = "Kết luận: ĐẠT" in obs and "Kết luận: KHÔNG ĐẠT" not in obs
+    elif tool_name == "check_calendar_availability":
+        canonical_date = normalize_date(args[0])
+        slots = [slot for slot in INTERVIEW_SLOTS if slot in obs]
+        updates["calendar_checked"] = bool(canonical_date and slots and not obs.startswith("LỖI:"))
+        updates["checked_date"] = canonical_date if updates["calendar_checked"] else None
+        updates["available_slots"] = slots if updates["calendar_checked"] else []
+    elif tool_name == "schedule_interview" and obs.startswith("Đã đặt lịch"):
+        updates["booking_confirmed"] = True
+    return updates
 
 
 def append_observation(state: AgentState) -> dict:
@@ -338,7 +399,11 @@ def safe_fallback(state: AgentState) -> dict:
     if state.get("final_answer"):
         return {}
 
-    if state.get("repeated_blocked"):
+    if state.get("stop_reason") == "workflow_blocked":
+        reason = "workflow_blocked"
+        note = "Agent bị chặn vì vi phạm thứ tự hoặc điều kiện nghiệp vụ của workflow HR."
+        answer = "Xin lỗi, tôi không thể tiếp tục vì yêu cầu chưa đáp ứng điều kiện sàng lọc hoặc lịch phỏng vấn."
+    elif state.get("repeated_blocked"):
         reason = "repeated_action"
         note = (
             f"Agent lặp lại cùng một Action quá {MAX_REPEATED_ACTION} lần — "
@@ -380,7 +445,7 @@ def route_after_llm(state: AgentState) -> str:
 
 
 def route_budget(state: AgentState) -> str:
-    if state.get("repeated_blocked"):
+    if state.get("stopped") or state.get("repeated_blocked"):
         return "exhausted"
     return "continue" if state["step"] < state["max_iterations"] else "exhausted"
 
@@ -444,6 +509,12 @@ def make_initial_state(
         "action_counts": {},
         "repeated_blocked": False,
         "tool_calls": 0,
+        "screening_passed": False,
+        "screening_completed": False,
+        "calendar_checked": False,
+        "checked_date": None,
+        "available_slots": [],
+        "booking_confirmed": False,
     }
 
 
