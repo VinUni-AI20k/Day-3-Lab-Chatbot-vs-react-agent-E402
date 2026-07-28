@@ -1,0 +1,454 @@
+{
+  "version": "1.0.0",
+  "locale": "vi-VN",
+  "questionnaire_name": "Cupid Initial Compatibility Questionnaire",
+  "scoring_model": {
+    "hard_questions": "threshold_filter",
+    "soft_questions": "normalized_euclidean_distance",
+    "soft_scale_min": 1,
+    "soft_scale_max": 5
+  },
+  "questions": [
+    {
+      "id": "relationship_goal",
+      "order": 1,
+      "category": "relationship_intent",
+      "question_type": "hard_threshold",
+      "prompt": "Hiện tại bạn đang tìm kiếm loại mối quan hệ nào?",
+      "description": "Chọn mục tiêu phù hợp nhất với mong muốn hiện tại của bạn.",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "short_term",
+          "label": "Kết nối ngắn hạn"
+        },
+        {
+          "value": "exploring",
+          "label": "Tìm hiểu, chưa xác định rõ"
+        },
+        {
+          "value": "long_term",
+          "label": "Mối quan hệ độc quyền lâu dài"
+        },
+        {
+          "value": "marriage_oriented",
+          "label": "Mối quan hệ hướng tới kết hôn"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác đang tìm kiếm những loại mối quan hệ nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "commitment_model",
+      "order": 2,
+      "category": "relationship_intent",
+      "question_type": "hard_threshold",
+      "prompt": "Bạn mong muốn mô hình cam kết nào trong một mối quan hệ?",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "exclusive",
+          "label": "Mối quan hệ độc quyền"
+        },
+        {
+          "value": "open_relationship",
+          "label": "Mối quan hệ mở có thỏa thuận"
+        },
+        {
+          "value": "undecided",
+          "label": "Chưa xác định"
+        },
+        {
+          "value": "other",
+          "label": "Hình thức khác"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác mong muốn những mô hình cam kết nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": true
+    },
+    {
+      "id": "children_preference",
+      "order": 3,
+      "category": "family",
+      "question_type": "hard_threshold",
+      "prompt": "Quan điểm hiện tại của bạn về việc có con là gì?",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "do_not_want",
+          "label": "Không muốn có con"
+        },
+        {
+          "value": "unsure",
+          "label": "Chưa chắc chắn"
+        },
+        {
+          "value": "want_children",
+          "label": "Muốn có con"
+        },
+        {
+          "value": "have_children_no_more",
+          "label": "Đã có con và không muốn có thêm"
+        },
+        {
+          "value": "have_children_want_more",
+          "label": "Đã có con và muốn có thêm"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác có những quan điểm nào về việc có con?"
+      },
+      "allow_skip": false,
+      "is_sensitive": true
+    },
+    {
+      "id": "religion_importance",
+      "order": 4,
+      "category": "values",
+      "question_type": "hard_threshold",
+      "prompt": "Tôn giáo hoặc đời sống tinh thần giữ vai trò thế nào trong cuộc sống của bạn?",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "not_practicing",
+          "label": "Không thực hành hoặc không quan trọng"
+        },
+        {
+          "value": "cultural",
+          "label": "Chủ yếu mang tính văn hóa hoặc gia đình"
+        },
+        {
+          "value": "moderately_practicing",
+          "label": "Thực hành ở mức vừa phải"
+        },
+        {
+          "value": "central",
+          "label": "Là phần trung tâm trong cuộc sống"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác có mức độ thực hành tôn giáo hoặc đời sống tinh thần nào?"
+      },
+      "allow_skip": true,
+      "is_sensitive": true
+    },
+    {
+      "id": "smoking_frequency",
+      "order": 5,
+      "category": "lifestyle",
+      "question_type": "hard_threshold",
+      "prompt": "Tần suất sử dụng thuốc lá hoặc sản phẩm nicotine của bạn là bao nhiêu?",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "never",
+          "label": "Không bao giờ"
+        },
+        {
+          "value": "former",
+          "label": "Đã từng sử dụng nhưng đã bỏ"
+        },
+        {
+          "value": "occasionally",
+          "label": "Thỉnh thoảng"
+        },
+        {
+          "value": "daily",
+          "label": "Hằng ngày"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác có mức sử dụng thuốc lá hoặc nicotine nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": true
+    },
+    {
+      "id": "alcohol_nightlife_frequency",
+      "order": 6,
+      "category": "lifestyle",
+      "question_type": "hard_threshold",
+      "prompt": "Bạn uống rượu bia hoặc tham gia nightlife với tần suất nào?",
+      "answer_type": "single_choice",
+      "options": [
+        {
+          "value": "never",
+          "label": "Không sử dụng hoặc không tham gia"
+        },
+        {
+          "value": "few_times_year",
+          "label": "Một vài lần mỗi năm"
+        },
+        {
+          "value": "few_times_month",
+          "label": "Một vài lần mỗi tháng"
+        },
+        {
+          "value": "weekly",
+          "label": "Hằng tuần"
+        },
+        {
+          "value": "multiple_times_week",
+          "label": "Nhiều lần mỗi tuần"
+        }
+      ],
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "multiple_choice",
+        "prompt": "Bạn chấp nhận đối tác có tần suất uống rượu bia hoặc tham gia nightlife nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": true
+    },
+    {
+      "id": "individual_vs_family_values",
+      "order": 7,
+      "category": "values",
+      "question_type": "soft_scale",
+      "prompt": "Khi lựa chọn cá nhân xung đột với kỳ vọng gia đình hoặc xã hội, bạn thường ưu tiên phía nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Ưu tiên kỳ vọng gia đình và chuẩn mực chung",
+          "2": "Thường ưu tiên gia đình",
+          "3": "Cân bằng tùy tình huống",
+          "4": "Thường ưu tiên lựa chọn cá nhân",
+          "5": "Ưu tiên quyền tự quyết cá nhân"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác nằm ở vị trí nào trên thang đo này?"
+      },
+      "allow_skip": true,
+      "is_sensitive": false
+    },
+    {
+      "id": "financial_style",
+      "order": 8,
+      "category": "finance",
+      "question_type": "soft_scale",
+      "prompt": "Phong cách sử dụng tiền của bạn gần với phía nào hơn?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Ưu tiên trải nghiệm và chi tiêu hiện tại",
+          "2": "Thiên về chi tiêu hiện tại",
+          "3": "Cân bằng giữa chi tiêu và tiết kiệm",
+          "4": "Thiên về tiết kiệm và dự phòng",
+          "5": "Ưu tiên tiết kiệm và kế hoạch dài hạn"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có phong cách sử dụng tiền thế nào?"
+      },
+      "allow_skip": true,
+      "is_sensitive": true
+    },
+    {
+      "id": "career_priority",
+      "order": 9,
+      "category": "life_direction",
+      "question_type": "soft_scale",
+      "prompt": "Trong 3–5 năm tới, mức độ ưu tiên sự nghiệp của bạn như thế nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Ưu tiên thời gian cá nhân và sự linh hoạt",
+          "2": "Thiên về cuộc sống cá nhân",
+          "3": "Cân bằng công việc và cuộc sống",
+          "4": "Thiên về phát triển sự nghiệp",
+          "5": "Sẵn sàng dành phần lớn thời gian cho sự nghiệp"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác ưu tiên sự nghiệp ở mức nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "planning_style",
+      "order": 10,
+      "category": "lifestyle",
+      "question_type": "soft_scale",
+      "prompt": "Bạn thích cuộc sống hằng tuần được tổ chức như thế nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Rất tự phát và linh hoạt",
+          "2": "Thiên về linh hoạt",
+          "3": "Có kế hoạch nhưng vẫn linh hoạt",
+          "4": "Thiên về lịch trình rõ ràng",
+          "5": "Có kế hoạch cụ thể và ít thay đổi phút cuối"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có phong cách lên kế hoạch thế nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "conflict_processing",
+      "order": 11,
+      "category": "communication",
+      "question_type": "soft_scale",
+      "prompt": "Sau một bất đồng, bạn thường muốn trao đổi lại vào thời điểm nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Cần hơn một ngày để có không gian riêng",
+          "2": "Cần phần lớn thời gian trong ngày",
+          "3": "Muốn trao đổi lại sau vài giờ",
+          "4": "Muốn trao đổi tương đối sớm",
+          "5": "Muốn giải quyết ngay hoặc trong ngày"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác xử lý bất đồng với tốc độ thế nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "communication_frequency",
+      "order": 12,
+      "category": "communication",
+      "question_type": "soft_scale",
+      "prompt": "Trong một mối quan hệ, bạn mong muốn hai người liên lạc thường xuyên đến mức nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Một vài lần mỗi tuần",
+          "2": "Gần như mỗi ngày",
+          "3": "Ít nhất một lần mỗi ngày",
+          "4": "Nhiều lần trong ngày",
+          "5": "Thường xuyên cập nhật trong ngày"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có nhu cầu liên lạc ở mức nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "social_intensity",
+      "order": 13,
+      "category": "lifestyle",
+      "question_type": "soft_scale",
+      "prompt": "Cuối tuần lý tưởng của bạn gần với phía nào hơn?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Ở nhà, hoạt động một mình hoặc nhóm nhỏ",
+          "2": "Ưu tiên không gian yên tĩnh",
+          "3": "Kết hợp hoạt động riêng và xã hội",
+          "4": "Thường xuyên gặp gỡ bạn bè",
+          "5": "Thích sự kiện và hoạt động nhóm thường xuyên"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có mức độ giao tiếp xã hội thế nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "relationship_autonomy",
+      "order": 14,
+      "category": "boundaries",
+      "question_type": "soft_scale",
+      "prompt": "Bạn mong muốn mức độ độc lập trong một mối quan hệ như thế nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Chia sẻ phần lớn thời gian, hoạt động và quyết định",
+          "2": "Ưu tiên thực hiện nhiều hoạt động cùng nhau",
+          "3": "Cân bằng giữa hoạt động chung và riêng",
+          "4": "Duy trì nhiều hoạt động và mối quan hệ riêng",
+          "5": "Cần nhiều không gian và sự độc lập cá nhân"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có nhu cầu độc lập ở mức nào?"
+      },
+      "allow_skip": false,
+      "is_sensitive": false
+    },
+    {
+      "id": "family_involvement",
+      "order": 15,
+      "category": "family",
+      "question_type": "soft_scale",
+      "prompt": "Gia đình hai bên nên tham gia vào các quyết định lớn của một cặp đôi ở mức nào?",
+      "answer_type": "scale",
+      "scale": {
+        "min": 1,
+        "max": 5,
+        "labels": {
+          "1": "Các quyết định chủ yếu thuộc về hai người",
+          "2": "Gia đình chỉ góp ý khi được hỏi",
+          "3": "Tham khảo gia đình nhưng cặp đôi quyết định",
+          "4": "Gia đình có ảnh hưởng đáng kể",
+          "5": "Gia đình tham gia sâu vào các quyết định lớn"
+        }
+      },
+      "partner_preference": {
+        "enabled": true,
+        "answer_type": "scale",
+        "prompt": "Bạn mong muốn đối tác có quan điểm thế nào về sự tham gia của gia đình?"
+      },
+      "allow_skip": true,
+      "is_sensitive": false
+    }
+  ]
+}
