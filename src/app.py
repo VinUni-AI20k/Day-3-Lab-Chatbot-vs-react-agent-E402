@@ -101,10 +101,10 @@ def extract_order_id(user_query: str) -> str | None:
 
 def infer_item_id(user_query: str) -> str | None:
     text = user_query.lower()
-    if "hoodie" in text or "áo" in text or "ao" in text:
-        return "ITEM-AO-HOODIE"
-    if "tất" in text or "tat" in text:
+    if "tất" in text or "tat" in text or "sock" in text:
         return "ITEM-TAT-SET"
+    if "hoodie" in text or "áo" in text or re.search(r"\bao\b", text):
+        return "ITEM-AO-HOODIE"
     if "balo" in text:
         return "ITEM-BALO"
     if "giày" in text or "giay" in text:
@@ -112,6 +112,7 @@ def infer_item_id(user_query: str) -> str | None:
     if "unknown" in text:
         return "ITEM-UNKNOWN"
     return None
+
 
 
 def infer_reason(user_query: str) -> str:
