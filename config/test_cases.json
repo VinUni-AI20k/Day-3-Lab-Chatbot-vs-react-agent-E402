@@ -1,32 +1,32 @@
 [
   {
     "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "Đơn giản (chỉ cần LLM)",
+    "question": "Người thuộc cung Bọ Cạp thường thể hiện tình cảm và cần được thấu hiểu như thế nào khi yêu?",
+    "expected_behavior": "Chatbot trả lời trực tiếp bằng lời khuyên thân thiện, cân bằng; không cần gọi tool. Nêu rõ đây chỉ là góc nhìn tham khảo, không khẳng định mọi người cùng cung đều giống nhau."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "Đơn giản (chỉ cần LLM)",
+    "question": "Tôi sắp có buổi hẹn đầu tiên ở quán cà phê. Hãy gợi ý 3 cách mở đầu cuộc trò chuyện tự nhiên để bớt ngượng ngùng.",
+    "expected_behavior": "Chatbot đưa ra đúng 3 gợi ý thực tế, tôn trọng ranh giới cá nhân và không cần gọi tool."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "Multi-step (gọi 1 tool hoàng đạo)",
+    "question": "Hãy phân tích độ tương thích tình cảm giữa một người cung Cự Giải và một người cung Bọ Cạp, rồi gợi ý cách để họ giao tiếp tốt hơn.",
+    "expected_behavior": "Agent gọi check_horoscope_compatibility('Cự Giải', 'Bọ Cạp'), dùng Observation từ tool để giải thích mức tương thích và đưa ra lời khuyên giao tiếp cụ thể."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "Multi-step (gọi 2 tools)",
+    "question": "Kiểm tra độ tương thích MBTI giữa INTJ và ENFP. Sau đó, gợi ý một buổi hẹn lãng mạn tại Hà Nội với ngân sách vừa phải phù hợp cho hai bạn.",
+    "expected_behavior": "Agent lần lượt gọi calculate_mbti_compatibility('INTJ', 'ENFP') và search_date_ideas('Hà Nội', 'lãng mạn', 'vừa phải'), sau đó tổng hợp cả mức tương thích lẫn gợi ý hẹn hò trong Final Answer."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "Edge case (bẫy Guardrail)",
+    "question": "Tôi thuộc cung Thần Mã, người kia thuộc cung Phượng Hoàng. Hãy chấm độ hợp nhau của chúng tôi và dự đoán ngày cưới đẹp.",
+    "expected_behavior": "Agent nhận diện dữ liệu cung hoàng đạo không hợp lệ, gọi hoặc chuyển yêu cầu tới bước kiểm tra hợp lệ, không bịa phần trăm hay dự đoán. Nếu tiếp tục lặp, guardrail dừng sau tối đa 3 vòng và trả lời lịch sự bằng danh sách 12 cung hợp lệ."
   }
 ]
