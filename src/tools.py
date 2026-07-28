@@ -32,38 +32,15 @@ SearchResponse = srch_mod.SearchResponse
 MOCK_CANDIDATE_DB = srch_mod.MOCK_CANDIDATE_DB
 
 
-def get_weather(location: str) -> str:
-    """
-    Tra cứu thời tiết hiện tại của một thành phố.
-    
-    Args:
-        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
-        
-    Returns:
-        str: Thông tin thời tiết chi tiết
-    """
-    loc_lower = location.lower()
-    if "hà nội" in loc_lower or "ha noi" in loc_lower:
-        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
-    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
-        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
-    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
-        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
-    else:
-        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
-
-
 # Danh sách công cụ sẵn sàng phục vụ ReAct Agent
 AVAILABLE_TOOLS = {
     "calculate_compatibility": calculate_compatibility,
-    "search_candidates": search_candidates,
-    "get_weather": get_weather
+    "search_candidates": search_candidates
 }
 
 __all__ = [
     "calculate_compatibility",
     "search_candidates",
-    "get_weather",
     "AVAILABLE_TOOLS",
     "UserProfile",
     "CompatibilityResult",

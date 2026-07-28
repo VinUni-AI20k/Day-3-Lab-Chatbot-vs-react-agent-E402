@@ -36,7 +36,7 @@ def load_test_cases():
 
 def run_full_ai_levels_evaluation():
     print("=================================================================")
-    print("🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHẤM ĐIỂM & ĐÁNH GIÁ 4 CẤP ĐỘ AI")
+    print("🏫 BÀI LAB 3: ĐÁNH GIÁ 4 CẤP ĐỘ AI SYSTEM & ĐIỂM GÃY (GAP ANALYSIS)")
     print("=================================================================")
     
     provider = get_llm_provider()
@@ -52,40 +52,36 @@ def run_full_ai_levels_evaluation():
         category = test["category"]
         question = test["question"]
         expected = test["expected_behavior"]
+        gap = test.get("gap_analysis", "")
 
         print(f"\n=================================================================")
         print(f"📌 TEST CASE #{test_id} [{category}]")
-        print(f"❓ Câu hỏi: {question}")
-        print(f"🎯 Kỳ vọng : {expected}")
+        print(f"❓ Câu hỏi  : {question}")
+        print(f"🎯 Kỳ vọng  : {expected}")
+        print(f"💡 Gap Note : {gap}")
         print("=================================================================")
 
-        # -------------------------------------------------------------
         # CẤP 1: RULE-BASED BOT
-        # -------------------------------------------------------------
         print("\n--- 🤖 CẤP 1: RULE-BASED BOT ---")
         ans_l1 = rule_based_bot(question)
         print(ans_l1)
 
-        # -------------------------------------------------------------
-        # CẤP 2: LLM CHATBOT BASELINE (Gemini)
-        # -------------------------------------------------------------
-        print("\n--- 🤖 CẤP 2: LLM CHATBOT (Google Gemini) ---")
+        # CẤP 2: LLM CHATBOT BASELINE
+        print("\n--- 🤖 CẤP 2: LLM CHATBOT (Gemini 3.5 Flash Lite) ---")
         ans_l2 = llm_chatbot(question, provider)
         print(ans_l2)
 
-        # -------------------------------------------------------------
-        # CẤP 3: REACTIVE AGENT (ReAct Loop + Tools + Guardrails)
-        # -------------------------------------------------------------
-        print("\n--- 🧠 CẤP 3: REACTIVE AGENT (Matchmaking ReAct Loop) ---")
+        # CẤP 3: REACTIVE AGENT
+        print("\n--- 🧠 CẤP 3: REACTIVE AGENT (ReAct Loop + Tools + Guardrails) ---")
         agent_l3.reset_state()
         ans_l3 = reactive_agent_process(question, agent_l3)
         print(ans_l3)
 
-    print("\n=================================================================")
-    print("🚀 BONUS DEMO: CẤP ĐỘ 4 - AUTONOMOUS AGENT (Planning + Memory)")
-    print("=================================================================")
-    agent_l4 = AutonomousMatchmakerAgent("Tìm bạn gái tương thích tại Hà Nội và lên lịch hẹn hò", provider)
-    agent_l4.execute()
+        # CẤP 4: AUTONOMOUS AGENT
+        print("\n--- 🚀 CẤP 4: AUTONOMOUS AGENT (Planning + Memory + Multi-Tool) ---")
+        agent_l4 = AutonomousMatchmakerAgent(question, provider)
+        ans_l4 = agent_l4.execute()
+        print(ans_l4)
 
     print("\n=================================================================")
     print("🎉 HOÀN THÀNH TOÀN BỘ BÀI TEST KIỂM THỬ 4 CẤP ĐỘ HỆ THỐNG AI!")

@@ -76,7 +76,7 @@ async def api_chat(req: ChatRequest):
         elif level == "level4" or "cấp 4" in level or "autonomous" in level:
             auto_agent = AutonomousMatchmakerAgent(goal=message, provider=provider)
             auto_agent.execute()
-            memory_logs = [f"• **Step {m['step']}** [{m['task']}]: {m['result']}" for m in auto_agent.memory]
+            memory_logs = [f"• **Step {m['step']}** [{m.get('task', '')}]: {m.get('observation', m.get('result', ''))}" for m in auto_agent.memory]
             final_ans = getattr(auto_agent, 'final_answer', '') or "✨ **Đề xuất hoàn tất!**"
             response_text = (
                 f"🚀 **[CẤP 4 - AUTONOMOUS AGENT GOAL COMPLETION]**\n\n"

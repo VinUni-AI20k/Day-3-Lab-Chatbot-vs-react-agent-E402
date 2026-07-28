@@ -48,7 +48,7 @@ def chat_fn(message: str, history, agent_state, level_choice: str):
     elif "Cấp 4" in level_choice:
         auto_agent = AutonomousMatchmakerAgent(goal=user_text, provider=provider)
         auto_agent.execute()
-        memory_str = "\n".join([f"• Step {m['step']} [{m['task']}]: {m['result']}" for m in auto_agent.memory])
+        memory_str = "\n".join([f"• Step {m['step']} [{m.get('task', '')}]: {m.get('observation', m.get('result', ''))}" for m in auto_agent.memory])
         final_ans = getattr(auto_agent, 'final_answer', '') or "✨ **Đề xuất hoàn tất!**"
         bot_response = f"🚀 **[CẤP 4 - AUTONOMOUS AGENT GOAL COMPLETION]**\n\n🎯 **Mục tiêu**: {user_text}\n\n📋 **Nhật ký Bộ nhớ Execution Memory**:\n{memory_str}\n\n---\n\n{final_ans}"
     elif "Cấp 2" in level_choice:
