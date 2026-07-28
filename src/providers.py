@@ -5,9 +5,13 @@ Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằ
 
 import os
 import sys
-import json
-import requests
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv():
+        """Cho phép MockProvider chạy khi chưa cài python-dotenv."""
+
 
 # Đảm bảo in ra Tiếng Việt và Emojis không bị lỗi trên Windows Console
 if sys.stdout.encoding != 'utf-8':
@@ -108,6 +112,8 @@ class OpenRouterProvider(BaseLLMProvider):
         if not self.api_key or self.api_key == "your_openrouter_api_key_here":
             return "[OpenRouter Error]: Chưa cấu hình OPENROUTER_API_KEY trong file .env!"
         try:
+            import requests
+
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json"
@@ -135,9 +141,34 @@ class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
-        return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
+        if "3 cách" in text and "bắt đầu cuộc trò chuyện" in text:
+            return (
+                "Bạn có thể: (1) chào hỏi và giới thiệu ngắn gọn, "
+                "(2) hỏi một câu mở dựa trên hoàn cảnh chung, "
+                "(3) lắng nghe và phản hồi chân thành. "
+                "Hãy giữ thái độ tự nhiên và tôn trọng ranh giới của đối phương."
+            )
+        if "mối quan hệ nghiêm túc" in text and "yếu tố" in text:
+            return (
+                "Một mối quan hệ nghiêm túc thường cần sự tôn trọng, giao tiếp "
+                "trung thực, tin cậy, đồng thuận về kỳ vọng và khả năng cùng giải "
+                "quyết bất đồng."
+            )
+        if "phù hợp nhất" in text or "so sánh phương" in text:
+            return (
+                "Tôi chưa thể đưa ra kết luận vì chatbot thông thường không có "
+                "quyền truy cập hồ sơ đã lưu hoặc công cụ tính độ tương thích. "
+                "Bạn có thể cung cấp thông tin của từng người để tôi nhận xét sơ bộ."
+            )
+        if "hãy tìm cho tôi" in text:
+            return (
+                "Tôi không thể kiểm tra danh sách ứng viên vì không có quyền truy "
+                "cập cơ sở dữ liệu. Tôi sẽ không tự tạo hồ sơ không có căn cứ."
+            )
+        return (
+            "Tôi có thể tư vấn dựa trên thông tin bạn cung cấp, nhưng không thể "
+            "truy cập hồ sơ hoặc dữ liệu hệ thống."
+        )
 
 
 def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:

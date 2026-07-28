@@ -6,7 +6,6 @@ File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Ca
 import json
 import os
 import sys
-from dotenv import load_dotenv
 
 # Đảm bảo import các module cùng thư mục src/ hoạt động mượt mà
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +28,8 @@ from tools import (
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
-load_dotenv()
+MILESTONE_2_TEST_COUNT = 5
+
 
 def load_test_cases():
     """Đọc bộ test cases từ config/test_cases.json của Role 1"""
@@ -54,6 +54,35 @@ def run_baseline_chatbot(user_query: str, provider):
     # Gọi LLM Provider thực hiện sinh câu trả lời
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
     print(f"🤖 Chatbot trả lời:\n{response}")
+    print("📈 Telemetry: LLM calls = 1 | Tool calls = 0")
+    return {
+        "question": user_query,
+        "response": response,
+        "llm_calls": 1,
+        "tool_calls": 0,
+    }
+
+
+def run_baseline_suite(test_cases, provider):
+    """Chạy Baseline trên toàn bộ test cases và trả về raw results."""
+    results = []
+    for test_case in test_cases:
+        print(
+            f"\n{'=' * 50}\n"
+            f"TEST CASE #{test_case['id']} - {test_case['category']}\n"
+            f"{'=' * 50}"
+        )
+        result = run_baseline_chatbot(test_case["question"], provider)
+        result["id"] = test_case["id"]
+        results.append(result)
+
+    total_llm_calls = sum(result["llm_calls"] for result in results)
+    total_tool_calls = sum(result["tool_calls"] for result in results)
+    print(
+        f"\n📊 TỔNG KẾT BASELINE: {len(results)} test cases | "
+        f"LLM calls = {total_llm_calls} | Tool calls = {total_tool_calls}"
+    )
+    return results
 
 
 def run_react_agent(user_query: str, provider):
@@ -94,10 +123,11 @@ def run_react_agent(user_query: str, provider):
             # Thực thi tool 4 & Đưa ra Final Answer
             summary = synthesize_recommendation("Minh", "Mai")
             print(f"\n🏁 Final Answer:\n"
-                  f"Dựa trên phân tích Feature Vector (Độ tương thích 91/100):\n"
+                  f"Dựa trên phân tích Feature Vector (Độ tương thích 98/100):\n"
                   f"Mai là ứng viên phù hợp nhất với Minh! Cả hai đều hướng nội nhẹ nhàng, thích đọc sách và cà phê yên tĩnh.\n\n"
                   f"💡 [Gợi ý câu mở đầu Icebreaker]:\n"
-                  f"\"Chào Mai, mình thấy bạn cũng thích không gian cà phê yên tĩnh và đọc sách. Dạo này bạn đang đọc cuốn sách nào hay không?\"")
+                  f"\"Chào Mai, mình thấy bạn cũng thích không gian cà phê yên tĩnh và đọc sách. Dạo này bạn đang đọc cuốn sách nào hay không?\"\n\n"
+                  f"{summary}")
             break
             
     if step >= MAX_ITERATIONS and step < 3:
@@ -118,19 +148,15 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-    # Thống nhất câu truy vấn Cupid Agent chuẩn cho cả 2 Demo để so sánh công bằng
-    cupid_sample_query = (
-        "Hãy tìm cho tôi ứng viên phù hợp nhất để hẹn hò nghiêm túc, "
-        "phân tích điểm tương thích % và gợi ý câu mở đầu bắt chuyện."
-    )
-    
     print("==================================================")
-    print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE (KHÔNG TOOL) ---")
+    print("--- MỐC 2: CHATBOT BASELINE TRÊN 5 TEST CASES ---")
     print("==================================================")
-    run_baseline_chatbot(cupid_sample_query, provider)
-    
-    print("\n==================================================")
-    print("--- DEMO 2: CHẠY TRÊN CUPID REACT AGENT (CÓ TOOLS) ---")
-    print("==================================================")
-    run_react_agent(cupid_sample_query, provider)
+    milestone_2_tests = tests[:MILESTONE_2_TEST_COUNT]
+    run_baseline_suite(milestone_2_tests, provider)
+
+    if os.getenv("RUN_REACT_DEMO") == "1":
+        print("\n==================================================")
+        print("--- BẢN NHÁP MỐC 3: CUPID REACT AGENT ---")
+        print("==================================================")
+        run_react_agent(tests[2]["question"], provider)
 

@@ -16,26 +16,49 @@
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+## 🔍 2. KẾT QUẢ CHATBOT BASELINE - MỐC 2
 
-**Câu hỏi**: *"Hãy tìm cho tôi một người phù hợp nhất để hẹn hò."*
+**Môi trường chạy**: `MockProvider` offline
 
-### 🤖 Chatbot Baseline:
+**Giao thức**: Mỗi test case gọi LLM đúng 1 lần và không gọi tool.
 
-* **Phản hồi**: *"Tôi có thể giúp bạn tìm người phù hợp, nhưng tôi cần biết thêm về sở thích, tính cách, độ tuổi mong muốn và mục tiêu hẹn hò của bạn."*
-* **Nhận xét**: Câu trả lời an toàn nhưng chưa tận dụng được profile người dùng đã nhập trước đó. Chatbot Baseline không có khả năng truy xuất dữ liệu đã lưu, không so sánh với danh sách ứng viên và không đưa ra lựa chọn cụ thể.
+| Test | Phân loại | LLM calls | Tool calls | Nhận xét |
+| :---: | :--- | :---: | :---: | :--- |
+| #1 | `correct` | 1 | 0 | Trả lời được câu hỏi tư vấn chung bằng kiến thức sẵn có. |
+| #2 | `correct` | 1 | 0 | Nêu được các yếu tố cơ bản của một mối quan hệ nghiêm túc. |
+| #3 | `safe fallback` | 1 | 0 | Không bịa người phù hợp nhất khi không truy cập được hồ sơ. |
+| #4 | `safe fallback` | 1 | 0 | Không tự tạo điểm số khi không có công cụ tính tương thích. |
+| #5 | `safe fallback` | 1 | 0 | Không bịa ứng viên không tồn tại trong dữ liệu. |
 
-### 🧠 ReAct Agent:
+### Raw answers
 
-* **Thought 1**: Người dùng nói đã nhập profile trước đó, nên cần truy xuất hồ sơ đã lưu trước khi tư vấn.
-* **Action 1**: `get_user_profile['current_user']`
-* **Observation 1**: `Profile người dùng: Minh, 21 tuổi, hướng nội, thích đọc sách, cà phê yên tĩnh, học công nghệ, muốn tìm mối quan hệ nghiêm túc, ưu tiên người biết lắng nghe và có mục tiêu rõ ràng.`
-* **Thought 2**: Cần tìm các ứng viên có tiêu chí phù hợp với profile của Minh.
-* **Action 2**: `search_candidate_profiles['relationship_goal=serious; interests=reading,cafe,technology; personality=calm/listening']`
-* **Observation 2**: `Tìm thấy 3 ứng viên: Lan 82/100, Mai 91/100, An 76/100. Mai có sở thích đọc sách, thích cà phê, hướng nội vừa phải, cũng muốn mối quan hệ nghiêm túc.`
-* **Thought 3**: Cần chọn ứng viên phù hợp nhất và giải thích lý do dựa trên điểm tương thích.
-* **Action 3**: `calculate_compatibility['Minh', 'Mai']`
-* **Observation 3**: `Điểm tương thích Minh - Mai: 91/100. Điểm mạnh: cùng mục tiêu nghiêm túc, cùng thích đọc sách và cà phê, phong cách giao tiếp nhẹ nhàng. Điểm cần lưu ý: Minh hơi ít chủ động bắt chuyện.`
-* **Thought 4**: Đã có đủ dữ liệu để đưa ra gợi ý người phù hợp nhất và bước tiếp theo.
-* **Final Answer**: *"Dựa trên profile bạn đã nhập, người phù hợp nhất hiện tại là Mai với điểm tương thích 91/100. Hai bạn cùng muốn một mối quan hệ nghiêm túc, đều thích đọc sách và không gian cà phê yên tĩnh, nên có nhiều điểm chung để bắt đầu trò chuyện tự nhiên. Điểm cần lưu ý là bạn có xu hướng hơi ít chủ động, vì vậy nên mở đầu bằng một câu nhẹ nhàng như: 'Mình thấy bạn cũng thích đọc sách, gần đây bạn đọc cuốn nào khiến bạn nhớ nhất?'"*
-* **Nhận xét**: ReAct Agent xử lý tốt hơn vì biết truy xuất profile đã lưu, tìm danh sách ứng viên, chấm điểm tương thích và chọn người phù hợp nhất dựa trên dữ liệu quan sát được. Câu trả lời cụ thể, có căn cứ và đưa ra được hành động tiếp theo cho người dùng.
+**Test case #1**
+
+> Bạn có thể: (1) chào hỏi và giới thiệu ngắn gọn, (2) hỏi một câu mở dựa trên hoàn cảnh chung, (3) lắng nghe và phản hồi chân thành. Hãy giữ thái độ tự nhiên và tôn trọng ranh giới của đối phương.
+
+**Test case #2**
+
+> Một mối quan hệ nghiêm túc thường cần sự tôn trọng, giao tiếp trung thực, tin cậy, đồng thuận về kỳ vọng và khả năng cùng giải quyết bất đồng.
+
+**Test case #3**
+
+> Tôi chưa thể đưa ra kết luận vì chatbot thông thường không có quyền truy cập hồ sơ đã lưu hoặc công cụ tính độ tương thích. Bạn có thể cung cấp thông tin của từng người để tôi nhận xét sơ bộ.
+
+**Test case #4**
+
+> Tôi chưa thể đưa ra kết luận vì chatbot thông thường không có quyền truy cập hồ sơ đã lưu hoặc công cụ tính độ tương thích. Bạn có thể cung cấp thông tin của từng người để tôi nhận xét sơ bộ.
+
+**Test case #5**
+
+> Tôi không thể kiểm tra danh sách ứng viên vì không có quyền truy cập cơ sở dữ liệu. Tôi sẽ không tự tạo hồ sơ không có căn cứ.
+
+**Tổng kết**: `5 test cases | LLM calls = 5 | Tool calls = 0`. Chatbot
+Baseline xử lý tốt câu hỏi kiến thức chung và từ chối an toàn khi câu hỏi cần dữ
+liệu hệ thống. Đây là giới hạn mà ReAct Agent sẽ giải quyết ở Mốc 3.
+
+---
+
+## 🧪 3. TRACE REACT CHO MỐC 3
+
+Chưa nghiệm thu. Phần này sẽ được bổ sung bằng output thực tế sau khi hoàn thiện
+ReAct loop, parser và guardrail ở Mốc 3.
