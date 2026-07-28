@@ -15,7 +15,7 @@
 
 ---
 
-## 🔍 2. KẾT QUẢ VÀ ĐÁNH GIÁ PHẢN HỒI CHATBOT BASELINE (MỐC 2)
+## 🔍 2. KẾT QUẢ VÀ ĐÁNH GIÁ PHẢN HỒI CHATBOT BASELINE
 
 ### 📌 Kịch bản kiểm thử & Phản hồi thực tế từ Chatbot Gốc:
 
