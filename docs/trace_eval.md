@@ -6,13 +6,13 @@
 
 ## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
 
-| Tiêu chí                       |  Điểm (1-5)  | Lý do đánh giá                                                                                                                                                                                |
-| :------------------------------- | :-------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 🧠**Multi-step Reasoning** |     `4/5`     | Cần suy luận từ thông tin người dùng (nguyện vọng, kinh nghiệm) -> xác định lỗ hổng kiến thức -> thiết kế lộ trình gồm nhiều khóa học nối tiếp nhau.                  |
-| 🛠️**Tool Interaction**   |     `5/5`     | Cần công cụ để tìm kiếm danh sách khóa học thực tế từ database/API, kiểm tra học phí, kiểm tra lịch khai giảng hoặc suất học bổng còn trống.                            |
-| 🔀**Dynamic Decision**     |     `4/5`     | Dựa trên kết quả tìm kiếm khóa học A (ví dụ: đã hết chỗ hoặc học phí quá cao), Agent phải linh hoạt chuyển hướng tìm kiếm khóa học B hoặc đề xuất mã giảm giá. |
-| ⏳**Long Horizon**         |     `4/5`     | Chuỗi hội thoại tư vấn có thể kéo dài qua nhiều lượt hỏi đáp để thu thập đủ thông tin đầu vào trước khi ra lộ trình học tối ưu.                                   |
-| **TỔNG ĐIỂM FIT**       | **17/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!**                                                                                                                                     |
+| Tiêu chí | Điểm (1-5) | Lý do đánh giá |
+| :--- | :---: | :--- |
+| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ 4 thông tin đầu vào (Mục tiêu, Trình độ, Thời gian, Ngân sách) để đề xuất khóa học, phân tích lý do, thiết lập lộ trình học phù hợp và đưa ra cảnh báo. |
+| 🛠️ **Tool Interaction** | `4/5` | Cần gọi công cụ tra cứu thông tin khóa học (Python nền tảng/nâng cao, chi phí, thời lượng học, điều kiện tiên quyết) trong cơ sở dữ liệu khóa học. |
+| 🔀 **Dynamic Decision** | `4/5` | Lựa chọn khóa học và lộ trình thay đổi linh hoạt dựa trên trình độ hiện tại của người dùng kết hợp với quỹ thời gian rảnh và ngân sách thực tế. |
+| ⏳ **Long Horizon** | `3/5` | Quy trình tư vấn diễn ra ngắn gọn, giải quyết ngay sau khi nhận đủ 4 thông tin đầu vào chính mà không cần duy trì phiên làm việc quá dài ngày. |
+| **TỔNG ĐIỂM FIT** | **15/20** | **KẾT LUẬN: BÀI TOÁN RẤT PHÙ HỢP ĐỂ SỬ DỤNG REACT AGENT!** |
 
 ---
 
