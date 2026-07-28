@@ -1,73 +1,233 @@
-# 🏫 BÀI LAB 3: CHATBOT VS REACT AGENT - TỪ Ý TƯỞNG ĐẾN THỰC THI
+# 🤖 AI Recruitment Agent
+
+**Agent sàng lọc CV và điều phối phỏng vấn** — Hệ thống AI Agent tự động hóa quy trình tuyển dụng từ nhận CV đến lên lịch phỏng vấn.
 
 ---
 
-### 💡 1. LỜI NÓI ĐẦU & NỀN TẢNG LÝ THUYẾT (4 CẤP ĐỘ AI HỘI THOẠI)
+## 🏗️ Kiến trúc hệ thống
 
-Bài Lab giúp bạn hiểu rõ sự tiến hóa qua 4 cấp độ của hệ thống AI:
+```
+┌──────────────────────────────────────────────────────────┐
+│                    FastAPI REST API                       │
+│  POST /api/v1/screen  │  GET /api/v1/runs/{id}           │
+│  GET  /api/v1/candidates/{id}  │  GET /api/v1/jobs/{id}  │
+└───────────────┬──────────────────────────────────────────┘
+                │
+┌───────────────▼──────────────────────────────────────────┐
+│              RecruitmentWorkflow                          │
+│         (State Machine — LangGraph-style)                │
+│                                                          │
+│  validate → parse_cv → get_jd → normalize                │
+│       → score_match ──┬── [PASS] → check_calendar        │
+│                       │       → select_slot               │
+│                       │       → book_interview            │
+│                       │       → generate_confirmation     │
+│                       └── [REJECT] → rejection_email      │
+└───────────────┬──────────────────────────────────────────┘
+                │
+┌───────────────▼──────────────────────────────────────────┐
+│  Tool Layer (tools.py)     │  LLM Adapter (providers.py) │
+│  parse_cv, get_jd,        │  Gemini / OpenAI /           │
+│  score_candidate,         │  Anthropic / OpenRouter /    │
+│  check_calendar,          │  Mock (offline)              │
+│  book_interview_slot      │                              │
+└──────────────────────────────────────────────────────────┘
+```
 
-| Cấp độ | Loại hệ thống | Đặc điểm chính | Sự xuất hiện trong Bài Lab |
-| :---: | :--- | :--- | :--- |
-| **Cấp 1** | **Rule-Based Bot** | Khớp từ khóa if/else cố định, không có LLM | *Minh họa lịch sử* |
-| **Cấp 2** | **LLM Chatbot** | Dùng LLM sinh text mượt, nhưng không gọi được Tool | **Chatbot Baseline** (Phần thực hành 1) |
-| **Cấp 3** | **Reactive Agent** | Suy luận `Thought -> Action -> Observation` & gọi Tool | **ReAct Agent Loop** (Trọng tâm Bài Lab) |
-| **Cấp 4** | **Autonomous Agent** | Tự rã mục tiêu (Planning), tự đánh giá & có Memory | 🎁 **Phần Bonus Nâng cao (+10%)** |
+### Quy trình nghiệp vụ
 
-* 🤖 **Chatbot thông thường (Cấp 2)**: Giống như một **chuyên gia lý thuyết** — chỉ trả lời dựa trên kiến thức tĩnh có sẵn trong LLM, không thể tra cứu số liệu thực tế hay tự thực hiện thao tác.
-* 🧠 **ReAct Agent (Cấp 3)**: Giống như một **trợ lý thực hành** — vừa biết suy nghĩ (**Thought**), vừa biết chủ động dùng công cụ (**Action**) như phần mềm tra cứu/tính toán, và quan sát kết quả (**Observation**) để giải quyết các bài toán thực tế.
+```
+Nhận CV + Job ID
+→ Phân tích CV (parse_cv)
+→ Lấy JD (get_jd)
+→ Chuẩn hóa dữ liệu
+→ Đối sánh & chấm điểm (score_candidate)
+→ PASS hoặc REJECT
 
----
+PASS:
+→ Kiểm tra lịch (check_calendar)
+→ Chọn slot sớm nhất
+→ Đặt lịch (book_interview_slot)
+→ Tạo email xác nhận phỏng vấn
 
-### 📂 2. CẤU TRÚC THƯ MỤC DỰ ÁN
-
-```text
-📁 Day-3-Lab-Chatbot-vs-react-agent-E402/
-├── 📄 README.md                 <-- 📘 Tổng quan bài Lab & Thang điểm
-├── 📄 .env.example              <-- 🔑 File mẫu API Key
-├── 📄 requirements.txt          <-- 📦 Thư viện cần cài đặt
-│
-├── 📁 config/                   <-- 🛠️ CẤU HÌNH & DỮ LIỆU
-│   └── 📄 test_cases.json       <-- 🟢 [Role 1] Bộ đề 5 Test Cases thử thách AI
-│
-├── 📁 src/                      <-- 💻 MÃ NGUỒN PYTHON (BOILERPLATE)
-│   ├── 📄 tools.py              <-- 🛠️ [Role 2] Khai báo các công cụ (Tools)
-│   ├── 📄 prompts.py            <-- 🧠 [Role 3] ReAct System Prompt & Guardrails
-│   └── 📄 app.py                <-- 🚀 [Role 4] Core App ghép nối & chạy ReAct Loop
-│
-└── 📁 docs/                     <-- 📚 TÀI LIỆU HƯỚNG DẪN & BÁO CÁO
-    ├── 📄 CODELAB.md            <-- 🎓 [LMS Format] Hướng dẫn thực hành từng bước Codelab
-    ├── 📄 PHAN_CONG_CONG_VIEC.md <-- 📋 [BẮT ĐẦU TẠI ĐÂY] Sổ tay thực hành & Checklist 5 Roles
-    ├── 📄 DANH_SACH_DE_TAI.md    <-- 💡 Danh sách 10 chủ đề gợi ý
-    └── 📄 trace_eval.md          <-- 📊 [Role 5] Báo cáo Log Trace & Đánh giá Agentic Fit
+REJECT:
+→ Tạo email từ chối lịch sự
 ```
 
 ---
 
-### ⏱️ 3. LỘ TRÌNH THỰC HÀNH (4 MỐC / 150 PHÚT)
+## 📂 Cấu trúc dự án
 
-```mermaid
-timeline
-    title ⏱️ KỊCH BẢN THỰC HÀNH LAB 3 (Tổng thời lượng: 150 phút)
-    Mốc 1 (20 phút) : Định hình & Đánh giá Agentic Fit : Chọn bài toán & Lập bảng chấm điểm Scoring Matrix
-    Mốc 2 (30 phút) : Baseline Chatbot & Khai báo Tool : Dựng Chatbot gốc & Viết Tool Specs + 5 Test Cases
-    Mốc 3 (60 phút) : ReAct Loop & Safeguards : Viết Prompt, lắp Agent, cài Phanh Guardrails & Chạy Test
-    Mốc 4 (40 phút) : Tương tác liên nhóm & Hybrid Pattern : Cross-Audit (Tấn công/Phòng thủ) & Vẽ Flowchart
+```
+📁 AI-Recruitment-Agent/
+├── 📄 README.md
+├── 📄 .env.example               ← Cấu hình API keys & server
+├── 📄 requirements.txt           ← Dependencies
+├── 📄 Dockerfile                 ← Container image
+├── 📄 docker-compose.yml         ← Docker orchestration
+│
+├── 📁 config/
+│   └── 📄 test_cases.json        ← 5 test cases thử thách Agent
+│
+├── 📁 src/
+│   ├── 📄 api.py                 ← FastAPI REST API
+│   ├── 📄 app.py                 ← ReAct Agent CLI (Interactive + Batch)
+│   ├── 📄 tools.py               ← 5 tool functions (mock data)
+│   ├── 📄 prompts.py             ← ReAct System Prompt + Guardrails
+│   ├── 📄 providers.py           ← Multi-provider LLM adapter
+│   └── 📁 recruitment/
+│       ├── 📄 models.py          ← Pydantic models (AgentState, etc.)
+│       ├── 📄 workflow.py        ← State machine workflow engine
+│       └── 📄 tracing.py         ← Structured logging & observability
+│
+├── 📁 tests/
+│   ├── 📄 conftest.py            ← Shared fixtures
+│   ├── 📄 test_tools.py          ← Tool unit tests
+│   ├── 📄 test_models.py         ← Pydantic model tests
+│   ├── 📄 test_workflow.py       ← Workflow state machine tests
+│   └── 📄 test_api.py            ← FastAPI integration tests
+│
+└── 📁 docs/
+    ├── 📄 CODELAB.md
+    ├── 📄 trace_eval.md           ← Observability trace logs
+    └── 📄 PHAN_CONG_CONG_VIEC.md
 ```
 
 ---
 
-### 💯 4. CƠ CHẾ CHẤM ĐIỂM  (SCORING RUBRIC)
+## 🚀 Cài đặt & Chạy
 
-| Tiêu chí                                |  Trọng số  | Mô tả chi tiết                                                                                                             | Bằng chứng kiểm tra (Artifacts)                                        |
-| :---------------------------------------- | :-----------: | :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------ |
-| **1. Agentic Fit & Test Design**    | **20%** | Phân tích đúng 4 tiêu chí Agentic Fit cho chủ đề tự chọn. Bộ test cases đủ góc cạnh (đơn giản, multi-step, edge cases). | Bảng chấm điểm (`docs/trace_eval.md`) + `config/test_cases.json`. |
-| **2. ReAct Implementation & Tools** | **30%** | Tool description rõ ràng. Vòng lặp ReAct chạy đúng chuẩn `Thought -> Action -> Observation`.                         | Code trong `src/tools.py` + `src/app.py`.                              |
-| **3. Guardrails & Observability**   | **20%** | Bắt được lỗi loop, có max iterations (Guardrail). Trích xuất được ít nhất 1 Trace log hoàn chỉnh.                     | File `src/prompts.py` + Log trong `docs/trace_eval.md`.                |
-| **4. Inter-group Attack & Defense** | **20%** | Phản biện tốt khi gọi ngẫu nhiên hoặc cử 1 bạn đi chấm chéo (+10đ). Agent chống đỡ tốt / fallback chuẩn (+10đ).        | Biên bản Cross-Audit / Trả lời phản biện.                             |
-| **5. Hybrid Decision Flowchart**    | **10%** | Sơ đồ thể hiện rõ khi nào đi Chatbot path, khi nào đi ReAct Agent path.                                             | Sơ đồ Flowchart (`docs/hybrid_flowchart.mermaid`).                   |
-| 🎁 **BONUS: Autonomous Agent**     | **+10%**| Thử nghiệm tính năng Planning (tự chia nhỏ mục tiêu) hoặc Memory cho Agent (Cấp 4).                                  | Demo code trong `src/app.py` hoặc giải trình trong report.           |
+### 1. Cài đặt dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Cấu hình môi trường
+
+```bash
+cp .env.example .env
+# Sửa file .env: điền API key và chọn LLM_PROVIDER
+```
+
+### 3. Chạy API Server
+
+```bash
+uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
+```
+
+API docs tự động: http://localhost:8000/docs
+
+### 4. Chạy ReAct Agent (CLI)
+
+```bash
+# Interactive mode
+python -m src.app
+
+# Batch test (chạy tất cả test cases)
+python -m src.app --test
+
+# Workflow demo (deterministic, không cần LLM)
+python -m src.app --workflow
+```
+
+### 5. Chạy với Docker
+
+```bash
+docker compose up --build
+# API available at http://localhost:8000
+```
 
 ---
 
-> 🚀 **BẮT ĐẦU LÀM BÀI**:
-> Vui lòng mở sổ tay thực hành 👉 **[PHAN_CONG_CONG_VIEC.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/PHAN_CONG_CONG_VIEC.md)** để xem phân vai và checklist công việc cụ thể cho từng thành viên!
+## 📡 API Endpoints
+
+| Method | Endpoint | Mô tả |
+|:--|:--|:--|
+| `GET` | `/health` | Health check |
+| `POST` | `/api/v1/screen` | Sàng lọc ứng viên (full pipeline) |
+| `GET` | `/api/v1/runs/{run_id}` | Lấy kết quả run |
+| `GET` | `/api/v1/candidates/{id}` | Tra cứu CV ứng viên |
+| `GET` | `/api/v1/jobs/{id}` | Tra cứu JD vị trí |
+
+### Ví dụ gọi API
+
+```bash
+# Sàng lọc ứng viên
+curl -X POST http://localhost:8000/api/v1/screen \
+  -H "Content-Type: application/json" \
+  -d '{
+    "candidate_id": "candidate_001",
+    "job_id": "python_backend",
+    "interviewer_id": "interviewer_001",
+    "interview_date": "2026-08-01"
+  }'
+```
+
+Response mẫu:
+```json
+{
+  "run_id": "abc-123",
+  "status": "COMPLETED",
+  "decision": "PASS",
+  "total_score": 100,
+  "decision_summary": "Ứng viên candidate_001 ĐẠT với 100/100 điểm...",
+  "email_draft": "Kính gửi Nguyễn Văn An, Chúc mừng! ..."
+}
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Chạy tất cả tests
+pytest tests/ -v
+
+# Chạy với coverage
+pytest tests/ -v --cov=src --cov-report=term-missing
+
+# Chạy riêng từng test suite
+pytest tests/test_tools.py -v       # Tool unit tests
+pytest tests/test_models.py -v      # Pydantic model tests
+pytest tests/test_workflow.py -v    # Workflow tests
+pytest tests/test_api.py -v         # API integration tests
+```
+
+---
+
+## 🛡️ Guardrails & Safety
+
+1. **Input Guardrail**: Kiểm duyệt đầu vào chống prompt injection, out-of-scope, bias/discrimination
+2. **Output Guardrail**: Lọc thông tin kỹ thuật nội bộ khỏi câu trả lời
+3. **Max Iterations**: Giới hạn 8 vòng lặp ReAct (chống infinite loop)
+4. **Safe Identifiers**: Chặn path traversal trong candidate_id, job_id
+5. **Retry Logic**: Tự động retry cho lỗi tạm thời (calendar, booking)
+
+---
+
+## 🔧 Tech Stack
+
+| Thành phần | Công nghệ |
+|:--|:--|
+| Language | Python 3.12 |
+| API Framework | FastAPI |
+| Data Validation | Pydantic v2 |
+| LLM Integration | Google Gemini / OpenAI / Anthropic / OpenRouter |
+| Agent Pattern | ReAct (Thought → Action → Observation) |
+| Workflow Engine | State Machine (LangGraph-style, pure Python) |
+| Testing | pytest + httpx |
+| Container | Docker |
+| Observability | Structured JSON logging + Trace export |
+
+---
+
+## 👥 Nhóm phát triển
+
+| Vai trò | Người đảm nhận |
+|:--|:--|
+| Product Architect (Role 1) | Vũ Tú Quỳnh 01239 |
+| Tool Engineer (Role 2) | Nguyễn Ngọc Nam 01561 |
+| Prompt Engineer (Role 3) | Nguyễn Trần Ngọc Thắng 01163 |
+| Core Developer (Role 4) | Nguyễn Hoàng Biên 01233 |
+| Observability (Role 5) | Vũ Nguyễn Quốc Đạt 01199 |
