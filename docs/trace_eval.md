@@ -62,6 +62,8 @@
 
 ### Test Case #4 - Đổi trả áo hoodie trong đơn ORD1001
 
+*(Trace thật, chạy `python src/app.py` ngày 2026-07-28)*
+
 ```text
 Question: Tôi muốn trả áo hoodie trong đơn ORD1001 vì bị sai size. Đơn này có đủ điều kiện đổi trả không?
 
@@ -73,7 +75,11 @@ Observation: {
     "order_id": "ORD1001",
     "status": "delivered",
     "delivered_date": "2026-07-24",
-    "items": ["ITEM-AO-HOODIE", "ITEM-TAT-SET"]
+    "customer": "Minh Anh",
+    "items": [
+      {"item_id": "ITEM-AO-HOODIE", "name": "Áo hoodie xanh navy", "price": 450000, "returnable": true},
+      {"item_id": "ITEM-TAT-SET", "name": "Set tất thể thao", "price": 90000, "returnable": false}
+    ]
   }
 }
 
@@ -82,14 +88,17 @@ Action: check_return_policy['ORD1001', 'ITEM-AO-HOODIE', 'sai size']
 Observation: {
   "status": "success",
   "eligible": true,
-  "deadline": "2026-08-07"
+  "reason": "Đủ điều kiện đổi/trả với lý do: sai size.",
+  "deadline": "2026-08-07",
+  "next_step": "Có thể tạo yêu cầu đổi/trả bằng create_return_request."
 }
 
 Thought: Tôi đã có kết quả policy nên có thể trả lời cuối cùng.
-Final Answer: Đơn ORD1001 đủ điều kiện đổi/trả. Lý do: sai size. Hạn cuối xử lý là 2026-08-07.
+Final Answer: Đơn ORD1001 đủ điều kiện đổi/trả. Lý do: Đủ điều kiện đổi/trả với lý do: sai size. Hạn cuối xử lý là 2026-08-07.
 ```
 
 **Kết quả**: Pass. Agent gọi đúng 2 tool theo thứ tự, không tự bịa trạng thái đơn và dừng bằng Final Answer.
+**Bug nhỏ phát hiện được**: Final Answer bị lặp chữ ("Lý do: Đủ điều kiện đổi/trả với lý do: sai size.") vì `build_final_answer()` trong `src/app.py` nối trực tiếp field `reason` của tool (vốn đã có sẵn câu "Đủ điều kiện đổi/trả với lý do: ...") vào sau chữ "Lý do:". Không ảnh hưởng tính đúng đắn, chỉ là lỗi văn phong — Role 4 nên rút gọn.
 
 ### Test Case #5 - Edge Case đơn không tồn tại
 
@@ -118,6 +127,18 @@ Final Answer: Mình chưa thể xử lý yêu cầu này. LỖI: Không tìm th�
 | Unknown Tool Handling | Trả Observation lỗi nếu tool không tồn tại | Giúp agent tự phục hồi |
 | Repeated Action Detection | Dừng nếu gọi lại cùng tool với cùng tham số | Chặn vòng lặp kẹt |
 | Tool Error as Observation | Tool trả JSON lỗi thay vì crash | Giữ app ổn định |
+
+### Kiểm tra bổ sung của Role 1 - Agent có vượt qua câu bẫy không?
+
+*(Chạy thật `run_react_agent()` với 3 câu bẫy bổ sung, ngày 2026-07-28)*
+
+| Câu bẫy | Kỳ vọng | Kết quả thật | Đạt? |
+| :--- | :--- | :--- | :---: |
+| `Trả set tất trong ORD1001 vì không thích nữa.` | Sản phẩm không hỗ trợ đổi trả → từ chối có lý do | `check_return_policy` trả `eligible: false`, lý do "thuộc nhóm không hỗ trợ đổi/trả". Agent từ chối đúng. | ✅ Pass |
+| `Đơn ORD1002 đang vận chuyển, tạo đổi trả giúp tôi.` | Đơn chưa giao → không tạo request | `infer_item_id()` trả `None` (không suy luận nhầm sản phẩm), Agent hỏi lại: "Mình đã tìm thấy đơn hàng, nhưng bạn vui lòng cho biết sản phẩm cần đổi/trả." Không tạo request. | ✅ Pass |
+| `Tôi muốn trả giày trong ORD1003.` | Đơn quá hạn đổi trả (giao `2026-06-10`, hạn 14 ngày) → từ chối | `check_return_policy` trả `eligible: false`, lý do "Đơn đã quá hạn 14 ngày đổi trả", deadline `2026-06-24`. Agent từ chối đúng. | ✅ Pass |
+
+**🐛 Bug phát hiện khi thử biến thể không dấu (đáng chú ý cho Role 2/Role 4)**: Cùng câu hỏi ORD1002 ở trên nhưng gõ **không dấu** — `"Don ORD1002 dang van chuyen, tao doi tra giup toi."` — khiến `infer_item_id()` trả nhầm `ITEM-AO-HOODIE` (đơn ORD1002 không hề có sản phẩm này). Nguyên nhân: hàm dùng khớp chuỗi con không có ranh giới từ (`"ao" in text`), và chữ "tao" (từ "tạo" bỏ dấu) tình cờ chứa chuỗi con "ao". Guardrail cuối vẫn an toàn — tool `check_return_policy` báo lỗi "không tìm thấy sản phẩm" nên Agent fallback lịch sự, không tạo ticket sai — nhưng đây là lỗi suy luận trung gian đáng sửa, vì nhiều người dùng Việt gõ không dấu. Role 2/4 nên dùng regex có word-boundary hoặc danh sách từ khoá chính xác hơn thay vì `in` chuỗi con.
 
 ---
 
