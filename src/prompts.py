@@ -133,7 +133,7 @@ BẮT ĐẦU:
 """
 
 # 🛡️ GUARDRAILS CONFIGURATION (PHANH AN TOÀN)
-MAX_ITERATIONS = 5  # Đủ cho chuỗi tìm -> xem chi tiết -> kiểm tra lịch -> đặt lịch
+MAX_ITERATIONS = 10  # Đủ cho chuỗi tìm -> xem chi tiết -> kiểm tra lịch -> đặt lịch
 MAX_REPEATED_ACTIONS = 1  # Role 4 dùng để chặn cùng tool + cùng arguments bị gọi lại
 TIMEOUT_SECONDS = 10  # Timeout cho mỗi lần gọi tool
 SAFE_FALLBACK_MESSAGE = (

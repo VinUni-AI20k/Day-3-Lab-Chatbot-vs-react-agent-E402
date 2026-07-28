@@ -132,10 +132,11 @@ def search_rentals(location: str = None, max_price: float = None, room_type: str
     lines = [f"Tìm thấy {len(results)} kết quả phù hợp (hiển thị {len(shown)} đầu tiên):"]
     for r in shown:
         addr = r.get("address", {})
+        amenities = ", ".join(r.get("amenities", [])) or "Không có"
         lines.append(
             f"- [{r['id']}] {r.get('title', r.get('type', ''))} | "
             f"{addr.get('ward', '')}, {addr.get('district', '')}, {addr.get('city', '')} | "
-            f"{r.get('area', 0)}m² | {r.get('price', 0):,.0f} VNĐ/tháng"
+            f"{r.get('area', 0)}m² | {r.get('price', 0):,.0f} VNĐ/tháng | Tiện nghi: {amenities}"
         )
     return "\n".join(lines)
 
