@@ -71,6 +71,76 @@ class OpenAIProvider(BaseLLMProvider):
         except Exception as e:
             return f"[OpenAI Exception]: {str(e)}"
 
+class VilaoProvider(BaseLLMProvider):
+    """Gọi model Gemini/GPT/Claude qua OpenAI-compatible API của ViLao."""
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        base_url: str | None = None,
+    ):
+        self.api_key = api_key or os.getenv("VILAO_API_KEY")
+        self.model_name = (
+            model
+            or os.getenv("LLM_MODEL")
+            or "ts/gemini-2.5-flash"
+        )
+        self.base_url = (
+            base_url
+            or os.getenv("VILAO_BASE_URL")
+            or "https://api.vilao.ai/v1"
+        )
+
+    def generate(self, prompt: str, system_prompt: str = "") -> str:
+        if not self.api_key:
+            return (
+                "[Vilao Error]: Chưa cấu hình VILAO_API_KEY "
+                "trong file .env!"
+            )
+
+        try:
+            from openai import OpenAI
+
+            client = OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+                timeout=30.0,
+                max_retries=2,
+            )
+
+            messages = []
+
+            if system_prompt:
+                messages.append(
+                    {
+                        "role": "system",
+                        "content": system_prompt,
+                    }
+                )
+
+            messages.append(
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            )
+
+            response = client.chat.completions.create(
+                model=self.model_name,
+                messages=messages,
+                temperature=0.1,
+            )
+
+            content = response.choices[0].message.content
+
+            if not content:
+                return "[Vilao Error]: Model không trả về nội dung."
+
+            return content.strip()
+
+        except Exception as exc:
+            return f"[Vilao Exception]: {exc}"
 
 class AnthropicProvider(BaseLLMProvider):
     """Anthropic Claude Provider (Claude 3.5 Sonnet, Claude 3 Haiku)"""
@@ -148,6 +218,8 @@ def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
         return GeminiProvider()
     elif name == "openai":
         return OpenAIProvider()
+    if name == "vilao":
+        return VilaoProvider()
     elif name == "anthropic":
         return AnthropicProvider()
     elif name == "openrouter":
