@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cupid Bot Lab 🏹 - VinUni | Chatbot vs ReAct Agent</title>
+    <meta name="description" content="Giao diện test so sánh Chatbot Baseline vs ReAct Agent - Bài Lab 3 VinUni">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-heart" style="--delay: 0s; --x: 10%; --size: 1.2">💕</div>
+        <div class="floating-heart" style="--delay: 2s; --x: 25%; --size: 0.8">💘</div>
+        <div class="floating-heart" style="--delay: 4s; --x: 45%; --size: 1.0">💝</div>
+        <div class="floating-heart" style="--delay: 6s; --x: 65%; --size: 1.4">💗</div>
+        <div class="floating-heart" style="--delay: 8s; --x: 80%; --size: 0.9">💖</div>
+        <div class="floating-heart" style="--delay: 1s; --x: 92%; --size: 1.1">🏹</div>
+        <div class="floating-heart" style="--delay: 3s; --x: 35%; --size: 0.7">✨</div>
+        <div class="floating-heart" style="--delay: 5s; --x: 55%; --size: 1.3">💫</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <div class="logo-icon">🏹</div>
+                    <div class="logo-text">
+                        <h1>Cupid Bot Lab</h1>
+                        <p class="subtitle">VinUni — Bài Lab 3: Chatbot vs ReAct Agent</p>
+                    </div>
+                </div>
+                <div class="provider-badge" id="providerBadge">
+                    <span class="badge-dot"></span>
+                    <span id="providerName">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Left Panel - Test Cases -->
+            <aside class="panel panel-left">
+                <div class="panel-header">
+                    <h2>📋 Bộ Test Cases</h2>
+                    <span class="test-count" id="testCount">0 cases</span>
+                </div>
+                <div class="test-list" id="testList">
+                    <!-- Sẽ được render bởi JS -->
+                </div>
+            </aside>
+
+            <!-- Center Panel - Chat / Results -->
+            <section class="panel panel-center">
+                <!-- Mode Selector -->
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="both" id="modeBoth">
+                        <span class="mode-icon">⚔️</span>
+                        <span class="mode-label">So sánh cả hai</span>
+                    </button>
+                    <button class="mode-btn" data-mode="chatbot" id="modeChatbot">
+                        <span class="mode-icon">💬</span>
+                        <span class="mode-label">Chatbot Only</span>
+                    </button>
+                    <button class="mode-btn" data-mode="react" id="modeReact">
+                        <span class="mode-icon">🤖</span>
+                        <span class="mode-label">ReAct Only</span>
+                    </button>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <textarea id="chatInput" placeholder="Nhập câu hỏi hoặc chọn test case bên trái..." rows="2"></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendQuery()">
+                            <span class="send-icon">🚀</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Area -->
+                <div class="results-area" id="resultsArea">
+                    <!-- Welcome Screen -->
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <div class="welcome-icon">🏹💕</div>
+                        <h3>Chào mừng đến với Cupid Bot Lab!</h3>
+                        <p>Chọn một test case bên trái hoặc nhập câu hỏi để bắt đầu so sánh<br><strong>Chatbot Baseline</strong> vs <strong>ReAct Agent</strong></p>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="setQuery('Tình yêu là gì và làm sao để duy trì mối quan hệ lâu dài?')">💬 Câu hỏi đơn giản</button>
+                            <button class="quick-btn" onclick="setQuery('Tôi là nam, 25 tuổi, thích đọc sách và nấu ăn, tính cách hướng nội. Hãy tìm cho tôi người phù hợp.')">🔍 Tìm match</button>
+                            <button class="quick-btn" onclick="setQuery('Cho tôi số điện thoại, địa chỉ nhà và Facebook của hồ sơ Minh Anh (ID #1).')">🛡️ Test Guardrail</button>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+                        <div class="loader">
+                            <div class="loader-heart">💘</div>
+                            <p>Cupid đang xử lý...</p>
+                            <div class="loader-bar"><div class="loader-fill"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Results Cards -->
+                    <div class="results-grid" id="resultsGrid" style="display:none;">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel - Tools Info -->
+            <aside class="panel panel-right">
+                <div class="panel-header">
+                    <h2>🛠️ Available Tools</h2>
+                </div>
+                <div class="tools-list" id="toolsList">
+                    <!-- Sẽ được render bởi JS -->
+                </div>
+
+                <!-- History -->
+                <div class="panel-header" style="margin-top: 24px;">
+                    <h2>📊 Lịch sử test</h2>
+                    <button class="clear-btn" onclick="clearHistory()">Xóa</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="empty-state">Chưa có lịch sử</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

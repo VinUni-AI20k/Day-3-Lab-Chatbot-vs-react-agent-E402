@@ -1,0 +1,59 @@
+flowchart TD
+      START([Người dùng gửi yêu cầu]) --> INTENT{Xác định loại yêu cầu}
+
+      INTENT -->|Kiến thức chung<br/>Tư vấn tình yêu hoặc hẹn hò chung| CHATBOT[Chatbot Path]
+      CHATBOT --> CHATBOT_PROMPT[CHATBOT_BASELINE_PROMPT]
+      CHATBOT_PROMPT --> DIRECT[Trả lời trực tiếp<br/>Không gọi tool]
+
+      INTENT -->|PII hoặc dữ liệu nhạy cảm<br/>Prompt injection<br/>Thao túng tâm lý| REFUSAL[Safe Direct Response]
+      REFUSAL --> REFUSE[Final Answer từ chối lịch sự<br/>Không gọi tool]
+
+      INTENT -->|Cần dữ liệu cụ thể<br/>Cần tra cứu hoặc tính toán<br/>Yêu cầu nhiều bước| AGENT[ReAct Agent Path]
+      AGENT --> REACT_PROMPT[REACT_SYSTEM_PROMPT]
+      REACT_PROMPT --> THINK[Thought<br/>Phân tích bước tiếp theo]
+
+      THINK --> TOOL_INTENT{Chọn tool phù hợp}
+
+      TOOL_INTENT -->|Tra cứu hồ sơ người dùng| PROFILE[get_user_profile]
+      TOOL_INTENT -->|Kiểm tra tương thích cung hoàng đạo| ZODIAC[check_zodiac_compatibility]
+      TOOL_INTENT -->|Gợi ý địa điểm theo sở thích| SPOTS[suggest_dating_spots]
+      TOOL_INTENT -->|Tính quẻ tình duyên| FORTUNE[calculate_love_fortune]
+      TOOL_INTENT -->|Tạo câu thả thính| PICKUP[generate_pickup_line]
+      TOOL_INTENT -->|Kiểm tra xung đột lịch hẹn| SCHEDULE[check_dating_schedule_conflict]
+
+      PROFILE --> ACTION[Action]
+      ZODIAC --> ACTION
+      SPOTS --> ACTION
+      FORTUNE --> ACTION
+      PICKUP --> ACTION
+      SCHEDULE --> ACTION
+
+      ACTION --> EXECUTE[Thực thi tool trong AVAILABLE_TOOLS]
+      EXECUTE --> OBSERVATION[Observation<br/>Kết quả thực tế từ tool]
+
+      OBSERVATION --> ERROR_CHECK{Observation có bắt đầu<br/>bằng LỖI:?}
+
+      ERROR_CHECK -->|Có| ERROR_RESPONSE[Final Answer giải thích lỗi<br/>Không lặp lại Action cũ]
+      ERROR_CHECK -->|Không| DATA_CHECK{Đã đủ thông tin<br/>để trả lời?}
+
+      DATA_CHECK -->|Có| FINAL[Final Answer<br/>Tổng hợp kết quả cho người dùng]
+      DATA_CHECK -->|Chưa đủ| THINK
+
+      THINK -->|Không cần tool hoặc yêu cầu ngoài danh sách tool| DIRECT_AGENT[Final Answer trực tiếp<br/>Trong ReAct Agent]
+      DIRECT_AGENT --> FINAL
+
+      AGENT --> LIMIT{Đạt MAX_ITERATIONS?}
+      LIMIT -->|Có| GUARDRAIL[Safe Fallback<br/>Dừng vòng lặp an toàn]
+      LIMIT -->|Không| THINK
+
+      classDef chatbot fill:#dbeafe,stroke:#2563eb,color:#111827
+      classDef agent fill:#ede9fe,stroke:#7c3aed,color:#111827
+      classDef tool fill:#fef3c7,stroke:#d97706,color:#111827
+      classDef safe fill:#fee2e2,stroke:#dc2626,color:#111827
+      classDef final fill:#dcfce7,stroke:#16a34a,color:#111827
+
+      class CHATBOT,CHATBOT_PROMPT chatbot
+      class AGENT,REACT_PROMPT,THINK,ACTION agent
+      class PROFILE,ZODIAC,SPOTS,FORTUNE,PICKUP,SCHEDULE,EXECUTE,OBSERVATION tool
+      class REFUSAL,REFUSE,ERROR_RESPONSE,GUARDRAIL safe
+      class DIRECT,DIRECT_AGENT,FINAL final
