@@ -1,0 +1,67 @@
+flowchart TD
+    START([Người dùng gửi câu hỏi]) --> SAFETY{Yêu cầu có an toàn và<br/>nằm trong phạm vi Cupid?}
+
+    SAFETY -->|Không| REJECT[Trả lời từ chối lịch sự<br/>Không tiết lộ dữ liệu riêng tư]
+    REJECT --> END([Kết thúc])
+
+    SAFETY -->|Có| ROUTER{Câu hỏi có cần dữ liệu hồ sơ,<br/>tính điểm hoặc nhiều bước?}
+
+    ROUTER -->|Không| CHATBOT[Chatbot Baseline Path]
+    CHATBOT --> GENERAL[Trả lời kiến thức chung<br/>Không gọi tool]
+    GENERAL --> DISCLAIMER[Thông báo kết quả<br/>chỉ mang tính tham khảo]
+    DISCLAIMER --> END
+
+    ROUTER -->|Có| REACT[Cupid ReAct Agent Path]
+    REACT --> LIMIT{Đã đạt<br/>MAX_ITERATIONS?}
+    LIMIT -->|Có| STOP[Ngắt vòng lặp an toàn<br/>Trả lỗi MAX_ITERATIONS]
+    STOP --> END
+
+    LIMIT -->|Chưa| MODEL[LLM chọn Action tiếp theo<br/>hoặc Final Answer]
+    MODEL --> DECISION{Loại phản hồi}
+
+    DECISION -->|Final Answer| FINAL[Trả câu trả lời dựa trên<br/>các Observation đã xác minh]
+    FINAL --> DISCLAIMER
+
+    DECISION -->|Action + Action Input| PARSER[Parse Action Input bằng JSON<br/>Không dùng eval]
+    PARSER --> FORMAT{JSON object<br/>hợp lệ?}
+    FORMAT -->|Không| INVALID[Trả lỗi INVALID_ACTION]
+    INVALID --> END
+
+    FORMAT -->|Có| REGISTRY{Action có trong<br/>AVAILABLE_TOOLS?}
+    REGISTRY -->|Không| UNKNOWN[Observation lỗi UNKNOWN_TOOL]
+    UNKNOWN --> REACT
+
+    REGISTRY -->|Có| TOOL[Thực thi Cupid Tool]
+    TOOL --> OBS[Nhận Observation có cấu trúc<br/>ok + data hoặc error]
+    OBS --> TRACE[Lưu Trace công khai<br/>Iteration + Action + Input + Observation]
+    TRACE --> RESULT{Observation thành công?}
+
+    RESULT -->|Không| RECOVER{Có thể sửa input<br/>an toàn không?}
+    RECOVER -->|Có| REACT
+    RECOVER -->|Không| ERROR_FINAL[Final Answer lịch sự<br/>Không bịa dữ liệu]
+    ERROR_FINAL --> END
+
+    RESULT -->|Có| ENOUGH{Đã đủ dữ liệu<br/>để trả lời?}
+    ENOUGH -->|Chưa| REACT
+    ENOUGH -->|Đủ| REACT
+
+    subgraph TOOLS[Cupid Tools]
+        T1[get_user_profile]
+        T2[find_candidate_matches]
+        T3[calculate_compatibility]
+        T4[suggest_first_message]
+    end
+
+    TOOL -. Chỉ gọi tool đã đăng ký .-> TOOLS
+
+    classDef chatbot fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20;
+    classDef agent fill:#E3F2FD,stroke:#1565C0,color:#0D47A1;
+    classDef guard fill:#FFF3E0,stroke:#EF6C00,color:#E65100;
+    classDef error fill:#FFEBEE,stroke:#C62828,color:#B71C1C;
+    classDef terminal fill:#F3E5F5,stroke:#6A1B9A,color:#4A148C;
+
+    class CHATBOT,GENERAL chatbot;
+    class REACT,MODEL,PARSER,REGISTRY,TOOL,OBS,TRACE,RESULT,ENOUGH agent;
+    class SAFETY,ROUTER,LIMIT,DECISION,FORMAT,RECOVER guard;
+    class REJECT,STOP,INVALID,UNKNOWN,ERROR_FINAL error;
+    class START,END,FINAL,DISCLAIMER terminal;
