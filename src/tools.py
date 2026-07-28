@@ -1,7 +1,12 @@
 """
-🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
-Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
+🛠️ TOOL REGISTRY & SCHEMAS
+(Dành cho Role 2: Tool & Spec Engineer)
+
+Nơi khai báo tất cả các công cụ (tools) mà ReAct Agent
+có thể sử dụng để hỗ trợ người dùng tìm kiếm và đặt lịch
+xem nhà trọ / căn hộ cho thuê.
 """
+
 
 def get_weather(location: str) -> str:
     """
@@ -42,7 +47,10 @@ def search_flights(origin: str, destination: str) -> str:
     )
 
 
-# Danh sách các tool được đăng ký để Agent sử dụng
+# =====================================================
+# Danh sách các Tool được đăng ký để Agent sử dụng
+# =====================================================
+
 AVAILABLE_TOOLS = {
     "get_weather": get_weather,
     "search_flights": search_flights,
