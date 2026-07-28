@@ -6,13 +6,12 @@
 
 ## 👥 1. BẢNG PHÂN VAI & FILE ĐẢM NHẬN
 
-| Vai trò (Role)                               | File đảm nhận           | Nhiệm vụ chính                                                                                          | Người đảm nhận  |
-| :-------------------------------------------- | :------------------------- | :--------------------------------------------------------------------------------------------------------- | :------------------- |
-| **Role 1: Product Architect**           | `config/test_cases.json` | Định hướng bài toán & soạn bộ câu test case                                                       | `________________` |
-| **Role 2: Tool Engineer**               | `src/tools.py`           | Định nghĩa các công cụ (Tools) cho Agent                                                             | `________________` |
-| **Role 3: Prompt Engineer**             | `src/prompts.py`         | Viết ReAct System Prompt & phanh Guardrails                                                               | `________________` |
-| **Role 4: Core Developer / Integrator** | `src/app.py`             | **Đầu mối kéo code/file của nhóm (`git pull`), Vibe Code lắp ráp thành App hoàn chỉnh** | `________________` |
-| **Role 5: Observability**               | `docs/trace_eval.md`     | Lập bảng Scoring Matrix & Soi nhật ký Trace Log                                                        | `________________` |
+| Vai trò (Role) | File đảm nhận | Nhiệm vụ chính | Người đảm nhận |
+| :--- | :--- | :--- | :--- |
+| **Tech Lead & Core Integrator** | `src/app.py` | Quản lý Git Repository, duyệt Pull Request, gom code & lắp ráp ReAct Agent App hoàn chỉnh | **Nguyễn Phúc Hưng** (2A202601115) |
+| **Role 1: Product Architect & Evaluator** | `config/test_cases.json`<br>`docs/trace_eval.md` | Định hướng bài toán, soạn 5 Test Cases, lập bảng Scoring Matrix & soi Trace Log | **Nguyễn Văn Phong** (2A202601087) |
+| **Role 2: Tool Engineer** | `src/tools.py` | Lập trình các hàm Tool, bổ sung docstrings chuẩn xác, xử lý ngoại lệ an toàn | **Nguyễn Hữu Khánh Tùng** (2A202601781) |
+| **Role 3: Prompt & Safeguard Engineer** | `src/prompts.py`<br>`docs/hybrid_flowchart.mermaid` | Soạn Baseline & ReAct System Prompts, cài phanh Guardrails, vẽ sơ đồ Hybrid Flowchart | **Nguyễn Tuấn Vũ** (2A202601845) |
 
 *Note: Nếu nhóm 6 người, Role 5 tách thành 5A (Trace Analyst) và 5B (Flowchart Architect).*
 
