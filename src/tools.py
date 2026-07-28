@@ -9,7 +9,6 @@ thay vì ném exception làm dừng Agent.
 
 from itertools import count
 
-
 # Dữ liệu giả lập dùng chung cho bài lab, giúp kết quả test có tính lặp lại.
 PROPERTIES = {
     "CH001": {
