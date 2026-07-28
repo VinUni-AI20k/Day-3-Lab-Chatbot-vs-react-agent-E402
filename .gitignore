@@ -5,3 +5,4 @@ __pycache__/
 .venv/
 env/
 venv/
+TEMPLATE_INDIVIDUAL_REPORT.md
