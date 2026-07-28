@@ -42,9 +42,12 @@ Nếu bạn cần thêm thông tin cụ thể hoặc kiến thức về sản ph
 * **Nhận xét**: An toàn nhưng không đầy đủ, chi tiết các thành phần với hàm lượng tương ứng, không có giá tiền và liều dùng để giải quyết được nhu cầu thực tế của người dùng.
 
 ### 🧠 ReAct Agent:
-* **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-* **Action 1**: `get_weather['Hà Nội']`
-* **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-* **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-* **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+* **Thought 1**: Cần bóc tách thành phần sản phẩm TPCN Ostelin Calcium & Vitamin D3.
+* **Action 1**: `search_products["Ostelin"]`
+* **Observation 1**: `{"success": True, "product_name": "Ostelin", "products": [{"product_id": "P001", "product_name": "Ostelin Calcium & Vitamin D3"}]}`
+* **Thought 2**: Đã tìm thấy sản phẩm P001, tiến hành tra cứu 100% chi tiết thành phần và giá tiền.
+* **Action 2**: `get_product_ingredients["P001"]`
+* **Observation 2**: `{"success": True, "product_name": "Ostelin Calcium & Vitamin D3", "ingredients": [{"ingredient_name": "Canxi (từ Calcium Carbonate)", "amount": "600", "unit": "mg"}, {"ingredient_name": "Vitamin D3", "amount": "500", "unit": "IU"}]}`
+* **Thought 3**: Đã có đủ thông tin chi tiết bóc tách từ cơ sở dữ liệu, tiến hành tổng hợp câu trả lời.
+* **Final Answer**: *"Sản phẩm Ostelin Calcium & Vitamin D3 (P001) gồm các thành phần chính: 600mg Canxi nguyên tố (từ Calcium Carbonate) và 500 IU Vitamin D3 per serving. Lưu ý: TPCN hỗ trợ sức khỏe xương, không có tác dụng thay thế thuốc chữa bệnh."*
+* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận từng bước và gọi đúng tool tra cứu dữ liệu TPCN thời gian thực.
