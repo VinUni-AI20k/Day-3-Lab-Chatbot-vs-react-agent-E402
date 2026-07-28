@@ -4,36 +4,118 @@ Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent sử dụng t
 "Trợ Lý Khai Quật Nhân Cách Thứ 2 & Tư Vấn Tâm Lý"
 """
 
-def analyze_personality_traits(user_answers: str) -> str:
+import json
+import re
+from typing import Union, List
+
+
+def score_personality_profile(responses: Union[List[int], str]) -> str:
     """
-    Phân tích các đặc trưng tính cách nổi bật và xu hướng cảm xúc dựa trên câu trả lời hoặc mô tả của người dùng.
+    Tính điểm hồ sơ tính cách từ bộ đáp án tự đánh giá (thang điểm 1-5).
     
     Args:
-        user_answers (str): Đoạn văn bản mô tả suy nghĩ, thói quen, cách ứng xử hoặc câu trả lời bài test của người dùng.
+        responses (Union[List[int], str]): Danh sách 10 câu trả lời tự đánh giá, ví dụ: [5, 4, 2, 4, 3, 5, 4, 2, 4, 3] hoặc chuỗi JSON "[5, 4, 2, 4, 3, 5, 4, 2, 4, 3]".
         
     Returns:
-        str: Kết quả phân tích các nét tính cách chủ đạo, độ nhạy cảm và xu hướng ứng xử.
+        str: Kết quả điểm số các chỉ số tính cách (openness, conscientiousness, extraversion, agreeableness, emotional_sensitivity) và giải thích xu hướng.
     """
-    if not user_answers or len(user_answers.strip()) < 5:
-        return "LỖI: Mô tả quá ngắn hoặc trống. Vui lòng cung cấp thêm thông tin về suy nghĩ hoặc phản ứng của bạn."
-    
-    text = user_answers.lower()
-    traits = []
-    
-    if any(w in text for w in ["im lặng", "một mình", "nội tâm", "ít nói", "khép kín"]):
-        traits.append("Hướng nội sâu sắc (Introverted) - Thường tích tụ năng lượng khi ở một mình.")
-    if any(w in text for w in ["lo lắng", "sợ", "áp lực", "căng thẳng", "stress", "mệt mỏi"]):
-        traits.append("Độ nhạy cảm cảm xúc cao (Highly Sensitive) - Dễ bị ảnh hưởng bởi môi trường xung quanh.")
-    if any(w in text for w in ["hoàn hảo", "kỹ tính", "tiêu chuẩn", "đúng giờ", "nghiêm túc"]):
-        traits.append("Xu hướng cầu toàn (Perfectionist) - Đặt kỳ vọng cao vào bản thân và công việc.")
-    if any(w in text for w in ["tự do", "nổi loạn", "khác biệt", "sáng tạo", "phá cách"]):
-        traits.append("Tâm hồn tự do & Sáng tạo (Creative Rebel) - Ghét sự gò bó, thích tìm đường đi riêng.")
+    try:
+        if isinstance(responses, str):
+            try:
+                parsed = json.loads(responses)
+                if isinstance(parsed, list):
+                    responses = parsed
+            except Exception:
+                numbers = re.findall(r'\d+', responses)
+                responses = [int(n) for n in numbers]
+        
+        if not isinstance(responses, list) or len(responses) < 5:
+            return "LỖI: Đầu vào phải là danh sách ít nhất 5 đến 10 điểm số tự đánh giá (thang 1-5)."
 
-    if not traits:
-        traits.append("Tính cách cân bằng, linh hoạt - Khả năng thích nghi tốt trong nhiều hoàn cảnh.")
+        nums = [float(x) for x in responses]
 
-    result = "📊 PHÂN TÍCH TÍNH CÁCH CHỦ ĐẠO:\n" + "\n".join(f"- {t}" for t in traits)
-    return result
+        if len(nums) == 10:
+            openness = round((nums[0] + nums[5]) / 2.0, 1)
+            conscientiousness = round((nums[1] + nums[6]) / 2.0, 1)
+            extraversion = round((nums[2] + nums[7]) / 2.0, 1)
+            agreeableness = round((nums[3] + nums[8]) / 2.0, 1)
+            emotional_sensitivity = round((nums[4] + nums[9]) / 2.0, 1)
+        else:
+            openness = round(nums[0], 1)
+            conscientiousness = round(nums[1], 1) if len(nums) > 1 else 3.0
+            extraversion = round(nums[2], 1) if len(nums) > 2 else 3.0
+            agreeableness = round(nums[3], 1) if len(nums) > 3 else 3.0
+            emotional_sensitivity = round(nums[4], 1) if len(nums) > 4 else 3.0
+
+        scores = {
+            "openness": openness,
+            "conscientiousness": conscientiousness,
+            "extraversion": extraversion,
+            "agreeableness": agreeableness,
+            "emotional_sensitivity": emotional_sensitivity
+        }
+
+        json_str = json.dumps(scores, ensure_ascii=False)
+        return (
+            f"Kết quả điểm số hồ sơ tính cách: {json_str}\n"
+            f"- Openness (Cởi mở): {openness}/5.0\n"
+            f"- Conscientiousness (Tận tụy/Cầu toàn): {conscientiousness}/5.0\n"
+            f"- Extraversion (Hướng ngoại): {extraversion}/5.0\n"
+            f"- Agreeableness (Hòa đồng): {agreeableness}/5.0\n"
+            f"- Emotional Sensitivity (Độ nhạy cảm cảm xúc): {emotional_sensitivity}/5.0\n"
+            f"⚠️ LƯU Ý PHI LÂM SÀNG: Kết quả này chỉ mang tính tự tham khảo cá nhân, không phải là chẩn đoán y khoa hay tâm lý chính thức."
+        )
+
+    except Exception as e:
+        return f"LỖI: Không thể tính điểm hồ sơ tính cách. Chi tiết: {str(e)}"
+
+
+def get_wellbeing_exercise(emotional_state: str, intensity: Union[int, str] = 5) -> str:
+    """
+    Gợi ý bài tập hỗ trợ xoa dịu cảm xúc & thực hành tâm lý phù hợp với trạng thái và mức độ căng thẳng của người dùng.
+    
+    Args:
+        emotional_state (str): Trạng thái cảm xúc (ví dụ: 'căng thẳng', 'lo âu', 'buồn bã', 'mệt mỏi', 'giận dữ').
+        intensity (Union[int, str]): Mức độ cảm xúc trên thang điểm 1-10 (ví dụ: 7).
+        
+    Returns:
+        str: Bài tập thực hành chi tiết (kỹ thuật thở, grounding, journaling) và lưu ý phi lâm sàng.
+    """
+    try:
+        try:
+            val_intensity = int(intensity)
+        except (ValueError, TypeError):
+            val_intensity = 5
+
+        state_clean = str(emotional_state).lower()
+
+        if "căng thẳng" in state_clean or "stress" in state_clean or "áp lực" in state_clean:
+            exercise = (
+                f"🧘 BÀI TẬP XOA DỊU CĂNG THẲNG (Trạng thái: '{emotional_state}', Mức độ: {val_intensity}/10):\n"
+                f"1. Kỹ thuật thở nhịp nhàng 4-7-8: Hít vào bằng mũi trong 4s, giữ hơi 7s, thở ra từ từ qua miệng trong 8s. Lặp lại 5 vòng.\n"
+                f"2. Phương pháp Nối đất (Grounding 5-4-3-2-1): Tìm 5 vật bạn nhìn thấy, 4 thứ bạn chạm vào được, 3 âm thanh xung quanh, 2 mùi hương và 1 vị trong miệng.\n"
+                f"3. Dành 10 phút thả lỏng vai và nhắm mắt nghỉ ngơi."
+            )
+        elif "lo âu" in state_clean or "sợ" in state_clean or "bồn chồn" in state_clean:
+            exercise = (
+                f"🌿 BÀI TẬP GIẢM LO ÂU (Trạng thái: '{emotional_state}', Mức độ: {val_intensity}/10):\n"
+                f"1. Kỹ thuật Thở Hộp (Box Breathing): Hít 4s - Giữ 4s - Thở 4s - Giữ 4s.\n"
+                f"2. Viết nhật ký xả cảm xúc (Worry Journaling): Viết ra tất cả mối lo lên giấy, sau đó khoanh tròn những điều bạn CÓ THỂ kiểm soát."
+            )
+        else:
+            exercise = (
+                f"🌱 BÀI TẬP CÂN BẰNG TÂM TRÍ (Trạng thái: '{emotional_state}', Mức độ: {val_intensity}/10):\n"
+                f"1. Quét cơ thể (Body Scan): Nhắm mắt và hướng sự chú ý lần lượt từ ngón chân lên đỉnh đầu trong 5 phút.\n"
+                f"2. Ghi lại 3 điều bạn cảm thấy biết ơn trong ngày hôm nay."
+            )
+
+        return (
+            f"{exercise}\n"
+            f"⚠️ LƯU Ý PHI LÂM SÀNG: Bài tập mang tính chất hỗ trợ tự xoa dịu tinh thần, không thay thế cho tư vấn hoặc điều trị y khoa chuyên khoa."
+        )
+
+    except Exception as e:
+        return f"LỖI: Không thể tra cứu bài tập hỗ trợ. Chi tiết: {str(e)}"
 
 
 def get_psychological_archetype(trait_keywords: str) -> str:
@@ -41,7 +123,7 @@ def get_psychological_archetype(trait_keywords: str) -> str:
     Khai quật "Nhân cách thứ 2" (Shadow Archetype) - khía cạnh ẩn giấu trong tiềm thức của người dùng.
     
     Args:
-        trait_keywords (str): Từ khóa hoặc chủ đề đại diện cho nỗi sợ, ước mơ ẩn giấu hoặc thói quen đêm khuya (ví dụ: 'đêm', 'cô đơn', 'nổi loạn', 'sáng tạo', 'bảo vệ').
+        trait_keywords (str): Từ khóa đại diện cho nỗi sợ, ước mơ ẩn giấu hoặc thói quen đêm khuya (ví dụ: 'đêm', 'cô đơn', 'nổi loạn', 'sáng tạo', 'bảo vệ').
         
     Returns:
         str: Hồ sơ hình mẫu "Nhân cách thứ 2", bao gồm tên hình mẫu, đặc điểm tiềm thức và lời khuyên hòa giải nội tâm.
@@ -49,35 +131,31 @@ def get_psychological_archetype(trait_keywords: str) -> str:
     if not trait_keywords:
         return "LỖI: Chưa cung cấp từ khóa tính cách để khai quật hình mẫu."
         
-    kw = trait_keywords.lower()
+    kw = str(trait_keywords).lower()
     
     if any(w in kw for w in ["nổi loạn", "tự do", "phá cách", "khác biệt"]):
         return (
             "🎭 NHÂN CÁCH THỨ 2: KẺ NỔI LOẠN ẨN MÌNH (The Hidden Rebel)\n"
             "- Đặc điểm tiềm thức: Bên ngoài bạn có thể tuân thủ quy tắc, nhưng sâu bên trong là khao khát bứt phá và khẳng định cái tôi duy nhất.\n"
             "- Điểm mạnh tiềm ẩn: Bật nhảy tư duy đột phá, không sợ đi ngược đám đông.\n"
-            "- Lời khuyên hòa giải: Hãy tạo cho mình những 'khoảng không tự do' an toàn để sáng tạo mà không sợ bị phán xét."
+            "- Lời khuyên hòa giải: Hãy tạo cho mình những 'khoảng không tự do' an toàn để sáng tạo mà không sợ bị phán xét.\n"
+            "⚠️ Lưu ý: Thông tin mang tính tham khảo tự khám phá bản thân."
         )
     elif any(w in kw for w in ["đêm", "triết học", "suy ngẫm", "cô đơn", "sâu sắc"]):
         return (
             "🎭 NHÂN CÁCH THỨ 2: NHÀ TRIẾT HỌC ĐÊM KHUYA (The Midnight Philosopher)\n"
             "- Đặc điểm tiềm thức: Bạn thường che giấu những trăn trở sâu sắc về bản thể và cuộc đời đằng sau nụ cười thường ngày.\n"
             "- Điểm mạnh tiềm ẩn: Thấu cảm sâu sắc, khả năng quan sát và thấu hiểu bản chất vấn đề.\n"
-            "- Lời khuyên hòa giải: Đừng ôm giữ mọi suy nghĩ một mình, hãy viết journaling hoặc chia sẻ với người tri kỷ."
+            "- Lời khuyên hòa giải: Đừng ôm giữ mọi suy nghĩ một mình, hãy viết journaling hoặc chia sẻ với người tri kỷ.\n"
+            "⚠️ Lưu ý: Thông tin mang tính tham khảo tự khám phá bản thân."
         )
-    elif any(w in kw for w in ["bảo vệ", "hy sinh", "gánh vác", "lắng nghe", "chăm sóc"]):
+    else:
         return (
             "🎭 NHÂN CÁCH THỨ 2: NGƯỜI BẢO VỆ THẦM LẶNG (The Silent Guardian)\n"
             "- Đặc điểm tiềm thức: Bạn luôn mong muốn che chở người khác nhưng đôi khi quên mất việc chăm sóc chính đứa trẻ bên trong mình.\n"
             "- Điểm mạnh tiềm ẩn: Trái tim ấm áp, đáng tin cậy và kiên cường.\n"
-            "- Lời khuyên hòa giải: Học cách nói 'Không' và ưu tiên chữa lành cho bản thân trước."
-        )
-    else:
-        return (
-            "🎭 NHÂN CÁCH THỨ 2: KẺ TÌM KIẾM ẨN MÌNH (The Mystic Seeker)\n"
-            "- Đặc điểm tiềm thức: Bạn đang trong hành trình khám phá những khía cạnh mới chưa từng bộc lộ của bản thân.\n"
-            "- Điểm mạnh tiềm ẩn: Tò mò, sẵn sàng mở lòng với những trải nghiệm tâm lý mới.\n"
-            "- Lời khuyên hòa giải: Hãy tiếp tục lắng nghe tín hiệu từ cảm xúc hàng ngày để hiểu rõ mình hơn."
+            "- Lời khuyên hòa giải: Học cách nói 'Không' và ưu tiên chữa lành cho bản thân trước.\n"
+            "⚠️ Lưu ý: Thông tin mang tính tham khảo tự khám phá bản thân."
         )
 
 
@@ -94,9 +172,8 @@ def search_mental_health_resources(topic: str) -> str:
     if not topic:
         return "LỖI: Vui lòng nhập chủ đề cần tra cứu tài nguyên tư vấn."
         
-    t = topic.lower()
+    t = str(topic).lower()
     
-    # Kiểm tra tín hiệu khủng hoảng khẩn cấp (Safeguard / Crisis Guardrail)
     if any(w in t for w in ["tự sát", "tự hại", "muốn chết", "khủng hoảng", "hotline", "khẩn cấp"]):
         return (
             "🆘 TÀI NGUYÊN HỖ TRỢ TÂM LÝ KHẨN CẤP:\n"
@@ -104,20 +181,6 @@ def search_mental_health_resources(topic: str) -> str:
             "- Tổng đài Quốc gia Bảo vệ Trẻ em & Tâm lý: 111\n"
             "- Viện Sức khỏe Tâm thần - Bệnh viện Bạch Mai: (024) 3576 5344\n"
             "💡 Lời nhắn: Bạn không một mình. Hãy liên hệ ngay với chuyên gia hoặc người thân đáng tin cậy để được hỗ trợ kịp thời!"
-        )
-    elif any(w in t for w in ["stress", "căng thẳng", "áp lực", "lo âu"]):
-        return (
-            "🧘 BÀI TẬP VÀ KỸ THUẬT XOA DỊU STRESS & LO ÂU:\n"
-            "1. Kỹ thuật thở 4-7-8: Hít vào 4s -> Giữ thở 7s -> Thở ra từ từ qua miệng 8s (Lặp lại 4 lần).\n"
-            "2. Phương pháp Nối đất 5-4-3-2-1: Nhìn 5 vật xung quanh, Chạm 4 thứ, Nghe 3 âm thanh, Ngửi 2 mùi, Nếm 1 vị.\n"
-            "3. Sách khuyên đọc: 'Hiểu Về Trái Tim' (Thích Nhất Hạnh), 'Được Mới Mất' (Pema Chödrön)."
-        )
-    elif any(w in t for w in ["mất ngủ", "khó ngủ", "đêm"]):
-        return (
-            "🌙 KỸ THUẬT VỆ SINH GIẤC NGỦ (SLEEP HYGIENE):\n"
-            "1. Tắt toàn bộ thiết bị điện tử trước khi ngủ 30 phút.\n"
-            "2. Thực hành phương pháp Quét cơ thể (Body Scan Meditation) từ ngón chân lên đỉnh đầu.\n"
-            "3. Nghe nhạc tần số 432Hz hoặc tiếng mưa rơi tự nhiên."
         )
     else:
         return (
@@ -141,26 +204,23 @@ def check_counselor_schedule(counselor_name: str) -> str:
     schedules = {
         "nguyễn văn a": "TS. Nguyễn Văn A (Chuyên gia Trị liệu Tâm lý Nhận thức):\n- Thứ 4: 09:00 - 11:00\n- Thứ 6: 14:00 - 16:00",
         "lê thị b": "Chuyên gia Lê Thị B (Tư vấn Hôn nhân & Mối quan hệ):\n- Thứ 3: 10:00 - 12:00\n- Thứ 7: 15:00 - 17:00",
-        "trần văn c": "ThS. Trần Văn C (Tư vấn Khủng hoảng Người trẻ & Định hướng):\n- Thứ 2: 13:30 - 15:30\n- Chủ Nhật: 08:30 - 10:30",
     }
     
-    if not counselor_name or counselor_name.lower() in ["tất cả", "bat ky", "bất kỳ", "all"]:
+    if not counselor_name or str(counselor_name).lower() in ["tất cả", "bat ky", "bất kỳ", "all"]:
         return "📅 LỊCH TRỐNG CỦA CÁC CHUYÊN GIA TƯ VẤN TRONG TUẦN:\n\n" + "\n\n".join(schedules.values())
         
-    name_clean = counselor_name.lower()
+    name_clean = str(counselor_name).lower()
     for key, val in schedules.items():
         if key in name_clean or name_clean in key:
             return f"📅 LỊCH TRỐNG CỦA CHUYÊN GIA:\n{val}"
             
-    return (
-        f"LỖI: Không tìm thấy thông tin chuyên gia '{counselor_name}'.\n"
-        f"💡 Gợi ý chuyên gia hiện có: TS. Nguyễn Văn A, Chuyên gia Lê Thị B, ThS. Trần Văn C."
-    )
+    return f"LỖI: Không tìm thấy thông tin chuyên gia '{counselor_name}'."
 
 
 # Danh sách các tool được đăng ký để ReAct Agent sử dụng
 AVAILABLE_TOOLS = {
-    "analyze_personality_traits": analyze_personality_traits,
+    "score_personality_profile": score_personality_profile,
+    "get_wellbeing_exercise": get_wellbeing_exercise,
     "get_psychological_archetype": get_psychological_archetype,
     "search_mental_health_resources": search_mental_health_resources,
     "check_counselor_schedule": check_counselor_schedule,
