@@ -16,10 +16,10 @@ const STEP_LABELS = {
 };
 
 const QUICK_ACTIONS = [
-  { label: '🎬 Phim đang chiếu', message: 'Có phim gì đang chiếu?' },
-  { label: '🕐 Suất chiếu Avatar 3', message: 'Phim Avatar 3 chiếu lúc mấy giờ?' },
-  { label: '💺 Xem sơ đồ ghế', message: 'Cho tôi xem sơ đồ ghế suất 19h Avatar 3 ở CGV Vincom Bà Triệu' },
-  { label: '🎟️ Đặt 2 vé VIP', message: 'Đặt giúp tôi 2 vé VIP suất 19h phim Avatar 3 ở CGV Vincom Bà Triệu' }
+  { label: '🎬 Phim đang chiếu', message: 'Có phim gì đang chiếu ở CGV?' },
+  { label: '🕵️ Suất chiếu Conan', message: 'Phim Conan chiếu lúc mấy giờ ở CGV Vincom Bà Triệu?' },
+  { label: '💺 Xem ghế trống', message: 'Còn ghế trống nào suất 19h Conan ở CGV Vincom Bà Triệu ngày 2026-07-28?' },
+  { label: '🎟️ Đặt vé Conan', message: 'Đặt giúp tôi 2 ghế A5, A6 suất 19h phim Conan ở CGV Vincom Bà Triệu ngày 2026-07-28, tên Khanh' }
 ];
 
 /**

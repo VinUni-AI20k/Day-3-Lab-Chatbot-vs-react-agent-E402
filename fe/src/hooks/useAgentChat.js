@@ -1,9 +1,9 @@
 import { useState, useCallback, useRef } from 'react';
-import { AGENT_SCENARIOS, matchScenario, MOCK_MOVIES } from '../data/mockData';
+import { streamChat, fetchMovies, fetchSeatMap, getPosterUrl } from '../services/api';
 
 /**
  * Custom hook to manage agent chat interactions
- * Simulates the ReAct agent loop with step-by-step execution
+ * Connects to the backend ReAct agent via SSE streaming
  */
 export function useAgentChat() {
   const [messages, setMessages] = useState([
@@ -17,7 +17,7 @@ export function useAgentChat() {
   const [isTyping, setIsTyping] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [agentSteps, setAgentSteps] = useState([]);
-  const stepIndexRef = useRef(0);
+  const historyRef = useRef([]);
 
   const addMessage = useCallback((role, content) => {
     const msg = {
@@ -31,77 +31,87 @@ export function useAgentChat() {
   }, []);
 
   /**
-   * Process agent steps one by one with delays to simulate thinking
+   * Update the activity panel based on the tool being called and its result
    */
-  const processSteps = useCallback(async (scenario) => {
-    const steps = scenario.steps;
-    const allSteps = [];
+  const updateActivity = useCallback(async (step) => {
+    try {
+      if (step.type === 'action') {
+        const toolName = step.tool || '';
 
-    for (let i = 0; i < steps.length; i++) {
-      const step = steps[i];
-      const delay = step.type === 'thought' ? 1200 :
-                    step.type === 'action' ? 800 :
-                    step.type === 'observation' ? 1000 : 600;
-
-      await new Promise(resolve => setTimeout(resolve, delay));
-
-      const stepData = {
-        ...step,
-        id: `step-${Date.now()}-${i}`,
-        timestamp: new Date()
-      };
-      allSteps.push(stepData);
-      setAgentSteps([...allSteps]);
-
-      // Update activity panel based on scenario type
-      if (step.type === 'action' || step.type === 'observation') {
-        if (scenario.activityType === 'movies') {
-          setCurrentActivity({
-            type: 'movies',
-            data: MOCK_MOVIES
-          });
-        } else if (scenario.activityType === 'showtimes') {
-          const movie = MOCK_MOVIES.find(m => m.film_name === scenario.filmName);
-          setCurrentActivity({
-            type: 'showtimes',
-            data: movie
-          });
-        } else if (scenario.activityType === 'seatmap') {
-          const movie = MOCK_MOVIES.find(m => m.film_name === scenario.filmName);
-          const showtime = movie?.showtimes.find(s => s.cinema === scenario.cinema && s.time === scenario.time);
-          setCurrentActivity({
-            type: 'seatmap',
-            data: { movie, showtime }
-          });
-        } else if (scenario.activityType === 'booking' && step.type === 'observation' && i === steps.length - 2) {
-          setCurrentActivity({
-            type: 'booking',
-            data: {
-              filmName: scenario.filmName,
-              cinema: scenario.cinema,
-              time: scenario.time,
-              zone: scenario.zone,
-              seats: scenario.seats,
-              bookingId: scenario.bookingId,
-              totalPrice: scenario.totalPrice
-            }
-          });
+        if (toolName === 'search_movie' || toolName === 'search_theater') {
+          // Will update on observation
+        } else if (toolName === 'get_available_seats') {
+          // Will update on observation
         }
       }
 
-      // Add final answer as a chat message
-      if (step.type === 'final_answer') {
-        addMessage('agent', step.content);
-      }
-    }
+      if (step.type === 'observation') {
+        const toolName = step.tool || '';
+        const result = step.toolResult;
 
-    setIsTyping(false);
-  }, [addMessage]);
+        if (toolName === 'search_movie' && result && typeof result === 'object' && result.film_name) {
+          // Show movie info
+          setCurrentActivity({
+            type: 'movie_detail',
+            data: result
+          });
+        }
+
+        if (toolName === 'search_theater' && Array.isArray(result)) {
+          setCurrentActivity({
+            type: 'theaters',
+            data: result
+          });
+        }
+
+        if (toolName === 'search_showtime' && Array.isArray(result)) {
+          setCurrentActivity({
+            type: 'showtimes',
+            data: {
+              showtimes: result,
+              filmName: step.filmName || '',
+              cinema: step.cinema || ''
+            }
+          });
+        }
+
+        if (toolName === 'get_available_seats' && Array.isArray(result)) {
+          setCurrentActivity({
+            type: 'available_seats',
+            data: {
+              seats: result,
+              filmName: step.filmName || '',
+              cinema: step.cinema || '',
+              time: step.time || ''
+            }
+          });
+        }
+
+        if (toolName === 'book_seats' && result && typeof result === 'object') {
+          if (result.status === 'SUCCESS') {
+            setCurrentActivity({
+              type: 'booking',
+              data: result
+            });
+          }
+        }
+
+        if (toolName === 'generate_ticket' && result && typeof result === 'object') {
+          setCurrentActivity({
+            type: 'ticket',
+            data: result
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error updating activity:', err);
+    }
+  }, []);
 
   /**
-   * Send a message from the user
+   * Send a message from the user, stream agent responses via SSE
    */
-  const sendMessage = useCallback((content) => {
+  const sendMessage = useCallback(async (content) => {
     if (!content.trim() || isTyping) return;
 
     // Add user message
@@ -109,15 +119,40 @@ export function useAgentChat() {
     setIsTyping(true);
     setAgentSteps([]);
 
-    // Match scenario and process
-    const scenarioKey = matchScenario(content);
-    const scenario = AGENT_SCENARIOS[scenarioKey];
+    // Build history for the API
+    const history = historyRef.current.slice(-10); // Keep last 10 messages
+    historyRef.current.push({ role: 'user', content });
 
-    // Small delay before agent starts "thinking"
-    setTimeout(() => {
-      processSteps(scenario);
-    }, 500);
-  }, [isTyping, addMessage, processSteps]);
+    try {
+      const allSteps = [];
+
+      for await (const step of streamChat(content, history)) {
+        const stepData = {
+          ...step,
+          id: `step-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+          timestamp: new Date()
+        };
+
+        allSteps.push(stepData);
+        setAgentSteps([...allSteps]);
+
+        // Update activity panel
+        await updateActivity(step);
+
+        // If it's a final answer, add it as a chat message
+        if (step.type === 'final_answer') {
+          addMessage('agent', step.content);
+          historyRef.current.push({ role: 'assistant', content: step.content });
+        }
+      }
+    } catch (err) {
+      console.error('Chat error:', err);
+      // Fallback - show error message
+      addMessage('agent', `⚠️ Có lỗi xảy ra khi kết nối với server: ${err.message}\n\nHãy đảm bảo backend đang chạy tại http://localhost:8000`);
+    } finally {
+      setIsTyping(false);
+    }
+  }, [isTyping, addMessage, updateActivity]);
 
   const clearChat = useCallback(() => {
     setMessages([{
@@ -129,6 +164,7 @@ export function useAgentChat() {
     setAgentSteps([]);
     setCurrentActivity(null);
     setIsTyping(false);
+    historyRef.current = [];
   }, []);
 
   return {
