@@ -18,19 +18,56 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
+import re
+
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
+
+import ast
+
+def execute_tool_call(action_str: str) -> str:
+    """
+    Bóc tách và thực thi Tool từ chuỗi Action của LLM (dạng: tool_name['arg1', 'arg2'])
+    """
+    match = re.search(r"(\w+)\[(.*)\]", action_str)
+    if not match:
+        return f"LỖI: Định dạng Action không hợp lệ ({action_str}). Cần có dạng: tên_tool['tham_số']"
+    
+    tool_name = match.group(1).strip()
+    raw_args = match.group(2).strip()
+    
+    if tool_name not in AVAILABLE_TOOLS:
+        return f"LỖI: Công cụ '{tool_name}' không tồn tại. Danh sách công cụ: {list(AVAILABLE_TOOLS.keys())}"
+    
+    tool_func = AVAILABLE_TOOLS[tool_name]
+    
+    try:
+        if not raw_args:
+            args = []
+        else:
+            try:
+                parsed = ast.literal_eval(f"[{raw_args}]")
+                if isinstance(parsed, list):
+                    args = [str(x) for x in parsed]
+                else:
+                    args = [str(parsed)]
+            except Exception:
+                args = [arg.strip().strip("'\"") for arg in raw_args.split(",") if arg.strip()]
+                
+        return str(tool_func(*args))
+    except Exception as e:
+        return f"LỖI khi thực thi công cụ '{tool_name}': {str(e)}"
+
 
 def load_test_cases():
     """Đọc bộ test cases từ config/test_cases.json của Role 1"""
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     config_path = os.path.join(base_dir, "config", "test_cases.json")
     
-    # Fallback kiểm tra nếu file ở thư mục hiện tại
     if not os.path.exists(config_path):
         config_path = "test_cases.json"
         
@@ -45,7 +82,6 @@ def run_baseline_chatbot(user_query: str, provider):
     print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
     print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
     
-    # Gọi LLM Provider thực hiện sinh câu trả lời
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
     print(f"🤖 Chatbot trả lời:\n{response}")
 
@@ -56,26 +92,48 @@ def run_react_agent(user_query: str, provider):
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     step = 0
+    conversation_history = f"Câu hỏi của sinh viên: {user_query}"
     
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
         
-        if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
+        # Gọi LLM sinh bước tiếp theo
+        llm_output = provider.generate(conversation_history, system_prompt=REACT_SYSTEM_PROMPT)
+        
+        if not llm_output:
+            print("⚠️ LLM trả về phản hồi rỗng!")
+            break
             
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
-            print(f"👁️ Observation: {obs}")
+        print(llm_output)
+        
+        # Thêm kết quả của LLM vào lịch sử hội thoại
+        conversation_history += f"\n{llm_output}"
+        
+        # Kiểm tra xem LLM đã đưa ra Final Answer chưa
+        if "Final Answer:" in llm_output:
+            print("\n🏁 Hoàn thành luồng suy luận ReAct!")
+            break
             
-        elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+        # Kiểm tra xem LLM có sinh ra Action để gọi Tool hay không
+        if "Action:" in llm_output:
+            action_line = [line for line in llm_output.split("\n") if "Action:" in line][0]
+            action_str = action_line.replace("Action:", "").strip()
+            
+            # Thực thi Tool
+            obs = execute_tool_call(action_str)
+            print(f"👁️ Observation:\n{obs}")
+            
+            # Đưa Observation vào lịch sử để lượt sau LLM đọc được
+            conversation_history += f"\nObservation: {obs}"
+        else:
+            # Nếu LLM không sinh ra cả Action lẫn Final Answer
             break
             
     if step >= MAX_ITERATIONS:
-        print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
+        print(f"\n🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
+
+
 
 
 if __name__ == "__main__":
