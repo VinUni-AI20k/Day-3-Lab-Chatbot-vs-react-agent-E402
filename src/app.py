@@ -50,14 +50,28 @@ def load_test_cases():
 
 def run_baseline_chatbot(user_query: str, provider):
     """
-    Dựng Chatbot gốc (Baseline) không có công cụ.
+    Chạy Chatbot Baseline định hướng nghề nghiệp (không dùng Tool).
+    Sử dụng CHATBOT_BASELINE_PROMPT từ prompts.py, gọi LLM qua provider
+    và in kết quả ra console theo định dạng chuẩn.
     """
-    print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
-    print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
-    
-    # Gọi LLM Provider thực hiện sinh câu trả lời
+    print("\n" + "=" * 50)
+    print("💬 [CHATBOT BASELINE - Định hướng Nghề nghiệp]")
+    print("=" * 50)
+    print(f"📝 Câu hỏi: {user_query}")
+    # Chỉ in dòng đầu của system prompt để tránh output quá dài
+    first_line = CHATBOT_BASELINE_PROMPT.strip().splitlines()[0]
+    print(f"⚙️  System Prompt (tóm tắt): {first_line}")
+    print("-" * 50)
+
+    # Gọi LLM Provider sinh câu trả lời (không truyền tool)
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
+
+    if not response or not str(response).strip():
+        print("⚠️  Không nhận được phản hồi từ chatbot. Vui lòng kiểm tra lại provider.")
+        return
+
     print(f"🤖 Chatbot trả lời:\n{response}")
+    print("=" * 50)
 
 
 def _parse_action_args(raw_args: str):
