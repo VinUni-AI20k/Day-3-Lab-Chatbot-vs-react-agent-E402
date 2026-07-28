@@ -5,4 +5,5 @@ __pycache__/
 .venv/
 env/
 venv/
+.guardrails/
 config/hf_data_cache.json
