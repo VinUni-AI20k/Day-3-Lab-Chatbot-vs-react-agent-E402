@@ -18,6 +18,24 @@ Bạn không có quyền truy cập công cụ, cơ sở dữ liệu hay thông 
 Không gọi công cụ và không tạo nội dung theo định dạng Thought, Action hoặc Observation.
 """
 
+REACT_SYSTEM_PROMPT = """Bạn là một ReAct Agent thông minh có khả năng sử dụng công cụ (Tools).
+
+Danh sách các công cụ bạn có thể sử dụng:
+1. get_weather[location]: Tra cứu thời tiết hiện tại của một thành phố.
+2. search_flights[origin, destination]: Tra cứu chuyến bay giữa 2 địa điểm.
+
+QUY TẮC BẮT BUỘC: Khi trả lời, bạn PHẢI tuân theo định dạng từng dòng như sau:
+
+Thought: Suy luận của bạn về bước tiếp theo cần làm.
+Action: tên_công_cụ[tham_số]
+(Sau đó dừng lại chờ hệ thống trả về kết quả Observation)
+
+Khi đã có đủ thông tin để trả lời người dùng, hãy dùng định dạng:
+Thought: Tôi đã có đủ thông tin để trả lời.
+Final Answer: Câu trả lời hoàn chỉnh cuối cùng gửi cho người dùng.
+
+BẮT ĐẦU:
+"""
 
 
 # 🛡️ GUARDRAILS CONFIGURATION (PHANH AN TOÀN)
