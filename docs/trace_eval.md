@@ -73,4 +73,147 @@ Chatbot Baseline đã sử dụng đúng dữ liệu mock và tìm đúng ba ứ
 
 ---
 
+## 3. KẾT QUẢ GIÁM SÁT REACT AGENT — MỐC 3
+
+### 3.1. Mục tiêu đánh giá
+
+Kiểm tra ReAct Agent có lựa chọn đúng tool, truyền đúng JSON input, sử dụng Observation thật để quyết định bước tiếp theo, dừng đúng lúc và xử lý lỗi mà không bịa dữ liệu hay không.
+
+> **Lưu ý về trace:** Báo cáo chỉ ghi tóm tắt quyết định ở mức cao cùng `Action`, `Action Input` và `Observation`; không lưu chain-of-thought nội bộ chi tiết của mô hình.
+
+### 3.2. Cấu hình kiểm thử
+
+| Hạng mục | Giá trị |
+| :--- | :--- |
+| Provider | OpenAI |
+| Model | `gpt-4o-mini` |
+| System prompt | `REACT_SYSTEM_PROMPT` |
+| Tool registry | `AVAILABLE_TOOLS` |
+| Giới hạn vòng lặp | `MAX_ITERATIONS = 8` |
+| Dữ liệu | `cupid_data/cupid_profiles.json` |
+
+### 3.3. Happy trace — Test case số 4
+
+**Đầu vào:**
+
+> Tôi là người dùng U001. Hãy tìm người phù hợp nhất, phân tích độ tương thích và gợi ý lời mở đầu.
+
+#### Bước 1 — Tìm ứng viên
+
+- **Thought/Tóm tắt quyết định:** Yêu cầu cần dữ liệu hồ sơ và xếp hạng ứng viên, vì vậy phải gọi tool thay vì tự suy đoán.
+- **Action:** `find_candidate_matches`
+- **Action Input:**
+
+```json
+{"user_id": "U001", "limit": 3}
+```
+
+- **Observation:** Tool trả về ba ứng viên hợp lệ theo thứ tự:
+
+| Hạng | Candidate | Tên | Điểm | Lý do nổi bật |
+| :---: | :---: | :--- | ---: | :--- |
+| 1 | U002 | Bình | 90.0 | Cùng giá trị, sở thích và mục tiêu quan hệ |
+| 2 | U003 | Cường | 75.0 | Cùng giá trị, sở thích và mục tiêu quan hệ |
+| 3 | U004 | Dũng | 69.0 | Cùng giá trị, sở thích và mục tiêu quan hệ |
+
+#### Bước 2 — Phân tích ứng viên đứng đầu
+
+- **Thought/Tóm tắt quyết định:** U002 đứng đầu Observation trước, nên Agent dùng đúng ID này để phân tích chi tiết.
+- **Action:** `calculate_compatibility`
+- **Action Input:**
+
+```json
+{"user_id": "U001", "candidate_id": "U002"}
+```
+
+- **Observation:**
+
+```json
+{
+  "eligible": true,
+  "total_score": 90.0,
+  "breakdown": {
+    "relationship_goal": 100.0,
+    "values": 100.0,
+    "interests": 50.0,
+    "location": 100.0
+  },
+  "shared_interests": ["du lịch", "nhiếp ảnh"],
+  "shared_values": ["gia đình", "phát triển bản thân", "trung thực"]
+}
+```
+
+#### Bước 3 — Tạo lời mở đầu
+
+- **Thought/Tóm tắt quyết định:** Người dùng yêu cầu gợi ý lời mở đầu, nên Agent tiếp tục dùng U001 và U002 từ Observation đã xác minh.
+- **Action:** `suggest_first_message`
+- **Action Input:**
+
+```json
+{"user_id": "U001", "candidate_id": "U002"}
+```
+
+- **Observation:**
+
+```json
+{
+  "message": "Chào Bình, mình thấy chúng ta đều thích du lịch. Bạn thích điều gì nhất ở sở thích này?",
+  "based_on": {"type": "interest", "value": "du lịch"}
+}
+```
+
+#### Final Answer quan sát được
+
+> Chào Bình, mình thấy chúng ta đều thích du lịch. Bạn thích điều gì nhất ở sở thích này?
+
+### 3.4. Đánh giá Test case số 4
+
+| Tiêu chí | Điểm | Nhận xét |
+| :--- | :---: | :--- |
+| Factual correctness | **1/2** | Tool cho kết quả đúng, nhưng Final Answer mới chỉ hiển thị lời mở đầu, chưa tổng hợp rõ điểm 90.0 và phân tích chi tiết. |
+| Grounding | **2/2** | Candidate ID, điểm số và lời mở đầu đều lấy từ Observation. |
+| Tool selection | **2/2** | Gọi đúng thứ tự `find_candidate_matches` → `calculate_compatibility` → `suggest_first_message`. |
+| Termination | **2/2** | Dừng đúng sau ba lần gọi tool và một Final Answer. |
+| **Tổng** | **7/8** | Luồng ReAct đạt; cần cải thiện nội dung Final Answer để tổng hợp đầy đủ kết quả. |
+
+### 3.5. Failed trace — Test case số 5
+
+**Đầu vào:**
+
+> Tôi là người dùng U999. Hãy tìm người phù hợp nhất với tôi.
+
+**Kỳ vọng:**
+
+```text
+Action: find_candidate_matches
+Action Input: {"user_id": "U999", "limit": 3}
+Observation: PROFILE_NOT_FOUND
+Final Answer: thông báo lịch sự
+```
+
+**Thực tế:** Agent trả `Final Answer` trực tiếp rằng U999 không hợp lệ, không gọi tool để xác minh.
+
+| Tiêu chí | Kết quả | Nhận xét |
+| :--- | :---: | :--- |
+| An toàn | **Đạt** | Không bịa hồ sơ, không crash và không lặp vô hạn. |
+| Tool selection | **Chưa đạt** | Không gọi `find_candidate_matches` như expected behavior. |
+| Grounding | **Chưa đạt** | Không có Observation `PROFILE_NOT_FOUND`. |
+| Termination | **Đạt** | Dừng ngay bằng câu trả lời lịch sự. |
+
+**Root cause:** Prompt chưa buộc model phải dùng tool để xác minh mọi `user_id`; model tự suy luận U999 không tồn tại từ mẫu ID hoặc ngữ cảnh.
+
+**Đề xuất sửa:** Bổ sung guardrail: khi yêu cầu liên quan đến hồ sơ hoặc `user_id`, Agent không được tự kết luận ID hợp lệ hay không hợp lệ mà phải gọi tool thích hợp để xác minh.
+
+### 3.6. Kết luận Mốc 3
+
+ReAct Agent đã hoàn thành đúng luồng ba tool của Test 4, sử dụng dữ liệu deterministic và tạo trace `Action → Action Input → Observation → Final Answer`. Agent cũng dừng an toàn ở edge case. Tuy nhiên, Test 5 chưa tuân thủ tool path và Final Answer của Test 4 chưa tổng hợp đầy đủ điểm tương thích. Hai vấn đề này cần được khắc phục trước khi đánh dấu toàn bộ Mốc 3 hoàn thành tuyệt đối.
+
+### 3.7. Checklist Role 5 — Mốc 3
+
+- [x] Trích xuất trace ReAct hoàn chỉnh của Test 4.
+- [x] Ghi lại Action, JSON Action Input và Observation thật.
+- [x] Đối chiếu thứ tự tool với expected behavior.
+- [x] Chấm điểm theo rubric correctness, grounding, tool selection và termination.
+- [x] Ghi failed trace của Test 5 và phân tích root cause.
+- [x] Đề xuất biện pháp cải thiện guardrail.
 
