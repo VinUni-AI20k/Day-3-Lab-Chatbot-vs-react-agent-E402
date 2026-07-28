@@ -4,3 +4,5 @@ anthropic
 python-dotenv
 requests
 guardrails-ai
+langgraph
+streamlit
