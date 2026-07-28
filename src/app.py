@@ -85,6 +85,7 @@ class AgentState(TypedDict):
     resume_text: str
     job_description_text: str
     preferred_date: str
+    user_question: str  # yêu cầu người dùng tự nhập (chat box) — cũng phải qua Guardrails
     question: str
     history: str
     step: int
@@ -185,13 +186,20 @@ def _parse_step(raw: str, tolerant: bool = True) -> dict:
 
 
 def guard_input(state: AgentState) -> dict:
-    """Guardrails AI trên toàn bộ dữ liệu đầu vào (CV/JD/tên/ngày) TRƯỚC khi đưa vào Agent —
-    chặn injection gián tiếp nằm trong CV/JD ngay từ đầu, không tốn vòng lặp LLM nào."""
-    combined = "\n".join([
-        state["candidate_name"], state["resume_text"],
-        state["job_description_text"], state.get("preferred_date", ""),
-    ])
-    if contains_prompt_injection(combined):
+    """Guardrails AI trên TOÀN BỘ dữ liệu đầu vào TRƯỚC khi đưa vào Agent — chặn cả:
+    - injection GIÁN TIẾP nằm trong CV/JD (dữ liệu do bên ngoài cung cấp), và
+    - injection TRỰC TIẾP trong câu hỏi người dùng tự nhập (user_question).
+    Chạy ở node đầu tiên của graph nên không tốn vòng lặp LLM nào khi bị chặn."""
+    sources = {
+        "câu hỏi người dùng": state.get("user_question", ""),
+        "tên ứng viên": state["candidate_name"],
+        "CV": state["resume_text"],
+        "JD": state["job_description_text"],
+        "ngày phỏng vấn": state.get("preferred_date", ""),
+    }
+    # Kiểm tra từng nguồn riêng để báo đúng chỗ nào chứa injection (dễ audit khi demo).
+    flagged = [name for name, text in sources.items() if text and contains_prompt_injection(text)]
+    if flagged:
         guard_mode = injection_guard_status()
         return {
             "final_answer": INJECTION_REFUSAL_MESSAGE,
@@ -199,7 +207,10 @@ def guard_input(state: AgentState) -> dict:
             "stop_reason": "injection",
             "trace": state["trace"] + [{
                 "type": "blocked",
-                "text": f"{guard_mode} phát hiện dấu hiệu prompt injection trong CV/JD/đầu vào — dừng ngay, không gọi LLM/tool.",
+                "text": (
+                    f"{guard_mode} phát hiện dấu hiệu prompt injection trong: {', '.join(flagged)} "
+                    "— dừng ngay, không gọi LLM/tool."
+                ),
             }],
         }
     return {}
@@ -482,18 +493,29 @@ def make_initial_state(
     job_description_text: str,
     preferred_date: str = "",
     version: str = "v2",
+    user_question: str = "",
 ) -> AgentState:
+    """Dựng state khởi tạo cho ReAct Agent.
+
+    user_question: yêu cầu do người dùng tự nhập (VD từ chat box trên web). Nếu để trống,
+    dùng nhiệm vụ mặc định "sàng lọc rồi đặt lịch nếu đạt". Chuỗi này được lưu riêng vào
+    state để guard_input kiểm tra Guardrails TRƯỚC khi đưa vào LLM.
+    """
     date_hint = f" Ngày mong muốn phỏng vấn nếu đạt yêu cầu: {preferred_date}." if preferred_date else ""
+    task = (user_question or "").strip() or (
+        "Hãy dùng screen_resume để kiểm tra ứng viên có đạt yêu cầu không. "
+        "Nếu đạt yêu cầu, hãy đặt lịch phỏng vấn."
+    )
     question = (
-        f"Question: Ứng viên {candidate_name} vừa nộp hồ sơ cho vị trí đang tuyển. "
-        "Hãy dùng screen_resume để kiểm tra ứng viên có đạt yêu cầu không (CV và JD đã được "
-        "nạp sẵn trong hệ thống). Nếu đạt yêu cầu, hãy đặt lịch phỏng vấn." + date_hint
+        f"Question: Ứng viên {candidate_name} vừa nộp hồ sơ cho vị trí đang tuyển "
+        f"(CV và JD đã được nạp sẵn trong hệ thống). {task}{date_hint}"
     )
     return {
         "candidate_name": candidate_name,
         "resume_text": resume_text,
         "job_description_text": job_description_text,
         "preferred_date": preferred_date,
+        "user_question": user_question or "",
         "question": question,
         "history": "",
         "step": 0,
@@ -527,12 +549,14 @@ _TRACE_LABEL = {
 
 def run_react_agent(
     candidate_name: str, resume_text: str, job_description_text: str,
-    preferred_date: str, provider, version: str = "v2",
+    preferred_date: str, provider, version: str = "v2", user_question: str = "",
 ):
     """Chạy ReAct Agent (LangGraph) và in từng bước Thought/Action/Observation ra console."""
     print(f"\n🤖 [REACT AGENT {version.upper()}] Ứng viên: {candidate_name}")
     graph = build_react_graph(provider)
-    state = make_initial_state(candidate_name, resume_text, job_description_text, preferred_date, version)
+    state = make_initial_state(
+        candidate_name, resume_text, job_description_text, preferred_date, version, user_question
+    )
 
     seen = 0
     final_state = state

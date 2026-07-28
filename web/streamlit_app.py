@@ -39,9 +39,11 @@ TRACE_LABELS = {
 }
 
 
-def run_agent_turn(provider, candidate_name, resume_text, jd_text, preferred_date):
+def run_agent_turn(provider, candidate_name, resume_text, jd_text, preferred_date, user_question=""):
     graph = build_react_graph(provider)
-    state = make_initial_state(candidate_name, resume_text, jd_text, preferred_date)
+    state = make_initial_state(
+        candidate_name, resume_text, jd_text, preferred_date, user_question=user_question
+    )
     final_state = state
 
     for snapshot in graph.stream(state, stream_mode="values"):
@@ -140,7 +142,10 @@ if user_prompt:
             st.warning(answer)
         else:
             with st.spinner("Running ReAct agent..."):
-                final_state = run_agent_turn(provider, candidate_name, resume_text, jd_text, preferred_date)
+                final_state = run_agent_turn(
+                    provider, candidate_name, resume_text, jd_text, preferred_date,
+                    user_question=user_prompt,
+                )
 
             answer = final_state.get("final_answer") or "The agent stopped without a final answer."
             trace = final_state.get("trace", [])
