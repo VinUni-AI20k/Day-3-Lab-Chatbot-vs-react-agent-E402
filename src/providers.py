@@ -131,6 +131,39 @@ class OpenRouterProvider(BaseLLMProvider):
             return f"[OpenRouter Exception]: {str(e)}"
 
 
+class GroqProvider(BaseLLMProvider):
+    """Groq provider via its OpenAI-compatible Chat Completions API."""
+    def __init__(self, api_key: str = None, model: str = None):
+        self.api_key = api_key or os.getenv("GROQ_API_KEY")
+        self.model_name = model or os.getenv("LLM_MODEL") or "llama-3.3-70b-versatile"
+
+    def generate(self, prompt: str, system_prompt: str = "") -> str:
+        if not self.api_key or self.api_key == "your_groq_api_key_here":
+            return "[Groq Error]: Chưa cấu hình GROQ_API_KEY trong file .env!"
+
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        try:
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={"model": self.model_name, "messages": messages, "temperature": 0.4},
+                timeout=30,
+            )
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"]
+        except requests.RequestException as error:
+            return f"[Groq API Error]: {error}"
+        except (KeyError, IndexError, ValueError):
+            return "[Groq API Error]: Phản hồi từ Groq không đúng định dạng."
+
+
 class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
@@ -152,6 +185,8 @@ def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
         return AnthropicProvider()
     elif name == "openrouter":
         return OpenRouterProvider()
+    elif name == "groq":
+        return GroqProvider()
     else:
         return MockProvider()
 

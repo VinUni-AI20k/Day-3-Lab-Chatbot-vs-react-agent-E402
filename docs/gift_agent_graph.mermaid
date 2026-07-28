@@ -1,0 +1,11 @@
+flowchart TD
+    INPUT[User message] --> NORMALIZE[normalize_profile tool]
+    NORMALIZE --> COMPLETE{Đủ relationship<br/>occasion/interests/budget?}
+    COMPLETE -- Chưa --> COLLECT[collect_profile<br/>phản hồi + hỏi đúng 1 trường thiếu]
+    COLLECT --> DONE_PARTIAL[Return state: collect_profile]
+    COMPLETE -- Đủ --> SELECT[select_product tool: Groq<br/>chọn 1 sản phẩm đích]
+    SELECT --> SEARCH[search_web tool: Tavily<br/>Shopee/Lazada/Tiki/Sendo]
+    SEARCH --> RECOMMEND[generate_recommendation tool: Groq<br/>chốt 1 sản phẩm + link]
+    RECOMMEND --> DONE[Return state: done<br/>1 sản phẩm cụ thể + nguồn]
+    SEARCH -. lỗi có thể phục hồi .-> RECOMMEND
+    RECOMMEND -. lỗi .-> FALLBACK[Return state: error<br/>khuyến nghị fallback]
