@@ -21,7 +21,7 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
@@ -42,20 +42,21 @@ def load_test_cases():
 
 def run_baseline_chatbot(user_query: str, provider):
     """
-<<<<<<< Updated upstream
     Dựng Chatbot gốc (Baseline) không có công cụ.
     """
     print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
     print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
     
     # Gọi LLM Provider thực hiện sinh câu trả lời
-=======
-    Chạy đúng một lượt sinh phản hồi bằng LLM, không gọi công cụ (Mốc 2).
+    Chạy đúng một lượt sinh phản hồi bằng LLM, không gọi công cụ.
     """
     print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
->>>>>>> Stashed changes
+
+    # Baseline protocol: system prompt + user query -> đúng một LLM call.
+
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
     print(f"🤖 Chatbot trả lời:\n{response}")
+    return response
 
 
 def parse_action(text: str):
@@ -99,7 +100,6 @@ def execute_tool(tool_name: str, args: list) -> str:
 
 def run_react_agent(user_query: str, provider):
     """
-<<<<<<< Updated upstream
     Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
@@ -124,49 +124,11 @@ def run_react_agent(user_query: str, provider):
             
     if step >= MAX_ITERATIONS:
         print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
-=======
-    Chạy vòng lặp ReAct Agent (Mốc 3):
-    Suy luận (Thought) -> Gọi công cụ (Action) -> Quan sát (Observation) -> Trả lời (Final Answer).
-    Bao gồm Phanh An Toàn Guardrail (MAX_ITERATIONS).
+    Điểm tích hợp ReAct Agent dành cho Mốc 3.
+
+    Mốc 2 chỉ nghiệm thu Chatbot Baseline nên không thực thi tool tại đây.
     """
-    print(f"\n🧠 [REACT AGENT] Câu hỏi: {user_query}")
-    
-    conversation_history = f"User Question: {user_query}\n"
-    
-    for iteration in range(1, MAX_ITERATIONS + 1):
-        print(f"\n🔄 --- Vòng lặp ReAct #{iteration}/{MAX_ITERATIONS} ---")
-        
-        prompt = conversation_history
-        response = provider.generate(prompt, system_prompt=REACT_SYSTEM_PROMPT)
-        print(f"🤖 Agent:\n{response}")
-        
-        # Kiểm tra xem Agent đã đưa ra Final Answer chưa
-        if "Final Answer:" in response:
-            final_answer = response.split("Final Answer:")[-1].strip()
-            print(f"\n🎯 [FINAL ANSWER]: {final_answer}")
-            return response
-            
-        # Trích xuất Action từ phản hồi của Agent
-        tool_name, args = parse_action(response)
-        if tool_name:
-            print(f"🛠️ [ACTION DETECTED]: Gọi tool '{tool_name}' với tham số: {args}")
-            observation = execute_tool(tool_name, args)
-            print(f"👁️ [OBSERVATION]:\n{observation}")
-            
-            conversation_history += f"\n{response}\nObservation: {observation}\n"
-        else:
-            print("⚠️ [WARNING]: Agent không đưa ra Action hợp lệ hay Final Answer. Yêu cầu định dạng lại...")
-            conversation_history += f"\n{response}\nObservation: LỖI: Vui lòng đưa ra Action đúng định dạng 'Action: tool_name[args]' hoặc 'Final Answer: câu_trả_lời'.\n"
-            
-    # 🛡️ GUARDRAIL TRIGGERED
-    print(f"\n🛡️ [GUARDRAIL TRIGGERED]: Đã vượt quá số lần thử tối đa (MAX_ITERATIONS={MAX_ITERATIONS}). Ngắt vòng lặp.")
-    fallback_msg = (
-        "Xin lỗi, tôi đã thử tra cứu nhiều lần nhưng không thể hoàn thành yêu cầu do dữ liệu không hợp lệ "
-        "hoặc gặp sự cố hệ thống. Vui lòng cung cấp lại mã đơn hàng/thông tin chính xác hoặc liên hệ bộ phận hỗ trợ."
-    )
-    print(f"🤖 Agent (Fallback Response):\nFinal Answer: {fallback_msg}")
-    return f"Final Answer: {fallback_msg}"
->>>>>>> Stashed changes
+    print("\nℹ️ ReAct Agent sẽ được tích hợp và nghiệm thu tại Mốc 3.")
 
 
 if __name__ == "__main__":
@@ -182,7 +144,6 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-<<<<<<< Updated upstream
     # Chạy thử câu test số 3
     sample_query = tests[2]["question"]
     
@@ -191,30 +152,30 @@ if __name__ == "__main__":
     
     print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
     run_react_agent(sample_query, provider)
-=======
-    print("==================================================")
-    print("--- MỐC 2: CHẠY CHATBOT BASELINE TRÊN 5 TEST CASES ---")
-    print("==================================================")
     for test_case in tests:
         print(
             f"\n{'-' * 50}\n"
             f"Test #{test_case['id']} — {test_case['category']}\n"
             f"Kỳ vọng: {test_case['expected_behavior']}"
         )
-        run_baseline_chatbot(test_case["question"], provider)
 
-    print("\n==================================================")
-    print("--- MỐC 3: CHẠY REACT AGENT TRÊN 5 TEST CASES ---")
-    print("==================================================")
-    react_results = []
-    for test_case in tests:
-        print(
-            f"\n{'-' * 50}\n"
-            f"Test #{test_case['id']} — {test_case['category']}\n"
-            f"Kỳ vọng: {test_case['expected_behavior']}"
-        )
         res = run_react_agent(test_case["question"], provider)
         react_results.append(res)
 
     print("\n✅ HOÀN THÀNH TOÀN BỘ 5 TEST CASES TRÊN CẢ CHATBOT BASELINE VÀ REACT AGENT!")
->>>>>>> Stashed changes
+
+        response = run_baseline_chatbot(test_case["question"], provider)
+        baseline_results.append(
+            {
+                "id": test_case["id"],
+                "question": test_case["question"],
+                "response": response,
+            }
+        )
+
+    print(
+        "\n✅ HOÀN THÀNH BASELINE:"
+        f" {len(baseline_results)} LLM calls / {len(tests)} test cases,"
+        " 0 tool calls."
+    )
+    print(f"🧰 Tool registry đã nhận: {', '.join(AVAILABLE_TOOLS)}")
