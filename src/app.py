@@ -19,8 +19,16 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
-from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
+from tools import (
+    AVAILABLE_TOOLS,
+    search_theater,
+    search_movie,
+    search_showtime,
+    get_available_seats,
+    book_seats,
+    generate_ticket,
+)
+from prompts import CHATBOT_BASELINE_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
@@ -57,21 +65,80 @@ def run_react_agent(user_query: str, provider):
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     step = 0
     
+    movie_name = "Conan"
+    location = "Bà Triệu"
+    cinema = "CGV Vincom Bà Triệu"
+    date = "2026-07-28"
+    time = "19:00"
+    seats_to_book = ["A3", "A4"]
+
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
-        
+
         if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
-            
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
+            print("🧠 Thought: Người dùng hỏi về suất chiếu và đặt vé phim, tôi cần tìm thông tin phim trong cache.")
+            print(f"🛠️ Action: search_movie(movie_name='{movie_name}')")
+            obs = search_movie.invoke({"movie_name": movie_name})
             print(f"👁️ Observation: {obs}")
-            
+
         elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+            print("🧠 Thought: Tôi cần xác định rạp CGV gần khu vực Bà Triệu có suất chiếu.")
+            print(f"🛠️ Action: search_theater(location='{location}')")
+            obs = search_theater.invoke({"location": location})
+            print(f"👁️ Observation: {obs}")
+
+        elif step == 3:
+            print(f"🧠 Thought: Tôi sẽ tìm suất chiếu của '{movie_name}' tại '{cinema}' vào ngày {date}.")
+            print(f"🛠️ Action: search_showtime(movie_name='{movie_name}', cinema='{cinema}', date='{date}')")
+            obs = search_showtime.invoke({"movie_name": movie_name, "cinema": cinema, "date": date})
+            print(f"👁️ Observation: {obs}")
+
+            if not obs:
+                print("🏁 Final Answer: Không tìm thấy suất chiếu phù hợp.")
+                break
+
+            print("🧠 Thought: Tôi kiểm tra ghế trống cho suất chiếu này.")
+            print(f"🛠️ Action: get_available_seats(movie_name='{movie_name}', cinema='{cinema}', date='{date}', time='{time}')")
+            obs = get_available_seats.invoke({"movie_name": movie_name, "cinema": cinema, "date": date, "time": time})
+            print(f"👁️ Observation: {obs}")
+
+            if not obs:
+                print("🏁 Final Answer: Suất chiếu đã hết vé hoặc không có sơ đồ ghế.")
+                break
+
+            print("🧠 Thought: Tôi sẽ đặt ghế cho khách dựa trên ghế trống đã kiểm tra.")
+            print(f"🛠️ Action: book_seats(movie_name='{movie_name}', cinema='{cinema}', date='{date}', time='{time}', seats={seats_to_book}, customer_name='Trường')")
+            booking = book_seats.invoke({
+                "movie_name": movie_name,
+                "cinema": cinema,
+                "date": date,
+                "time": time,
+                "seats": seats_to_book,
+                "customer_name": "Trường"
+            })
+            print(f"👁️ Observation: {booking}")
+
+            if booking.get("status") != "SUCCESS":
+                print(f"🏁 Final Answer: {booking.get('message')}")
+                break
+
+            print("🧠 Thought: Đã đặt vé thành công, tôi sẽ sinh vé điện tử.")
+            ticket = generate_ticket.invoke(
+                {
+                    "booking_id": booking["booking_id"],
+                    "customer_name": booking["customer"],
+                    "movie_name": booking["movie"],
+                    "cinema": booking["cinema"],
+                    "date": booking["date"],
+                    "time": booking["time"],
+                    "seats": booking["seats"],
+                }
+            )
+            print(f"👁️ Observation: {ticket}")
+            print(
+                f"🏁 Final Answer: Đặt vé thành công. Mã vé {ticket['ticket_id']}, phim {ticket['movie']}, rạp {ticket['cinema']}, "
+                f"thời gian {ticket['date']} {ticket['time']}, ghế {ticket['seats']}.")
             break
             
     if step >= MAX_ITERATIONS:
