@@ -2,31 +2,69 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Nghề Data Analyst cần làm những công việc gì ?",
+    "expected_behavior": "Chatbot trả lời trực tiếp bằng kiến thức nghề nghiệp tổng quát, nêu được các nhiệm vụ tiêu biểu của Data Analyst và không cần gọi tool."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Em thích sáng tạo, giao tiếp và làm việc với nhiều người. Em nên bắt đầu khám phá những nhóm nghề nào?",
+    "expected_behavior": "Chatbot gợi ý một số nhóm nghề phù hợp như marketing, truyền thông, quan hệ công chúng hoặc nhân sự; giải thích đây chỉ là định hướng ban đầu và không cần gọi tool."
   },
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "question": "Chatbot gợi ý một số nhóm nghề phù hợp như marketing, truyền thông, quan hệ công chúng hoặc nhân sự; giải thích đây chỉ là định hướng ban đầu và không cần gọi tool.",
+    "expected_behavior": "Agent gọi tool tìm kiếm hoặc đối chiếu nghề nghiệp với hai kỹ năng Python và SQL, sau đó đề xuất các nghề phù hợp dựa trên Observation; không tự bịa dữ liệu ngoài kết quả tool."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "question": "Em có kỹ năng Python và Excel, muốn trở thành Data Analyst. Hãy đánh giá những kỹ năng em còn thiếu và đề xuất một lộ trình học phù hợp.",
+    "expected_behavior": "Agent tra cứu yêu cầu của nghề Data Analyst, đối chiếu với Python và Excel để xác định khoảng trống kỹ năng, rồi dùng kết quả đó đề xuất lộ trình học theo thứ tự hợp lý."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Tôi chưa cung cấp sở thích, kỹ năng hay trình độ học vấn. Hãy chọn chính xác một nghề tốt nhất cho tôi và bảo đảm rằng tôi chắc chắn sẽ thành công với nghề đó.",
+    "expected_behavior": "Agent không bịa hồ sơ, không khẳng định có một nghề tốt nhất và không bảo đảm thành công. Agent giải thích rằng chưa đủ dữ liệu, hỏi thêm thông tin cần thiết hoặc đưa ra hướng khám phá chung; nếu không thể tiếp tục thì dừng an toàn và lịch sự."
+  }
+,
+  {
+    "id": 6,
+    "category": "🟡 Multi-step (Career Tool)",
+    "question": "Tôi thích dữ liệu và có kỹ năng Python, SQL. Gợi ý nghề phù hợp?",
+    "expected_behavior": "Agent gọi assess_user_profile -> search_careers và trả về danh sách nghề phù hợp kèm điểm và lý do."
+  },
+  {
+    "id": 7,
+    "category": "🟡 Tool (Career Details)",
+    "question": "Mô tả nhiệm vụ và yêu cầu cho nghề 'Data Analyst'.",
+    "expected_behavior": "Agent gọi get_career_details('Data Analyst') và trả về nhiệm vụ, yêu cầu và môi trường làm việc."
+  },
+  {
+    "id": 8,
+    "category": "🟡 Tool (Skill Gap)",
+    "question": "Tôi có kỹ năng: Python. Khoảng cách kỹ năng so với nghề Data Analyst là gì?",
+    "expected_behavior": "Agent gọi analyze_skill_gap(['Python'], 'Data Analyst') và liệt kê kỹ năng đạt/thiếu cùng phần trăm phù hợp."
+  },
+  {
+    "id": 9,
+    "category": "🟡 Tool (Learning Path)",
+    "question": "Gợi ý lộ trình học 4 tháng để bù kỹ năng SQL và Statistics.",
+    "expected_behavior": "Agent gọi recommend_learning_path(['sql','statistics'], 4) và trả về kế hoạch theo tháng kèm khóa học gợi ý."
+  },
+  {
+    "id": 10,
+    "category": "🟣 End-to-end ReAct Flow",
+    "question": "(Luồng) Tôi cung cấp sở thích và kỹ năng -> agent gợi ý nghề -> chi tiết -> gap -> lộ trình.",
+    "expected_behavior": "Agent thực hiện: assess_user_profile -> search_careers -> get_career_details -> analyze_skill_gap -> recommend_learning_path và tổng hợp khuyến nghị cụ thể cho người dùng."
+  },
+  {
+    "id": 11,
+    "category": "🔴 Edge Case (Missing Career)",
+    "question": "Hỏi chi tiết nghề 'Astronaut Trainer' (không có trong DB).",
+    "expected_behavior": "get_career_details trả về lỗi 'career not found' và agent phản hồi lịch sự yêu cầu người dùng cung cấp nghề khác."
   }
 ]
+
