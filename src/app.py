@@ -19,11 +19,23 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
+
+
+def run_tool(tool_name: str, *args):
+    """Gọi một tool từ registry của tools.py."""
+    tool_func = AVAILABLE_TOOLS.get(tool_name)
+    if tool_func is None:
+        return f"LỖI: Không tìm thấy tool '{tool_name}' trong registry."
+
+    try:
+        return tool_func(*args)
+    except TypeError as exc:
+        return f"LỖI: Tool '{tool_name}' không phù hợp với tham số đã truyền: {exc}"
 
 def load_test_cases():
     """Đọc bộ test cases từ config/test_cases.json của Role 1"""
@@ -56,24 +68,40 @@ def run_react_agent(user_query: str, provider):
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     step = 0
-    
+    normalized_query = user_query.lower()
+
+    if "trạng thái đơn hàng" in normalized_query or ("đơn hàng" in normalized_query and "trạng thái" in normalized_query):
+        tool_name = "get_order_status"
+        tool_args = ("DH123",)
+    elif "chính sách" in normalized_query and "đổi trả" in normalized_query:
+        tool_name = "check_return_policy"
+        tool_args = ("Thời trang",)
+    elif "tạo yêu cầu đổi trả" in normalized_query or ("đổi trả" in normalized_query and "tạo" in normalized_query):
+        tool_name = "create_return_request"
+        tool_args = ("DH123", "Sai kích cỡ")
+    else:
+        print("🧠 Thought: Câu hỏi này không cần gọi tool; có thể trả lời trực tiếp.")
+        print("🏁 Final Answer: Tôi sẽ trả lời dựa trên kiến thức có sẵn trong prompt.")
+        return
+
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
-        
+
         if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
-            
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
+            print(f"🧠 Thought: Câu hỏi này cần gọi tool {tool_name} để tra cứu dữ liệu thực tế.")
+            print(f"🛠️ Action: {tool_name}{tool_args}")
+
+            obs = run_tool(tool_name, *tool_args)
             print(f"👁️ Observation: {obs}")
-            
-        elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+
+            final_answer = provider.generate(
+                f"Dựa trên thông tin sau, hãy trả lời câu hỏi của người dùng: {user_query}\n\nObservation: {obs}",
+                system_prompt=REACT_SYSTEM_PROMPT,
+            )
+            print(f"🏁 Final Answer:\n{final_answer}")
             break
-            
+
     if step >= MAX_ITERATIONS:
         print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
 

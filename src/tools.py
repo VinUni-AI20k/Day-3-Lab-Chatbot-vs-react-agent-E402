@@ -1,49 +1,148 @@
 """
 🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
-Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
+Chủ đề: Trợ lý tra cứu đơn hàng và xử lý đổi trả (E-commerce Order & Returns Assistant)
 """
 
-def get_weather(location: str) -> str:
+import json
+
+
+def get_order_status(order_id: str) -> str:
     """
-    Tra cứu thời tiết hiện tại của một thành phố.
+    Tra cứu trạng thái chi tiết của một đơn hàng dựa trên Mã đơn hàng (Order ID).
     
     Args:
-        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
+        order_id (str): Mã đơn hàng cần kiểm tra (Ví dụ: 'DH123', 'DH456', 'DH789')
         
     Returns:
-        str: Thông tin thời tiết chi tiết
+        str: Chuỗi thông tin chi tiết về đơn hàng (JSON hoặc thông báo lỗi)
     """
-    loc_lower = location.lower()
-    if "hà nội" in loc_lower or "ha noi" in loc_lower:
-        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
-    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
-        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
-    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
-        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
-    else:
-        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
+    try:
+        id_clean = order_id.strip().upper()
+        
+        # Giả lập database đơn hàng
+        orders_db = {
+            "DH123": {
+                "status": "Đã giao thành công",
+                "delivery_date": "2026-03-01",  # Đơn hàng mới giao gần đây
+                "category": "Thời trang",
+                "item": "Áo khoác gió Unisex",
+                "price": "350,000 VNĐ"
+            },
+            "DH456": {
+                "status": "Đang vận chuyển",
+                "delivery_date": None,
+                "category": "Điện tử",
+                "item": "Tai nghe Bluetooth",
+                "price": "1,200,000 VNĐ"
+            },
+            "DH789": {
+                "status": "Đã giao thành công",
+                "delivery_date": "2025-12-15",  # Đơn hàng đã giao quá lâu
+                "category": "Mỹ phẩm",
+                "item": "Kem chống nắng SPF50",
+                "price": "450,000 VNĐ"
+            }
+        }
+        
+        if id_clean in orders_db:
+            # Trả về chuỗi JSON để Agent dễ phân tích thông số
+            return json.dumps(orders_db[id_clean], ensure_ascii=False)
+            
+        return f"LỖI: Không tìm thấy mã đơn hàng '{order_id}' trong hệ thống."
+        
+    except Exception as e:
+        return f"LỖI: Đã xảy ra sự cố khi truy vấn đơn hàng: {str(e)}"
 
 
-def search_flights(origin: str, destination: str) -> str:
+def check_return_policy(category: str) -> str:
     """
-    Tra cứu chuyến bay giữa hai địa điểm.
+    Tra cứu chính sách đổi trả của cửa hàng dựa trên Ngành hàng.
     
     Args:
-        origin (str): Nơi đi (Ví dụ: 'TP.HCM')
-        destination (str): Nơi đến (Ví dụ: 'Hà Nội')
+        category (str): Ngành hàng của sản phẩm (Ví dụ: 'Thời trang', 'Điện tử', 'Mỹ phẩm')
         
     Returns:
-        str: Danh sách chuyến bay khả dụng và giá vé
+        str: Quy định đổi trả cụ thể cho ngành hàng đó
     """
-    return (
-        f"Chuyến bay từ {origin} -> {destination} ngày mai:\n"
-        f"1. VN123 (08:00) - Giá: 1,500,000 VNĐ (Còn vé)\n"
-        f"2. VJ456 (14:30) - Giá: 1,200,000 VNĐ (Còn vé)"
-    )
+    try:
+        cat_lower = category.strip().lower()
+        
+        if "thời trang" in cat_lower or "quần áo" in cat_lower:
+            return "Chính sách THỜI TRANG: Cho phép đổi trả trong vòng 7 ngày kể từ ngày giao hàng. Sản phẩm phải còn nguyên mác, chưa qua sử dụng."
+        elif "điện tử" in cat_lower or "thiết bị" in cat_lower:
+            return "Chính sách ĐIỆN TỬ: Cho phép đổi trả trong vòng 3 ngày nếu có lỗi từ nhà sản xuất. Yêu cầu có video khui hộp (unboxing)."
+        elif "mỹ phẩm" in cat_lower:
+            return "Chính sách MỸ PHẨM: Không hỗ trợ đổi trả nếu sản phẩm đã bị bóc màng co hoặc đã mở nắp sử dụng (trừ trường hợp kích ứng có chứng nhận y tế)."
+        else:
+            return f"LỖI: Ngành hàng '{category}' không thuộc danh mục hỗ trợ đổi trả tự động hoặc không tồn tại."
+            
+    except Exception as e:
+        return f"LỖI: Đã xảy ra sự cố khi kiểm tra chính sách: {str(e)}"
 
 
-# Danh sách các tool được đăng ký để Agent sử dụng
+def create_return_request(order_id: str, reason: str) -> str:
+    """
+    Tạo một yêu cầu đổi trả mới cho đơn hàng.
+    
+    Args:
+        order_id (str): Mã đơn hàng muốn đổi trả
+        reason (str): Lý do đổi trả sản phẩm (Ví dụ: 'Sai kích cỡ', 'Lỗi kỹ thuật')
+        
+    Returns:
+        str: Kết quả xử lý yêu cầu đổi trả (thành công kèm mã yêu cầu hoặc thất bại)
+    """
+    try:
+        id_clean = order_id.strip().upper()
+        reason_clean = reason.strip()
+        
+        if not id_clean:
+            return "LỖI: Thiếu mã đơn hàng để tạo yêu cầu đổi trả."
+        if not reason_clean:
+            return "LỖI: Vui lòng cung cấp lý do đổi trả rõ ràng."
+            
+        # Giả lập kiểm tra sơ bộ trước khi tạo yêu cầu
+        # Ở đây, ta tự động từ chối nếu là đơn hàng DH789 vì đã quá hạn đổi trả
+        if id_clean == "DH789":
+            return "LỖI TẠO YÊU CẦU: Hệ thống từ chối do đơn hàng DH789 đã vượt quá thời hạn đổi trả quy định."
+            
+        # Tạo mã yêu cầu ngẫu nhiên/giả lập
+        request_id = f"YCDT-{id_clean[-3:]}-99"
+        return f"THÀNH CÔNG: Đã tạo yêu cầu đổi trả {request_id} cho đơn hàng {id_clean}. Lý do ghi nhận: '{reason_clean}'. Nhân viên sẽ liên hệ lại trong vòng 24 giờ."
+        
+    except Exception as e:
+        return f"LỖI: Đã xảy ra sự cố khi tạo yêu cầu đổi trả: {str(e)}"
+
+
+# ==========================================
+# ĐĂNG KÝ DANH SÁCH TOOL (REGISTRY)
+# ==========================================
 AVAILABLE_TOOLS = {
-    "get_weather": get_weather,
-    "search_flights": search_flights,
+    "get_order_status": get_order_status,
+    "check_return_policy": check_return_policy,
+    "create_return_request": create_return_request,
 }
+
+
+# ==========================================
+# CHẠY THỬ ĐỘC LẬP (TESTING)
+# ==========================================
+if __name__ == "__main__":
+    print("--- BẮT ĐẦU KIỂM THỬ ĐỘC LẬP CÁC TOOL ĐỔI TRẢ ---")
+    
+    # 1. Test get_order_status
+    print("\n[Test 1] Tra cứu đơn hàng tồn tại:")
+    print(get_order_status("DH123"))
+    print("\n[Test 2] Tra cứu đơn hàng KHÔNG tồn tại:")
+    print(get_order_status("DH000"))
+    
+    # 2. Test check_return_policy
+    print("\n[Test 3] Kiểm tra chính sách ngành hàng:")
+    print(check_return_policy("Thời trang"))
+    
+    # 3. Test create_return_request
+    print("\n[Test 4] Tạo yêu cầu đổi trả hợp lệ:")
+    print(create_return_request("DH123", "Mặc bị chật size"))
+    print("\n[Test 5] Tạo yêu cầu đổi trả cho đơn đã quá hạn:")
+    print(create_return_request("DH789", "Không thích nữa"))
+    
+    print("\n--- HOÀN THÀNH KIỂM THỬ ---")

@@ -1,0 +1,15 @@
+flowchart TD
+    A[Người dùng gửi câu hỏi] --> B{Câu hỏi đơn giản hay phức tạp?}
+
+    B -->|Đơn giản| C[Chatbot Path]
+    C --> D[Tra cứu FAQ hoặc trạng thái đơn hàng]
+    D --> E[Trả lời người dùng]
+
+    B -->|Phức tạp| F[ReAct Agent Path]
+    F --> G[Phân tích yêu cầu]
+    G --> H[Gọi công cụ tra cứu đơn hàng và chính sách]
+    H --> I[Kiểm tra điều kiện đổi trả]
+    I --> J[Đưa ra kết quả hoặc tạo yêu cầu đổi trả]
+
+    E --> K[Kết thúc]
+    J --> K
