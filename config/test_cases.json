@@ -1,32 +1,50 @@
 [
   {
     "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟢 Đơn giản (Truy xuất dữ liệu)",
+    "question": "Hãy cho tôi biết thông tin về Phương, mã học viên 2A202601315",
+    "expected_behavior": "Agent gọi tool get_user_profile('2A202601315') và trả về thông tin hồ sơ của Phương từ tập dữ liệu."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟢 Đơn giản (Tìm kiếm)",
+    "question": "Tôi muốn tìm những người có cùng sở thích đọc sách ",
+    "expected_behavior": "Agent gọi tool search_candidate_profiles(interests='đọc sách'), đếm số lượng kết quả và trả lời."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Lọc + Xếp hạng)",
+    "question": "Tìm cho tôi 3 người phù hợp nhất để hẹn hò với tôi, dựa trên hồ sơ của tôi và sở thích của tôi.",
+    "expected_behavior": "Agent trích xuất thông tin người dùng, gọi calculate_compatibility để lọc ứng viên phù hợp, sau đó gọi calculate_compatibility để chấm điểm từng ứng viên, xếp hạng và trả về người phù hợp nhất cùng lý do."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Multi-step (Nhiều Tools)",
+    "question": "So sánh Phương mssv 2A202601315 và Lan mssv 2A202601316, ai phù hợp với tôi hơn? Giải thích chi tiết.",
+    "expected_behavior": "Agent gọi get_user_profile('2A202601315') và get_user_profile('2A202601316'), sau đó gọi calculate_compatibility cho từng người, so sánh điểm, phân tích điểm mạnh - điểm yếu của mỗi ứng viên rồi đưa ra kết luận."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "🔴 Edge Case (Guardrail / Không có dữ liệu)",
+    "question": "Hãy tìm cho tôi một bạn nam thích chơi piano, biết nấu ăn, biết đan len.",
+    "expected_behavior": "không tìm được người giống yêu cầu thì thông báo không tìm thấy."
+  }
+  {
+    "id": 6,
+    "category": "⚫ Ngoài phạm vi (Irrelevant Question)",
+    "question": "Viết cho tôi một chương trình Python sắp xếp mảng bằng Quick Sort.",
+    "expected_behavior": "Agent nhận biết câu hỏi không liên quan đến chức năng của Cupid Agent và lịch sự từ chối hoặc hướng người dùng sang một trợ lý lập trình."
+  },
+  {
+    "id": 7,
+    "category": "⚫ Ngoài phạm vi (Irrelevant Question)",
+    "question": "Thời tiết ở Hà Nội hôm nay như thế nào?",
+    "expected_behavior": "Agent nhận biết yêu cầu không thuộc phạm vi tìm kiếm đối tượng hẹn hò và thông báo rằng chức năng này không được hỗ trợ."
+  }
+  {
+  "id": 8,
+  "category": "🟡 input không rõ ràng",
+  "question": "Cho tôi xem thông tin của Phương.",
+  "expected_behavior": "Agent phát hiện có nhiều người tên Phương và yêu cầu người dùng chọn đúng MSSV hoặc mã người dùng."
   }
 ]
