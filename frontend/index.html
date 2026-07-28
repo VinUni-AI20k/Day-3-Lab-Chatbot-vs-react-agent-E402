@@ -226,8 +226,18 @@
         article.scrollIntoView({ behavior: "smooth", block: "end" });
       }
 
+      const giftCatalog = [
+        { name: "Bộ cà phê drip thủ công", price: 320, tags: ["cà phê"] },
+        { name: "Đèn đọc sách kẹp bàn", price: 280, tags: ["Đọc sách"] },
+        { name: "Hộp quà sách & cà phê", price: 650, tags: ["Đọc sách", "Cà phê"] },
+        { name: "Thẻ quà tặng game", price: 500, tags: ["Chơi game"] },
+        { name: "Bộ phụ kiện bàn làm việc", price: 450, tags: ["Đồng nghiệp"] },
+        { name: "Voucher workshop làm gốm", price: 750, tags: ["Kỷ niệm"] },
+        { name: "Bộ chăm sóc da mini", price: 480, tags: ["Làm đẹp"] }
+      ];
+
       function setProfile(key, value) {
-        if (!value || profile[key]) return;
+        if (!value) return;
         profile[key] = value;
         const target = document.querySelector(`[data-profile="${key}"]`);
         target.textContent = value;
@@ -263,7 +273,15 @@
         const note = document.querySelector("#profileNote");
         if (!missing) {
           note.textContent = "Đủ thông tin rồi, Mèo Hồng có thể bắt đầu tìm quà.";
-          return "Mình đã có đủ thông tin rồi. Mình sẽ ưu tiên những món quà hợp sở thích, trong mức ngân sách và không quá rủi ro nhé.";
+          const values = (profile.budget.match(/\d+(?:\.\d+)?/g) || []).map(Number);
+          const maxBudget = (values.length ? Math.max(...values) : 0) * (/(triệu|tr)/i.test(profile.budget) ? 1000 : 1);
+          const interests = profile.interests.toLowerCase().split(", ");
+          const matches = giftCatalog
+            .filter((gift) => gift.price <= maxBudget && gift.tags.some((tag) => interests.includes(tag.toLowerCase()) || tag === profile.relationship || tag === profile.occasion))
+            .sort((a, b) => b.tags.filter((tag) => interests.includes(tag.toLowerCase())).length - a.tags.filter((tag) => interests.includes(tag.toLowerCase())).length || a.price - b.price)
+            .slice(0, 3);
+          if (!matches.length) return "Catalog demo chưa có món thật sự khớp các điều kiện này. Bạn muốn nới một ràng buộc, như ngân sách hoặc loại quà, không?";
+          return "Mình đã lọc từ catalog demo:\n" + matches.map((gift, index) => `${index + 1}. ${gift.name} — ${gift.price.toLocaleString("vi-VN")}k: hợp với ${gift.tags.join(", ")}.`).join("\n");
         }
         const questions = {
           relationship: "Người nhận là ai với bạn để mình chọn món quà có độ thân mật vừa phải?",

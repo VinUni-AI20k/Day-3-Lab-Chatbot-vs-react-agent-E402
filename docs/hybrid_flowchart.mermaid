@@ -1,0 +1,11 @@
+flowchart TD
+    A[User message] --> B{Gift consultation with constraints?}
+    B -- No --> C[Baseline chatbot: general answer]
+    B -- Yes --> D[Extract and update recipient profile]
+    D --> E{Required profile complete?}
+    E -- No --> F[Ask exactly one priority follow-up]
+    F --> D
+    E -- Yes --> G[search_gifts: offline catalog]
+    G --> H{Any matches?}
+    H -- No --> I[Safe fallback: suggest relaxing one constraint]
+    H -- Yes --> J[rank_gifts and explain 3-5 choices]

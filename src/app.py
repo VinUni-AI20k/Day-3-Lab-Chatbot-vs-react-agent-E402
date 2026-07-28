@@ -1,101 +1,97 @@
-"""
-🚀 CORE AGENT APP (Dành cho Role 4: Core Agent Developer)
-File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Cases + Multi-Provider.
-"""
+"""Runnable offline state-machine demo for Mèo Hồng."""
+
+from __future__ import annotations
 
 import json
-import os
-import sys
-from dotenv import load_dotenv
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
 
-# Đảm bảo import các module cùng thư mục src/ hoạt động mượt mà
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-# Đảm bảo in ra Tiếng Việt và Emojis không bị lỗi trên Windows Console
-if sys.stdout.encoding != 'utf-8':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except Exception:
-        pass
-
-# Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
-from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
-from providers import get_llm_provider
-
-load_dotenv()
-
-def load_test_cases():
-    """Đọc bộ test cases từ config/test_cases.json của Role 1"""
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    config_path = os.path.join(base_dir, "config", "test_cases.json")
-    
-    # Fallback kiểm tra nếu file ở thư mục hiện tại
-    if not os.path.exists(config_path):
-        config_path = "test_cases.json"
-        
-    with open(config_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+from prompts import FOLLOW_UP_QUESTIONS, MAX_ITERATIONS
+from tools import get_profile_completeness, rank_gifts, search_gifts
 
 
-def run_baseline_chatbot(user_query: str, provider):
-    """
-    Dựng Chatbot gốc (Baseline) không có công cụ.
-    """
-    print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
-    print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
-    
-    # Gọi LLM Provider thực hiện sinh câu trả lời
-    response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
-    print(f"🤖 Chatbot trả lời:\n{response}")
+def empty_profile() -> dict[str, Any]:
+    return {"relationship": "", "occasion": "", "interests": [], "dislikes": [], "budget_min": None, "budget_max": None, "deadline": ""}
 
 
-def run_react_agent(user_query: str, provider):
-    """
-    Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
-    """
-    print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
-    step = 0
-    
-    while step < MAX_ITERATIONS:
-        step += 1
-        print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
-        
-        if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
-            
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
-            print(f"👁️ Observation: {obs}")
-            
-        elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
-            break
-            
-    if step >= MAX_ITERATIONS:
-        print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
+def parse_money(text: str) -> tuple[int | None, int | None]:
+    values = re.findall(r"(\d+(?:[.,]\d+)?)\s*(triệu|tr|nghìn|ngàn|k)?", text.lower())
+    amounts = []
+    for number, unit in values:
+        amount = float(number.replace(",", "."))
+        amounts.append(int(amount * (1_000_000 if unit in ("triệu", "tr") else 1_000 if unit in ("nghìn", "ngàn", "k") else 1)))
+    if not amounts:
+        return None, None
+    return (min(amounts), max(amounts)) if len(amounts) > 1 else (None, amounts[0])
+
+
+@dataclass
+class GiftAgent:
+    profile: dict[str, Any] = field(default_factory=empty_profile)
+    iteration: int = 0
+    trace: list[dict[str, Any]] = field(default_factory=list)
+
+    def _extract(self, message: str) -> None:
+        text = message.lower()
+        relationships = {"bạn thân": "Bạn thân", "người yêu": "Người yêu", "đồng nghiệp": "Đồng nghiệp", "mẹ": "Mẹ", "bố": "Bố", "sếp": "Sếp"}
+        occasions = {"sinh nhật": "Sinh nhật", "kỷ niệm": "Kỷ niệm", "cảm ơn": "Cảm ơn", "tri ân": "Tri ân", "giáng sinh": "Giáng sinh"}
+        for token, value in relationships.items():
+            if token in text:
+                self.profile["relationship"] = value
+                break
+        for token, value in occasions.items():
+            if token in text:
+                self.profile["occasion"] = value
+                break
+        interests = {"cà phê": "cà phê", "đọc sách": "đọc sách", "sách": "đọc sách", "game": "game", "chơi game": "game", "làm đẹp": "làm đẹp", "skincare": "làm đẹp", "nấu ăn": "nấu ăn", "gốm": "sáng tạo", "du lịch": "trải nghiệm"}
+        for token, value in interests.items():
+            if token in text and value not in self.profile["interests"]:
+                self.profile["interests"].append(value)
+        minimum, maximum = parse_money(text)
+        if maximum:
+            self.profile["budget_min"], self.profile["budget_max"] = minimum, maximum
+        if "ngày mai" in text:
+            self.profile["deadline"] = "ngày mai"
+
+    def handle_message(self, message: str) -> dict[str, Any]:
+        self.iteration += 1
+        self._extract(message)
+        complete = get_profile_completeness(self.profile)
+        event = {"iteration": self.iteration, "profile": self.profile.copy(), "tool_calls": ["get_profile_completeness"], "node": "collect_profile"}
+        if self.iteration > MAX_ITERATIONS:
+            reply = "Mình chưa muốn hỏi lan man. Bạn cho mình biết thêm " + complete["next_question_topic"] + " để chọn quà chính xác nhé."
+            event.update(node="fallback", reply=reply)
+        elif not complete["is_complete"]:
+            reply = FOLLOW_UP_QUESTIONS[complete["missing_fields"][0]]
+            event.update(reply=reply)
+        else:
+            result = search_gifts(self.profile)
+            event["tool_calls"].append("search_gifts")
+            if not result["gifts"]:
+                reply = "Catalog demo chưa có món phù hợp với các điều kiện này. Bạn muốn nới một ràng buộc, ví dụ tăng ngân sách hoặc đổi loại quà, không?"
+                event.update(node="fallback", reply=reply)
+            else:
+                gifts = rank_gifts(self.profile, result["gifts"])
+                event["tool_calls"].append("rank_gifts")
+                lines = [f"{index}. {gift['name']} — {gift['price']:,}đ: {gift['reason']}.".replace(",", ".") for index, gift in enumerate(gifts, 1)]
+                reply = "Mình đã lọc từ catalog demo. Đây là các lựa chọn phù hợp nhất:\n" + "\n".join(lines)
+                event.update(node="rank_and_explain", reply=reply, gifts=gifts)
+        self.trace.append(event)
+        return {"reply": reply, "profile": self.profile, "trace": event}
+
+
+def load_test_cases() -> list[dict[str, Any]]:
+    return json.loads((Path(__file__).parent.parent / "config" / "test_cases.json").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
-    print("==================================================")
-    print("🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHATBOT VS REACT AGENT")
-    print("==================================================")
-    
-    # Khởi tạo Multi-Provider LLM Adapter (Đọc từ biến môi trường LLM_PROVIDER)
-    provider = get_llm_provider()
-    model_name = getattr(provider, "model_name", "Offline Mock Mode")
-    print(f"🔌 LLM Provider đang hoạt động: {provider.__class__.__name__} (Model: {model_name})")
-    
-    tests = load_test_cases()
-    print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
-    
-    # Chạy thử câu test số 3
-    sample_query = tests[2]["question"]
-    
-    print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
-    run_baseline_chatbot(sample_query, provider)
-    
-    print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
-    run_react_agent(sample_query, provider)
+    agent = GiftAgent()
+    print("Mèo Hồng (offline demo). Gõ 'thoát' để dừng.")
+    while True:
+        message = input("Bạn: ").strip()
+        if message.lower() in {"thoát", "exit", "quit"}:
+            break
+        if message:
+            print("Mèo Hồng:", agent.handle_message(message)["reply"])

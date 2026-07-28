@@ -1,32 +1,17 @@
 [
   {
-    "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "id": "gift-01-complete", "category": "Đủ thông tin ngay", "messages": ["Tìm quà sinh nhật cho bạn thân, bạn ấy thích đọc sách và cà phê, ngân sách 500-800k."], "expected_tool_calls": ["get_profile_completeness", "search_gifts", "rank_gifts"], "expected_result": "Đưa 3-5 quà trong ngân sách, không hỏi thêm."
   },
   {
-    "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "id": "gift-02-budget", "category": "Thiếu ngân sách", "messages": ["Mình cần quà sinh nhật cho đồng nghiệp thích cà phê.", "Khoảng 400 nghìn."], "expected_tool_calls": ["get_profile_completeness", "search_gifts"], "expected_result": "Lượt đầu chỉ hỏi ngân sách; lượt hai mới tìm quà."
   },
   {
-    "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "id": "gift-03-interest", "category": "Thiếu sở thích", "messages": ["Tặng quà kỷ niệm cho người yêu, ngân sách 700k."], "expected_tool_calls": ["get_profile_completeness"], "expected_result": "Hỏi một câu mở về sở thích, không tự đoán."
   },
   {
-    "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "id": "gift-04-logistics", "category": "Nhiều ràng buộc", "messages": ["Quà sinh nhật cho bạn thân thích game, 300-500k, cần trước ngày mai."], "expected_tool_calls": ["get_profile_completeness", "search_gifts", "rank_gifts"], "expected_result": "Ưu tiên thẻ game gửi mã ngay."
   },
   {
-    "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "id": "gift-05-no-result", "category": "Không tìm thấy", "messages": ["Tặng sinh nhật cho đồng nghiệp thích nấu ăn, ngân sách 100k."], "expected_tool_calls": ["get_profile_completeness", "search_gifts"], "expected_result": "Fallback lịch sự và chỉ đề nghị nới một ràng buộc."
   }
 ]
