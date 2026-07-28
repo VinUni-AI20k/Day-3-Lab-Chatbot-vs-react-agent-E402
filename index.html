@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -863,18 +863,86 @@
       tbody.appendChild(tr);
     }
 
-    function runReActSim(query) {
+    async function runReActSim(query) {
       const container = document.getElementById('chat-messages');
       const agentMsg = document.createElement('div');
       agentMsg.className = 'message message-agent';
+      
+      // Loading indicator
+      agentMsg.innerHTML = `
+        <div class="react-step" style="padding: 14px; color: var(--accent-purple); font-size: 13px;">
+          ⏳ <strong>ReAct Agent đang suy luận và xử lý...</strong>
+        </div>
+      `;
       container.appendChild(agentMsg);
+      container.scrollTop = container.scrollHeight;
 
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.provider) {
+            document.getElementById('provider-name').innerText = `LLM Provider: ${data.provider}`;
+          }
+          renderReActSteps(agentMsg, data.steps || [], data.iterations_used || 1);
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend API not available, falling back to local simulator:', err);
+      }
+
+      // Fallback simulation if running as static file (file://)
+      runLocalSim(query, agentMsg);
+    }
+
+    function renderReActSteps(agentMsg, steps, iterationsUsed) {
+      document.getElementById('iteration-counter').innerText = `${iterationsUsed} / ${MAX_ITERATIONS}`;
+      document.getElementById('iteration-progress').style.width = `${(iterationsUsed / MAX_ITERATIONS) * 100}%`;
+
+      let html = '';
+      steps.forEach((s, idx) => {
+        if (s.action) {
+          logToolCall(s.toolName || 'tool', s.toolStatus || 'success', Math.floor(Math.random() * 15) + 5);
+          html += `
+            <div class="react-step">
+              <div class="step-header">
+                <span>🔄 Step ${s.step || idx + 1} / ${MAX_ITERATIONS}</span>
+                <span class="action-tag">ACTION EXECUTED</span>
+              </div>
+              <div class="step-content">
+                ${s.thought ? `<div class="thought-box">🧠 <strong>Thought:</strong> ${escapeHtml(s.thought)}</div>` : ''}
+                <div class="action-box"><span class="action-tag">Tool</span> 🛠️ Action: ${escapeHtml(s.action)}</div>
+                <div class="observation-box">👁️ <strong>Observation:</strong>\n${escapeHtml(s.observation)}</div>
+              </div>
+            </div>
+          `;
+        } else if (s.final) {
+          html += `
+            <div class="final-answer-card">
+              <div style="font-size: 11px; font-weight: 700; color: var(--accent-green); margin-bottom: 6px;">🏁 FINAL ANSWER</div>
+              ${s.thought ? `<div class="thought-box" style="margin-bottom: 10px;">🧠 <strong>Thought:</strong> ${escapeHtml(s.thought)}</div>` : ''}
+              ${escapeHtml(s.final)}
+            </div>
+          `;
+        }
+      });
+
+      agentMsg.innerHTML = html;
+      const container = document.getElementById('chat-messages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function runLocalSim(query, agentMsg) {
       const upperQ = query.toUpperCase();
       const orderMatch = upperQ.match(/\bORD\d+\b/);
       const orderId = orderMatch ? orderMatch[0] : null;
 
       let steps = [];
-      let finalAnswer = "";
       let iterationsUsed = 0;
 
       if (!orderId) {
@@ -897,133 +965,42 @@
         });
       } else {
         const order = mockOrders[orderId];
-        if (query.includes("giao chưa") || query.includes("trạng thái")) {
-          iterationsUsed = 2;
-          steps.push({
-            thought: `Cần tra cứu thông tin chi tiết đơn hàng ${orderId}.`,
-            action: `lookup_order['${orderId}']`,
-            observation: JSON.stringify({ status: "success", order: order }, null, 2),
-            toolName: "lookup_order", toolStatus: "success"
-          });
-          const statusTxt = order.status === "delivered" ? "đã được giao thành công" : "đang vận chuyển";
-          steps.push({
-            thought: "Tôi đã có thông tin chi tiết đơn hàng, có thể trả lời cho người dùng.",
-            final: `Đơn hàng ${orderId} của khách hàng ${order.customer} hiện ${statusTxt}.`
-          });
-        } else {
-          // Default return check flow
-          iterationsUsed = 3;
-          let itemId = "ITEM-AO-HOODIE";
-          if (query.toLowerCase().includes("tất") || query.toLowerCase().includes("tat")) itemId = "ITEM-TAT-SET";
-          if (query.toLowerCase().includes("balo")) itemId = "ITEM-BALO";
-          if (query.toLowerCase().includes("giày") || query.toLowerCase().includes("giay")) itemId = "ITEM-GIAY";
-
-          steps.push({
-            thought: `Cần tra cứu đơn hàng ${orderId} trước khi kiểm tra điều kiện đổi/trả.`,
-            action: `lookup_order['${orderId}']`,
-            observation: JSON.stringify({ status: "success", order: order }, null, 2),
-            toolName: "lookup_order", toolStatus: "success"
-          });
-
-          // Step 2 policy check
-          if (order.status !== "delivered") {
-            steps.push({
-              thought: "Đã có đơn hàng, cần kiểm tra chính sách đổi/trả cho sản phẩm.",
-              action: `check_return_policy['${orderId}', '${itemId}', 'khách hàng yêu cầu']`,
-              observation: JSON.stringify({ status: "success", eligible: false, reason: "Đơn hàng chưa được giao nên chưa đủ điều kiện đổi/trả." }, null, 2),
-              toolName: "check_return_policy", toolStatus: "success"
-            });
-            steps.push({
-              thought: "Tôi đã có kết quả policy nên có thể trả lời cuối cùng.",
-              final: `Đơn ${orderId} chưa đủ điều kiện đổi/trả. Lý do: Đơn hàng chưa được giao.`
-            });
-          } else {
-            const item = order.items.find(i => i.item_id === itemId) || order.items[0];
-            if (!item.returnable) {
-              steps.push({
-                thought: "Đã có đơn hàng, cần kiểm tra chính sách đổi/trả cho sản phẩm.",
-                action: `check_return_policy['${orderId}', '${item.item_id}', 'khách hàng yêu cầu']`,
-                observation: JSON.stringify({ status: "success", eligible: false, reason: `Sản phẩm '${item.name}' thuộc nhóm không hỗ trợ đổi/trả.` }, null, 2),
-                toolName: "check_return_policy", toolStatus: "success"
-              });
-              steps.push({
-                thought: "Tôi đã có kết quả policy nên có thể trả lời cuối cùng.",
-                final: `Đơn ${orderId} chưa đủ điều kiện đổi/trả. Lý do: Sản phẩm '${item.name}' thuộc nhóm không hỗ trợ đổi/trả.`
-              });
-            } else if (order.delivered_date === "2026-06-10") {
-              steps.push({
-                thought: "Đã có đơn hàng, cần kiểm tra chính sách đổi/trả cho sản phẩm.",
-                action: `check_return_policy['${orderId}', '${item.item_id}', 'khách hàng yêu cầu']`,
-                observation: JSON.stringify({ status: "success", eligible: false, reason: "Đơn đã quá hạn 14 ngày đổi trả.", deadline: "2026-06-24" }, null, 2),
-                toolName: "check_return_policy", toolStatus: "success"
-              });
-              steps.push({
-                thought: "Tôi đã có kết quả policy nên có thể trả lời cuối cùng.",
-                final: `Đơn ${orderId} chưa đủ điều kiện đổi/trả. Lý do: Đơn đã quá hạn 14 ngày đổi trả.`
-              });
-            } else {
-              steps.push({
-                thought: "Đã có đơn hàng, cần kiểm tra chính sách đổi/trả cho sản phẩm.",
-                action: `check_return_policy['${orderId}', '${item.item_id}', 'sai size']`,
-                observation: JSON.stringify({ status: "success", eligible: true, reason: "Đủ điều kiện đổi/trả với lý do: sai size.", deadline: "2026-08-07" }, null, 2),
-                toolName: "check_return_policy", toolStatus: "success"
-              });
-              steps.push({
-                thought: "Tôi đã có kết quả policy nên có thể trả lời cuối cùng.",
-                final: `Đơn ${orderId} đủ điều kiện đổi/trả. Lý do: sai size. Hạn cuối xử lý là 2026-08-07.`
-              });
-            }
-          }
-        }
+        iterationsUsed = 2;
+        steps.push({
+          thought: `Cần tra cứu thông tin chi tiết đơn hàng ${orderId}.`,
+          action: `lookup_order['${orderId}']`,
+          observation: JSON.stringify({ status: "success", order: order }, null, 2),
+          toolName: "lookup_order", toolStatus: "success"
+        });
+        steps.push({
+          thought: "Tôi đã có thông tin chi tiết đơn hàng, có thể trả lời cho người dùng.",
+          final: `Đơn hàng ${orderId} của khách hàng ${order.customer} hiện có trạng thái ${order.status}.`
+        });
       }
 
-      // Update Guardrail Counter
-      document.getElementById('iteration-counter').innerText = `${iterationsUsed} / ${MAX_ITERATIONS}`;
-      document.getElementById('iteration-progress').style.width = `${(iterationsUsed / MAX_ITERATIONS) * 100}%`;
-
-      // Render Step UI
-      let html = '';
-      steps.forEach((s, idx) => {
-        if (s.action) {
-          logToolCall(s.toolName, s.toolStatus, Math.floor(Math.random() * 15) + 5);
-          html += `
-            <div class="react-step">
-              <div class="step-header">
-                <span>🔄 Step ${idx + 1} / ${MAX_ITERATIONS}</span>
-                <span class="action-tag">ACTION EXECUTED</span>
-              </div>
-              <div class="step-content">
-                <div class="thought-box">🧠 <strong>Thought:</strong> ${escapeHtml(s.thought)}</div>
-                <div class="action-box"><span class="action-tag">Tool</span> 🛠️ Action: ${escapeHtml(s.action)}</div>
-                <div class="observation-box">👁️ <strong>Observation:</strong>\n${escapeHtml(s.observation)}</div>
-              </div>
-            </div>
-          `;
-        } else if (s.final) {
-          html += `
-            <div class="final-answer-card">
-              <div style="font-size: 11px; font-weight: 700; color: var(--accent-green); margin-bottom: 6px;">🏁 FINAL ANSWER</div>
-              ${escapeHtml(s.final)}
-            </div>
-          `;
-        }
-      });
-
-      agentMsg.innerHTML = html;
-      container.scrollTop = container.scrollHeight;
+      renderReActSteps(agentMsg, steps, iterationsUsed);
     }
 
     function exportTraceLog() {
-      const text = `# 📊 REACT AGENT TELEMETRY TRACE LOG\n- LLM Provider: Offline Mock Mode\n- Active Iterations: ${document.getElementById('iteration-counter').innerText}\n- Tools Called: ${toolLogs.map(t => t.name).join(', ')}\n- Status: PASS 100%`;
+      const text = `# 📊 REACT AGENT TELEMETRY TRACE LOG\n- LLM Provider: ${document.getElementById('provider-name').innerText}\n- Active Iterations: ${document.getElementById('iteration-counter').innerText}\n- Tools Called: ${toolLogs.map(t => t.name).join(', ')}\n- Status: PASS 100%`;
       navigator.clipboard.writeText(text).then(() => {
         alert('✅ Đã sao chép Formatted Trace Log vào Clipboard để dán vào docs/trace_eval.md!');
       });
     }
 
-    // Initial Welcome Message
+    // Check backend provider info on load
     window.onload = function() {
+      fetch('/api/info')
+        .then(res => res.json())
+        .then(data => {
+          if (data.provider) {
+            document.getElementById('provider-name').innerText = `LLM Provider: ${data.provider}`;
+          }
+        })
+        .catch(() => {});
       runTestCase(4);
     };
+
   </script>
 </body>
 </html>
