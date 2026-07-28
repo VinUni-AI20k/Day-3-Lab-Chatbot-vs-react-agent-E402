@@ -180,7 +180,7 @@ def initiate_return(order_id: str, reason: str) -> str:
              KHÔNG dùng để tra cứu thông tin.
     Input:  order_id (str) - Mã đơn hàng cần đổi trả.
             reason (str) - Lý do đổi trả (VD: 'Sản phẩm bị lỗi', 'Không đúng mẫu').
-    Output: Chuỗi thông báo kết quả kèm mã yêu cầu đổi trả nếu thành công.
+    Output: Chuỗi thông báo kết qxuả kèm mã yêu cầu đổi trả nếu thành công.
     Error:  Trả về lỗi nếu đơn hàng không hợp lệ, chưa giao, quá hạn,
             hoặc đã có yêu cầu đổi trả trước đó.
     Side effect: CÓ THAY ĐỔI TRẠNG THÁI (tạo bản ghi yêu cầu đổi trả mới).

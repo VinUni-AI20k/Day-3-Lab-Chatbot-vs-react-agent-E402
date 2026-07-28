@@ -14,19 +14,19 @@
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Đơn hàng #DH12345 của tôi hiện đang ở trạng thái nào rồi?",
-    "expected_behavior": "Agent gọi tool track_order('DH12345') rồi trả lời trạng thái đơn hàng cụ thể cho khách."
+    "question": "Đơn hàng #ORD-002 của tôi hiện đang ở trạng thái nào rồi?",
+    "expected_behavior": "Agent gọi tool lookup_order('ORD-002') rồi trả lời trạng thái đơn hàng cụ thể cho khách."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Đơn hàng #DH12345 tôi nhận bị lỗi sản phẩm, tôi có đổi trả được không và cần làm những bước gì?",
-    "expected_behavior": "Agent gọi track_order('DH12345') để xác nhận đơn đã giao, sau đó gọi check_return_eligibility('DH12345') để kiểm tra điều kiện đổi trả, rồi tổng hợp hướng dẫn các bước tiếp theo."
+    "question": "Đơn hàng #ORD-001 tôi nhận bị lỗi sản phẩm, tôi có đổi trả được không và cần làm những bước gì?",
+    "expected_behavior": "Agent gọi lookup_order('ORD-001') để xác nhận đơn đã giao, sau đó gọi check_return_eligibility('ORD-001') để kiểm tra điều kiện đổi trả, rồi tổng hợp hướng dẫn các bước tiếp theo."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
     "question": "Đơn hàng #XX-000-KHONGTONTAI tôi mua cách đây 6 tháng, tôi muốn hoàn tiền 100% ngay bây giờ.",
-    "expected_behavior": "Tool track_order báo lỗi không tìm thấy đơn hàng, hoặc check_return_eligibility báo quá hạn chính sách đổi trả. Guardrail ngắt sau tối đa 3 bước (MAX_ITERATIONS) và trả lời lịch sự từ chối kèm giải thích lý do, không bịa số tiền hoàn."
+    "expected_behavior": "Tool lookup_order báo lỗi không tìm thấy đơn hàng. Guardrail ngắt sau tối đa 3 bước (MAX_ITERATIONS) và trả lời lịch sự từ chối kèm giải thích lý do, không bịa số tiền hoàn."
   }
 ]
