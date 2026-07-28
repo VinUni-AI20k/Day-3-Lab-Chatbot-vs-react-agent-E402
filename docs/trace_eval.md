@@ -5,13 +5,15 @@
 
 ## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
 
+# Bảng chấm điểm Agentic Fit cho đề: Trợ lý đặt vé xem phim
+
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Yêu cầu tổng hợp nhiều bước: tìm suất chiếu → kiểm tra ghế trống → chọn ghế -> xác nhận đặt vé. |
+| 🛠️ **Tool Interaction** | `5/5` | Cần gọi API rạp, tra lịch chiếu, trạng thái ghế, giá vé thời gian thực, không có trong LLM. |
+| 🔀 **Dynamic Decision** | `4/5` | Kết quả tool bước trước (VD: hết suất 19h) quyết định hành động bước sau (gợi ý suất khác). |
+| ⏳ **Long Horizon** | `4/5` | Quy trình 3 bước tool + 1 bước xác nhận hành động, dài hơn use-case mẫu |
+| **TỔNG ĐIỂM FIT** | **18/20** | **KẾT LUẬN: RẤT PHÙ HỢP — NÊN DÙNG REACT AGENT VỚI TOOLING CHUẨN (BOOKING, PAYMENT, INVENTORY)** |
 
 ---
 
