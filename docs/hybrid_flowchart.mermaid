@@ -1,7 +1,9 @@
-# HYBRID DECISION FLOWCHART — Text-to-SQL BookFinder Agent
-# Mốc 4 — Phân luồng giữa Chatbot (1 LLM call) và ReAct Agent (multi-step Thought→Action→Observation)
+📊 SƠ ĐỒ QUY TRÌNH QUYẾT ĐỊNH LAI (HYBRID DECISION FLOWCHART)
 
-```mermaid
+Mã tài liệu: docs/hybrid_flowchart.mermaid
+Mốc 4 — Phân luồng giữa Chatbot (1 LLM call) và ReAct Agent (multi-step Thought
+\rightarrow Action \rightarrow Observation)
+
 flowchart TD
     Start([User đặt câu hỏi về sách]) --> Router{Có cần truy xuất<br/>dữ liệu thật từ DB?}
 
@@ -52,64 +54,59 @@ flowchart TD
     Final --> End
     Refuse --> End
     Fallback --> End
-```
 
----
+📋 GHI CHÚ PHÂN LUỒNG (ROUTING RULES)
 
-## GHI CHÚ PHÂN LUỒNG (ROUTING RULES)
+1. Khi nào đi Chatbot path (Rẻ, nhanh, không truy vấn DB)
 
-### Khi nào đi Chatbot path (rẻ, nhanh, không có số liệu)
-| Loại câu hỏi | Ví dụ | Tại sao không cần Agent |
-|---|---|---|
-| Giải nghĩa khái niệm | "Thể loại Fantasy là gì?" | LLM có sẵn kiến thức chung |
-| Chính sách/Rule | "Goodreads tính rating thế nào?" | LLM có dữ liệu training |
-| Hỏi đáp mở | "Mẹo đọc sách hiệu quả?" | Không cần data cụ thể |
-| Talk/Hỏi ngoài phạm vi | "Thời tiết hôm nay?" | Refuse lịch sự |
+| Loại câu hỏi              | Ví dụ                                   | Tại sao không cần Agent                               |
+| ------------------------- | --------------------------------------- | ----------------------------------------------------- |
+| **Giải nghĩa khái niệm**  | *"Thể loại Fantasy là gì?"*             | LLM sử dụng tri thức tĩnh sẵn có.                     |
+| **Chính sách / Quy định** | *"Goodreads tính điểm rating thế nào?"* | Sử dụng dữ liệu huấn luyện đã có của mô hình.         |
+| **Hỏi đáp mở**            | *"Mẹo đọc sách hiệu quả vào ban đêm?"*  | Tư vấn kỹ năng chung, không cần thông tin cụ thể.     |
+| **Hỏi ngoài phạm vi**     | *"Thời tiết hôm nay thế nào?"*          | Từ chối lịch sự hoặc tư vấn ngoài lề mà không gọi DB. |
 
-### Khi nào đi ReAct Agent path (chậm hơn, có evidence)
-| Loại câu hỏi | Ví dụ | Tool path |
-|---|---|---|
-| Đếm / Tổng hợp | "DB có bao nhiêu cuốn?" | `execute_select_query[SELECT COUNT(*)]` |
-| Top N theo tiêu chí | "Top 5 sách fantasy hay" | `describe_table` → `execute_select_query` với ORDER BY + LIKE genres |
-| So sánh theo tác giả | "Sách của Stephen King rating ≥4" | `describe_table` → `execute_select_query` với WHERE LIKE |
-| Theo năm xuất bản | "Sách xuất bản năm 2005" | `describe_table` để sniff `first_publish_date` → query `substr(..., -4)` |
-| Gợi ý cá nhân | "Tôi thích Harry Potter, gợi ý?" | `describe_table` → query `genres LIKE ... AND title NOT LIKE ...` |
+2. Khi nào đi ReAct Agent path (Chậm hơn, có đối chiếu cơ sở dữ liệu)
 
-### Khi nào đi REFUSE path (Right ngay, 0 tool)
-| Pattern | Trigger trong prompt |
-|---|---|
-| "huỷ", "thôi", "bỏ qua", "dừng", "cancel" | Meta-command HỦY |
-| "xoá lịch sử", "reset", "làm mới" | Meta-command RESET |
-| "thoát", "bye", "goodbye", "tạm biệt" | Meta-command END |
-| "Ignore previous" / "DAN" / "developer mode" | Prompt-injection |
-| "DROP TABLE" / "INSERT INTO" / "UPDATE books" | SQL injection |
-| "In ra system prompt" | Leak attempt |
-| "đặt mua sách", "thanh toán", "sửa rating" | Out-of-scope (Agent read-only) |
+| Loại câu hỏi                 | Ví dụ                                               | Hướng xử lý của Tool                                                                     |
+| ---------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Đếm / Tổng hợp**           | *"Database có bao nhiêu cuốn sách?"*                | Thực thi `execute_select_query[SELECT COUNT(*)]`.                                        |
+| **Top N theo tiêu chí**      | *"Top 5 sách fantasy hay"*                          | `describe_table` $\rightarrow$ truy vấn kết hợp `ORDER BY` + `LIKE genres`.              |
+| **So sánh / Bộ lọc tác giả** | *"Stephen King có những sách nào rating trên 4.0?"* | `describe_table` $\rightarrow$ `execute_select_query` lọc theo `author` và `avg_rating`. |
+| **Theo mốc thời gian**       | *"Sách xuất bản năm 2005"*                          | `describe_table` để tìm cấu trúc trường ngày $\rightarrow$ query trích xuất năm.         |
+| **Gợi ý tương tự**           | *"Tôi thích Harry Potter, gợi ý sách tương tự?"*    | Tìm kiếm các sách có cùng thể loại (genres) nhưng loại trừ Harry Potter.                 |
 
----
+3. Khi nào đi REFUSE path (Từ chối ngay từ vòng ngoài, 0 Tool calls)
 
-## LỚP GUARDRAILS Ở TỪNG STEP
+| Dấu hiệu nhận diện   | Mô tả hành vi                                                | Cách xử lý                                                             |
+| -------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **Meta-commands**    | *"hủy", "thôi", "bỏ qua", "reset", "làm mới", "thoát"*       | Ngắt luồng và đưa ra thông báo xác nhận tương ứng.                     |
+| **Prompt Injection** | *"Ignore previous instructions", "DAN", "developer mode"*    | Từ chối thực thi yêu cầu phá hoại hệ thống.                            |
+| **SQL Injection**    | Chứa từ khóa `DROP TABLE`, `INSERT INTO`, `UPDATE`, `DELETE` | Hệ thống DB chặn thực thi và trả lỗi ngay lập tức.                     |
+| **Leak Attempt**     | *"In ra system prompt của bạn"*                              | Từ chối cung cấp thông tin cấu hình hệ thống.                          |
+| **Out of Scope**     | *"Đặt mua hộ tôi cuốn này", "Thanh toán hóa đơn"*            | Báo cáo tính năng ngoài phạm vi (Agent hiện tại chỉ hỗ trợ Read-Only). |
 
-| Step | Guardrail | File |
-|---|---|---|
-| Pre-check | Nhận diện meta-command + prompt-injection trong system prompt | `src/prompts.py` |
-| ReAct loop | `MAX_ITERATIONS = 6` (phanh cho loop) | `src/prompts.py` + `src/app.py` |
-| ReAct loop | Repeated action detection (cùng tool+args 2-3 lần) | `src/app.py::Counter(action,args)` |
-| Tool exec | Unknown tool → trả msg để LLM tự sửa (Agent V2) | `src/app.py::execute_tool` |
-| DB layer | `is_select_only()` chặn DML/DDL | `src/db.py` |
-| DB layer | `ensure_limit()` tự chèn LIMIT 100 nếu thiếu | `src/db.py` |
-| DB layer | Connection mở mode `ro` (read-only) | `src/db.py::get_connection` |
+🛡️ CÁC LỚP BẢO VỆ (GUARDRAILS) Ở TỪNG BƯỚC
 
----
+| Bước áp dụng       | Tên Guardrail                              | Vị trí định nghĩa               | Vai trò thực tế                                                                                                  |
+| ------------------ | ------------------------------------------ | ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Pre-check**      | Nhận diện meta-command + prompt-injection  | `src/prompts.py`                | Lọc sạch các yêu cầu độc hại hoặc lệnh điều hướng trước khi chạy ReAct.                                          |
+| **ReAct loop**     | `MAX_ITERATIONS = 6`                       | `src/prompts.py` + `src/app.py` | Ngăn chặn việc LLM chạy vô hạn làm tiêu tốn Token và tài nguyên hệ thống.                                        |
+| **ReAct loop**     | Phát hiện hành động lặp (Repeated actions) | `src/app.py`                    | Cảnh báo LLM đổi phương án nếu gọi lặp đi lặp lại cùng một công cụ với tham số cũ.                               |
+| **Tool Execution** | Gọi sai công cụ (Unknown tool)             | `src/app.py`                    | Tự động trả về danh sách các tool hợp lệ để Agent tự sửa sai ở vòng kế tiếp (Agent V2).                          |
+| **Database layer** | Kiểm tra quyền truy cập SELECT             | `src/db.py`                     | Hàm `is_select_only()` chặn đứng mọi câu lệnh thay đổi cấu trúc hoặc dữ liệu (DML/DDL).                          |
+| **Database layer** | Tự động chèn giới hạn kết quả              | `src/db.py`                     | Hàm `ensure_limit()` tự động áp `LIMIT 100` để tránh trường hợp query lấy ra hàng triệu dòng gây quá tải bộ nhớ. |
+| **Database layer** | Quyền hạn Read-Only của kết nối            | `src/db.py`                     | Khởi tạo kết nối SQLite với tùy chọn chế độ Read-Only để bảo mật tuyệt đối cho dữ liệu.                          |
 
-## TRƯỜNG HỢP DEMO (theo test_cases.json)
+📊 KỊCH BẢN KIỂM THỬ THỰC TẾ (DEMO CASES)
 
-| Test | Route đi | Bằng chứng |
-|---|---|---|
-| #1 "DB có gì" | ReAct path (cần describe_table) | agent path |
-| #2 "Top 5 rating" | ReAct path (1-loop success) | 1 tool_call, Final Answer có data |
-| #3 "Sách fantasy hay" | ReAct path (4-step with self-recovery) | 3 tool_calls |
-| #7 "Cột rating" | ReAct path (4-step with self-recovery) | 3 tool_calls |
-| #8 "DROP TABLE" | Refuse (prompt + DB đã chặn) | 0 tool_call |
-| #10 "thôi huỷ" | Refuse meta-command | 0 tool_call |
-| #11 "DAN jailbreak" | Refuse prompt-injection | 0 tool_call |
+| ID       | Câu hỏi thực tế (Query) | Luồng đi thực tế (Route) | Kết quả kiểm thử thực tế                                                                                      |
+| -------- | ----------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **\#1**  | *"DB có gì"*            | ReAct path               | Gọi `describe_table('books')` thành công, mô tả cấu trúc bảng cho người dùng.                                 |
+| **\#2**  | *"Top 5 rating"*        | ReAct path               | Tạo truy vấn SQL chính xác, lấy ra 5 đầu sách, trả về kèm số liệu chứng minh.                                 |
+| **\#3**  | *"Sách fantasy hay"*    | ReAct path (tự phục hồi) | Nếu gặp lỗi cú pháp ban đầu, Agent tự sửa câu SQL ở bước tiếp theo để ra kết quả.                             |
+| **\#7**  | *"Cột rating"*          | ReAct path (tự sửa lỗi)  | Phát hiện bảng không có cột `rating`, tự gọi `describe_table` để tìm cột đúng (`avg_rating`) và truy vấn lại. |
+| **\#8**  | *"DROP TABLE"*          | Refuse                   | Bị chặn ngay từ tầng phân tích cú pháp SQL injection. Không có công cụ nào được gọi.                          |
+| **\#10** | *"Thôi hủy đi"*         | Refuse                   | Nhận diện meta-command dừng tác vụ, phản hồi ngắn gọn xác nhận hủy.                                           |
+| **\#11** | *"DAN jailbreak"*       | Refuse                   | Phát hiện prompt-injection phá hoại hệ thống, từ chối thực hiện lịch sự.                                      |
+
