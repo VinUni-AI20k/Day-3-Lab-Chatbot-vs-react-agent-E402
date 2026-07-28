@@ -1,22 +1,35 @@
-"""
-🤖 CẤP ĐỘ 2: LLM CHATBOT (Baseline Chatbot không có Tool)
-Dùng LLM sinh câu trả lời tự nhiên mượt mà, nhưng không thể truy cập dữ liệu thời gian thực.
-"""
+import os
+from typing import List
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
-CHATBOT_BASELINE_PROMPT = """Bạn là một Chatbot tư vấn thông thường.
-Hãy trả lời câu hỏi của người dùng một cách thân thiện dựa trên kiến thức có sẵn.
-Nếu không biết thông tin thực tế thời gian thực, hãy thông báo lịch sự cho người dùng.
-"""
+class Level2LLMCupid:
+    def __init__(self, api_key: str = None, model: str = "gpt-4o-mini"):
+        self.llm = ChatOpenAI(
+            model=model,
+            api_key=api_key or os.getenv("OPENAI_API_KEY"),
+            temperature=0.7
+        )
+        
+        # Thiết lập cá tính (Persona) cho Cupid
+        self.system_prompt = SystemMessage(
+            content=(
+                "Bạn là Cupid - Thần Tình Yêu AI thông minh, tinh tế và hóm hỉnh. "
+                "Nhiệm vụ của bạn là lắng nghe tâm sự tình cảm, đưa ra lời khuyên thả thính, "
+                "hoặc giúp người dùng xây dựng mẫu trò chuyện gây ấn tượng với 'crush'. "
+                "Hãy giao tiếp bằng giọng văn ấm áp, có chút hài hước nhẹ nhàng."
+            )
+        )
+        self.history: List = [self.system_prompt]
 
-def llm_chatbot(user_input: str) -> str:
-    text = user_input.lower()
-    if "thời tiết" in text or "vé máy bay" in text:
-        return "🤖 [LLM Chatbot]: Tôi là AI hội thoại nhưng không được cấp công cụ tra cứu dữ liệu thời gian thực, nên tôi không biết chính xác thời tiết/giá vé hôm nay!"
-    else:
-        return f"🤖 [LLM Chatbot]: Rất vui được hỗ trợ bạn về câu hỏi '{user_input}'!"
-
-if __name__ == "__main__":
-    print("=== DEMO CẤP ĐỘ 2: LLM CHATBOT BASELINE ===")
-    q = "Thời tiết Hà Nội hôm nay thế nào?"
-    print(f"User: {q}")
-    print(f"Bot : {llm_chatbot(q)}")
+    def chat(self, user_input: str) -> str:
+        # Thêm câu hỏi của người dùng vào lịch sử
+        self.history.append(HumanMessage(content=user_input))
+        
+        # Gọi LLM
+        response = self.llm.invoke(self.history)
+        
+        # Lưu câu trả lời vào lịch sử
+        self.history.append(AIMessage(content=response.content))
+        
+        return response.content
