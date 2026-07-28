@@ -1,0 +1,52 @@
+{
+  "JD001": {
+    "title": "Backend Engineer (Python)",
+    "department": "Engineering",
+    "headcount": 2,
+    "deadline": "2026-08-15",
+    "requirements": [
+      "Tối thiểu 2 năm kinh nghiệm Python",
+      "Thành thạo FastAPI hoặc Django",
+      "Có kinh nghiệm với PostgreSQL / Redis",
+      "Hiểu biết về Docker, CI/CD"
+    ],
+    "nice_to_have": [
+      "Kinh nghiệm với Kafka",
+      "Biết Kubernetes"
+    ],
+    "salary_range": "25 - 40 triệu VNĐ / tháng",
+    "status": "Đang tuyển"
+  },
+  "JD002": {
+    "title": "AI/ML Engineer",
+    "department": "AI Lab",
+    "headcount": 1,
+    "deadline": "2026-08-30",
+    "requirements": [
+      "Thành thạo Python, PyTorch hoặc TensorFlow",
+      "Có kinh nghiệm fine-tune LLM hoặc RAG pipeline",
+      "Hiểu biết về MLOps (MLflow, Weights & Biases)"
+    ],
+    "nice_to_have": [
+      "Có bài báo khoa học / Kaggle ranking"
+    ],
+    "salary_range": "35 - 55 triệu VNĐ / tháng",
+    "status": "Đang tuyển"
+  },
+  "JD003": {
+    "title": "Product Manager",
+    "department": "Product",
+    "headcount": 1,
+    "deadline": "2026-07-31",
+    "requirements": [
+      "Tối thiểu 3 năm kinh nghiệm PM tại công ty Tech",
+      "Kỹ năng phân tích dữ liệu (SQL cơ bản)",
+      "Kinh nghiệm làm việc với Agile / Scrum"
+    ],
+    "nice_to_have": [
+      "Có kinh nghiệm sản phẩm B2B SaaS"
+    ],
+    "salary_range": "30 - 50 triệu VNĐ / tháng",
+    "status": "Đang tuyển"
+  }
+}

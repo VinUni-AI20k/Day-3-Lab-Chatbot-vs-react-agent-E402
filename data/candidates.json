@@ -1,0 +1,338 @@
+{
+  "CV101": {
+    "name": "Nguyễn Văn An",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-20",
+    "email": "an.nguyen@email.com",
+    "summary": "3 năm kinh nghiệm Python/FastAPI, từng làm tại startup Fintech.",
+    "experience": [
+      {
+        "role": "Backend Developer",
+        "duration": "2 năm",
+        "mission": "Phát triển API cho hệ thống thanh toán."
+      }
+    ],
+    "education": "Cử nhân Khoa học Máy tính, Đại học Quốc gia Hà Nội",
+    "project": [
+      {
+        "name": "Hệ thống quản lý thanh toán",
+        "description": "Xây dựng hệ thống quản lý thanh toán trực tuyến, tích hợp với các cổng thanh toán.",
+        "technologies": ["Python", "FastAPI", "PostgreSQL", "Docker"]
+      }
+    ],
+    "skills": ["Python", "FastAPI", "PostgreSQL", "Docker"]
+  },
+  "CV102": {
+    "name": "Trần Thị Bình",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-21",
+    "email": "binh.tran@email.com",
+    "summary": "1 năm kinh nghiệm Python, chủ yếu làm script automation.",
+    "experience": [
+      {
+        "role": "Junior Python Developer",
+        "duration": "1 năm",
+        "mission": "Viết script tự động hóa kiểm thử và xử lý dữ liệu."
+      }
+    ],
+    "education": "Cử nhân Công nghệ Thông tin, Đại học Bách Khoa TP.HCM",
+    "project": [
+      {
+        "name": "Tool tự động hóa báo cáo",
+        "description": "Xây dựng tool tự động thu thập và tổng hợp báo cáo từ nhiều nguồn.",
+        "technologies": ["Python", "Django", "Selenium"]
+      }
+    ],
+    "skills": ["Python", "Django", "Selenium"]
+  },
+  "CV103": {
+    "name": "Lê Minh Khoa",
+    "jd_id": "JD002",
+    "status": "pending",
+    "applied_at": "2026-07-22",
+    "email": "khoa.le@email.com",
+    "summary": "2 năm nghiên cứu LLM tại trường ĐH, có 1 bài báo NeurIPS.",
+    "experience": [
+      {
+        "role": "AI Research Assistant",
+        "duration": "2 năm",
+        "mission": "Nghiên cứu và fine-tune mô hình ngôn ngữ lớn cho bài toán tiếng Việt."
+      }
+    ],
+    "education": "Thạc sĩ Trí tuệ Nhân tạo, Đại học Bách Khoa Hà Nội",
+    "project": [
+      {
+        "name": "Vietnamese LLM Fine-tuning",
+        "description": "Fine-tune LLaMA-2 cho tiếng Việt, đạt BLEU +12% so với baseline.",
+        "technologies": ["Python", "PyTorch", "LLM", "RAG", "MLflow"]
+      }
+    ],
+    "skills": ["Python", "PyTorch", "LLM", "RAG", "MLflow"]
+  },
+  "CV104": {
+    "name": "Phạm Hồng Nhung",
+    "jd_id": "JD003",
+    "status": "pending",
+    "applied_at": "2026-07-23",
+    "email": "nhung.pham@email.com",
+    "summary": "4 năm PM tại công ty SaaS B2B, thành thạo SQL và Jira.",
+    "experience": [
+      {
+        "role": "Product Manager",
+        "duration": "4 năm",
+        "mission": "Quản lý roadmap sản phẩm B2B SaaS, phối hợp với đội kỹ thuật và khách hàng."
+      }
+    ],
+    "education": "Cử nhân Quản trị Kinh doanh, Đại học Kinh tế Quốc dân",
+    "project": [
+      {
+        "name": "CRM SaaS Platform",
+        "description": "Dẫn dắt phát triển module CRM cho 50+ doanh nghiệp vừa và nhỏ.",
+        "technologies": ["Product Strategy", "SQL", "Scrum", "Jira"]
+      }
+    ],
+    "skills": ["Product Strategy", "SQL", "Scrum", "Jira"]
+  },
+  "CV105": {
+    "name": "Hoàng Đức Anh",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-24",
+    "email": "duc.anh.hoang@email.com",
+    "summary": "4 năm kinh nghiệm Backend với Python và Go, từng xây dựng hệ thống microservices quy mô lớn.",
+    "experience": [
+      {
+        "role": "Senior Backend Engineer",
+        "duration": "4 năm",
+        "mission": "Thiết kế và triển khai kiến trúc microservices phục vụ 500k DAU."
+      }
+    ],
+    "education": "Cử nhân Kỹ thuật Phần mềm, Đại học FPT",
+    "project": [
+      {
+        "name": "Microservices E-commerce Platform",
+        "description": "Xây dựng nền tảng thương mại điện tử dạng microservices, tích hợp Kafka và Redis.",
+        "technologies": ["Python", "FastAPI", "PostgreSQL", "Redis", "Docker", "Kafka"]
+      }
+    ],
+    "skills": ["Python", "FastAPI", "PostgreSQL", "Redis", "Docker", "Kafka"]
+  },
+  "CV106": {
+    "name": "Ngô Thị Lan Anh",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-24",
+    "email": "lananh.ngo@email.com",
+    "summary": "2 năm kinh nghiệm Django và REST API, có kiến thức Docker cơ bản.",
+    "experience": [
+      {
+        "role": "Backend Developer",
+        "duration": "2 năm",
+        "mission": "Phát triển REST API cho ứng dụng quản lý nhân sự nội bộ."
+      }
+    ],
+    "education": "Cử nhân Công nghệ Thông tin, Đại học Công nghệ - ĐHQGHN",
+    "project": [
+      {
+        "name": "HRM Internal System",
+        "description": "Xây dựng hệ thống quản lý nhân sự với Django REST Framework.",
+        "technologies": ["Python", "Django", "PostgreSQL", "Docker"]
+      }
+    ],
+    "skills": ["Python", "Django", "PostgreSQL", "Docker"]
+  },
+  "CV107": {
+    "name": "Vũ Quang Huy",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-25",
+    "email": "quanghuy.vu@email.com",
+    "summary": "3 năm kinh nghiệm FastAPI và PostgreSQL, am hiểu CI/CD và Kubernetes.",
+    "experience": [
+      {
+        "role": "Backend Engineer",
+        "duration": "3 năm",
+        "mission": "Vận hành và tối ưu pipeline CI/CD cho sản phẩm SaaS."
+      }
+    ],
+    "education": "Cử nhân Khoa học Máy tính, Đại học Khoa học Tự nhiên TP.HCM",
+    "project": [
+      {
+        "name": "SaaS Deployment Pipeline",
+        "description": "Thiết lập hệ thống CI/CD với GitLab CI, triển khai trên Kubernetes.",
+        "technologies": ["Python", "FastAPI", "PostgreSQL", "Docker", "Kubernetes", "Redis"]
+      }
+    ],
+    "skills": ["Python", "FastAPI", "PostgreSQL", "Docker", "Kubernetes", "Redis"]
+  },
+  "CV108": {
+    "name": "Đinh Thị Thu Hà",
+    "jd_id": "JD002",
+    "status": "pending",
+    "applied_at": "2026-07-24",
+    "email": "thuha.dinh@email.com",
+    "summary": "3 năm kinh nghiệm ML/AI, chuyên RAG pipeline và triển khai mô hình production.",
+    "experience": [
+      {
+        "role": "ML Engineer",
+        "duration": "3 năm",
+        "mission": "Xây dựng và triển khai RAG pipeline cho chatbot hỗ trợ khách hàng."
+      }
+    ],
+    "education": "Thạc sĩ Khoa học Dữ liệu, Đại học Công nghệ - ĐHQGHN",
+    "project": [
+      {
+        "name": "Customer Support RAG Chatbot",
+        "description": "Triển khai chatbot hỗ trợ khách hàng dùng RAG, giảm 40% tải cho bộ phận CS.",
+        "technologies": ["Python", "PyTorch", "LLM", "RAG", "MLflow", "TensorFlow"]
+      }
+    ],
+    "skills": ["Python", "PyTorch", "LLM", "RAG", "MLflow", "TensorFlow"]
+  },
+  "CV109": {
+    "name": "Bùi Thanh Long",
+    "jd_id": "JD002",
+    "status": "pending",
+    "applied_at": "2026-07-25",
+    "email": "thanhlong.bui@email.com",
+    "summary": "1 năm kinh nghiệm ML, chủ yếu làm việc với TensorFlow và các bài toán phân loại ảnh.",
+    "experience": [
+      {
+        "role": "Junior ML Engineer",
+        "duration": "1 năm",
+        "mission": "Xây dựng model phân loại ảnh sản phẩm lỗi trong dây chuyền sản xuất."
+      }
+    ],
+    "education": "Cử nhân Toán Tin, Đại học Khoa học Tự nhiên Hà Nội",
+    "project": [
+      {
+        "name": "Defect Detection System",
+        "description": "Model CNN phát hiện lỗi sản phẩm trên băng chuyền, đạt accuracy 94%.",
+        "technologies": ["Python", "TensorFlow", "OpenCV"]
+      }
+    ],
+    "skills": ["Python", "TensorFlow", "OpenCV"]
+  },
+  "CV110": {
+    "name": "Trịnh Minh Tuấn",
+    "jd_id": "JD002",
+    "status": "pending",
+    "applied_at": "2026-07-25",
+    "email": "minhtuan.trinh@email.com",
+    "summary": "4 năm kinh nghiệm MLOps, có kinh nghiệm fine-tune LLM và vận hành hệ thống AI quy mô lớn.",
+    "experience": [
+      {
+        "role": "MLOps Engineer",
+        "duration": "4 năm",
+        "mission": "Xây dựng nền tảng MLOps phục vụ training và serving 20+ mô hình AI."
+      }
+    ],
+    "education": "Thạc sĩ Kỹ thuật Máy tính, Đại học Bách Khoa TP.HCM",
+    "project": [
+      {
+        "name": "AI Platform MLOps",
+        "description": "Thiết kế hệ thống MLOps end-to-end: data pipeline, model registry, serving API.",
+        "technologies": ["Python", "PyTorch", "MLflow", "LLM", "Kubernetes", "Weights & Biases"]
+      }
+    ],
+    "skills": ["Python", "PyTorch", "MLflow", "LLM", "Kubernetes", "Weights & Biases"]
+  },
+  "CV111": {
+    "name": "Lý Thị Mỹ Duyên",
+    "jd_id": "JD003",
+    "status": "pending",
+    "applied_at": "2026-07-24",
+    "email": "myduyen.ly@email.com",
+    "summary": "5 năm kinh nghiệm PM tại các công ty công nghệ, có kinh nghiệm sản phẩm B2B và B2C.",
+    "experience": [
+      {
+        "role": "Senior Product Manager",
+        "duration": "5 năm",
+        "mission": "Dẫn dắt roadmap sản phẩm cho 2 dòng sản phẩm B2B và B2C song song."
+      }
+    ],
+    "education": "Cử nhân Hệ thống Thông tin Quản lý, Đại học Kinh tế TP.HCM",
+    "project": [
+      {
+        "name": "B2B SaaS Marketplace",
+        "description": "Ra mắt sản phẩm marketplace B2B, đạt 200 doanh nghiệp sử dụng sau 6 tháng.",
+        "technologies": ["Product Strategy", "SQL", "Scrum", "Jira", "Mixpanel"]
+      }
+    ],
+    "skills": ["Product Strategy", "SQL", "Scrum", "Jira", "Mixpanel"]
+  },
+  "CV112": {
+    "name": "Phan Văn Khải",
+    "jd_id": "JD003",
+    "status": "pending",
+    "applied_at": "2026-07-25",
+    "email": "vankhai.phan@email.com",
+    "summary": "2 năm kinh nghiệm làm Business Analyst, đang chuyển hướng sang Product Manager.",
+    "experience": [
+      {
+        "role": "Business Analyst",
+        "duration": "2 năm",
+        "mission": "Phân tích yêu cầu nghiệp vụ và viết tài liệu đặc tả cho đội phát triển."
+      }
+    ],
+    "education": "Cử nhân Hệ thống Thông tin, Đại học RMIT Việt Nam",
+    "project": [
+      {
+        "name": "ERP Implementation",
+        "description": "Tham gia triển khai hệ thống ERP cho doanh nghiệp sản xuất 500 nhân viên.",
+        "technologies": ["SQL", "Jira", "Confluence", "Power BI"]
+      }
+    ],
+    "skills": ["SQL", "Jira", "Confluence", "Power BI", "Agile"]
+  },
+  "CV113": {
+    "name": "Cao Thị Hương Giang",
+    "jd_id": "JD003",
+    "status": "pending",
+    "applied_at": "2026-07-26",
+    "email": "huonggiang.cao@email.com",
+    "summary": "3 năm PM tại startup EdTech, thành thạo data-driven product development.",
+    "experience": [
+      {
+        "role": "Product Manager",
+        "duration": "3 năm",
+        "mission": "Quản lý sản phẩm học tập trực tuyến cho 80.000 người dùng."
+      }
+    ],
+    "education": "Cử nhân Kinh tế, Đại học Ngoại thương Hà Nội",
+    "project": [
+      {
+        "name": "EdTech Learning Platform",
+        "description": "Phát triển tính năng personalized learning path, tăng retention rate 25%.",
+        "technologies": ["Product Strategy", "SQL", "Scrum", "Jira", "Google Analytics"]
+      }
+    ],
+    "skills": ["Product Strategy", "SQL", "Scrum", "Jira", "Google Analytics", "Agile"]
+  },
+  "CV114": {
+    "name": "Đặng Minh Quân",
+    "jd_id": "JD001",
+    "status": "pending",
+    "applied_at": "2026-07-26",
+    "email": "minhquan.dang@email.com",
+    "summary": "5 năm kinh nghiệm Python, chuyên về hệ thống phân tán và tối ưu hiệu năng database.",
+    "experience": [
+      {
+        "role": "Lead Backend Engineer",
+        "duration": "5 năm",
+        "mission": "Thiết kế kiến trúc hệ thống phân tán xử lý 1 triệu giao dịch/ngày."
+      }
+    ],
+    "education": "Thạc sĩ Khoa học Máy tính, Đại học Quốc gia Hà Nội",
+    "project": [
+      {
+        "name": "Distributed Transaction System",
+        "description": "Xây dựng hệ thống giao dịch phân tán với độ trễ P99 < 50ms.",
+        "technologies": ["Python", "FastAPI", "PostgreSQL", "Redis", "Kafka", "Docker", "Kubernetes"]
+      }
+    ],
+    "skills": ["Python", "FastAPI", "PostgreSQL", "Redis", "Kafka", "Docker", "Kubernetes"]
+  }
+}
