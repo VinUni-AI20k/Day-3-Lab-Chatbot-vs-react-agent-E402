@@ -77,7 +77,7 @@ def run_baseline_chatbot(user_query: str, provider):
     return response
 
 def parse_action(text: str):
-    """Trích xuất Action từ response của LLM. Vd: search_rentals[{"location":"Cầu Giấy"}]"""
+    """Trích xuất Action từ response của LLM. Vd: search_rentals[{"location":"Cầu Giấy"}] hoặc search_rentals['Cầu Giấy']"""
     pattern = r"Action:\s*(\w+)\[(.*)\]"
     match = re.search(pattern, text, re.DOTALL)
     if match:
@@ -86,10 +86,22 @@ def parse_action(text: str):
         params = {}
         if params_str:
             try:
+                # Thử parse như JSON
                 params = json.loads(params_str)
             except:
-                # Fallback nếu JSON có lỗi
-                pass
+                # Fallback sang ast.literal_eval cho cú pháp Python (mặc định của System Prompt)
+                import ast
+                try:
+                    parsed = ast.literal_eval(params_str)
+                    if isinstance(parsed, (dict, list, tuple)):
+                        params = parsed
+                    else:
+                        params = ast.literal_eval(f"[{params_str}]")
+                except:
+                    try:
+                        params = ast.literal_eval(f"[{params_str}]")
+                    except:
+                        params = [p.strip().strip("'").strip('"') for p in params_str.split(',')]
         return tool_name, params
     return None, {}
 
@@ -126,7 +138,7 @@ def run_react_agent(user_query: str, provider):
                         tool_func = AVAILABLE_TOOLS[tool_name]
                         if isinstance(params, dict):
                             obs = tool_func(**params)
-                        elif isinstance(params, list):
+                        elif isinstance(params, (list, tuple)):
                             obs = tool_func(*params)
                         else:
                             obs = tool_func()
