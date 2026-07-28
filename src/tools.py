@@ -8,62 +8,198 @@ AI Agent: Tìm & Đặt Lịch Xem Nhà Trọ / Căn Hộ Cho Thuê
 # ============================================================
 
 RENTALS = [
+
     {
-        "id": "CH-8802",
-        "title": "Căn hộ Studio Full nội thất",
+        "id": "CH-1001",
+        "title": "Studio Full nội thất",
         "location": "Dịch Vọng, Cầu Giấy",
-        "price": 4800000,
+        "price": 4500000,
         "room_type": "Studio",
-        "amenities": ["điều hòa", "máy giặt", "wifi"],
-        "image": "https://example.com/ch8802.jpg"
+        "area": 28,
+        "amenities": ["điều hòa", "wifi", "máy giặt"],
+        "image": "https://example.com/ch1001.jpg"
     },
+
     {
-        "id": "CH-102",
-        "title": "Phòng trọ gần Đại học X",
-        "location": "Cầu Giấy",
-        "price": 3500000,
+        "id": "CH-1002",
+        "title": "Phòng trọ gần Đại học Quốc Gia",
+        "location": "Dịch Vọng, Cầu Giấy",
+        "price": 3900000,
         "room_type": "Phòng trọ",
-        "amenities": ["điều hòa"],
-        "image": "https://example.com/ch102.jpg"
+        "area": 20,
+        "amenities": ["wifi", "điều hòa"],
+        "image": "https://example.com/ch1002.jpg"
     },
+
     {
-        "id": "CH-5501",
-        "title": "Căn hộ 1PN có ban công",
+        "id": "CH-1003",
+        "title": "Studio có ban công",
+        "location": "Mai Dịch, Cầu Giấy",
+        "price": 5200000,
+        "room_type": "Studio",
+        "area": 30,
+        "amenities": ["điều hòa", "ban công", "wifi"],
+        "image": "https://example.com/ch1003.jpg"
+    },
+
+    {
+        "id": "CH-1004",
+        "title": "Căn hộ 1PN",
+        "location": "Mỹ Đình",
+        "price": 7200000,
+        "room_type": "1PN",
+        "area": 42,
+        "amenities": ["điều hòa", "máy giặt", "ban công", "thang máy"],
+        "image": "https://example.com/ch1004.jpg"
+    },
+
+    {
+        "id": "CH-1005",
+        "title": "Căn hộ 2PN",
+        "location": "Mỹ Đình",
+        "price": 9500000,
+        "room_type": "2PN",
+        "area": 68,
+        "amenities": ["ban công", "thang máy", "bãi đỗ xe"],
+        "image": "https://example.com/ch1005.jpg"
+    },
+
+    {
+        "id": "CH-1006",
+        "title": "Chung cư mini Full nội thất",
+        "location": "Nam Từ Liêm",
+        "price": 6500000,
+        "room_type": "Studio",
+        "area": 32,
+        "amenities": ["điều hòa", "máy giặt", "wifi", "ban công"],
+        "image": "https://example.com/ch1006.jpg"
+    },
+
+    {
+        "id": "CH-1007",
+        "title": "Studio gần Keangnam",
+        "location": "Nam Từ Liêm",
+        "price": 5800000,
+        "room_type": "Studio",
+        "area": 30,
+        "amenities": ["điều hòa", "wifi"],
+        "image": "https://example.com/ch1007.jpg"
+    },
+
+    {
+        "id": "CH-1008",
+        "title": "1PN gần Landmark 81",
+        "location": "Bình Thạnh",
+        "price": 7800000,
+        "room_type": "1PN",
+        "area": 45,
+        "amenities": ["ban công", "điều hòa", "máy giặt", "wifi"],
+        "image": "https://example.com/ch1008.jpg"
+    },
+
+    {
+        "id": "CH-1009",
+        "title": "Studio View Landmark",
+        "location": "Bình Thạnh",
+        "price": 6900000,
+        "room_type": "Studio",
+        "area": 33,
+        "amenities": ["điều hòa", "ban công"],
+        "image": "https://example.com/ch1009.jpg"
+    },
+
+    {
+        "id": "CH-1010",
+        "title": "Căn hộ 1PN Full nội thất",
         "location": "Bình Thạnh",
         "price": 7900000,
         "room_type": "1PN",
-        "amenities": ["ban công", "máy lạnh", "wifi"],
-        "image": "https://example.com/ch5501.jpg"
+        "area": 46,
+        "amenities": ["điều hòa", "ban công", "máy giặt", "wifi"],
+        "image": "https://example.com/ch1010.jpg"
+    },
+
+    {
+        "id": "CH-1011",
+        "title": "Phòng trọ sinh viên",
+        "location": "Thủ Đức",
+        "price": 2800000,
+        "room_type": "Phòng trọ",
+        "area": 18,
+        "amenities": ["wifi"],
+        "image": "https://example.com/ch1011.jpg"
+    },
+
+    {
+        "id": "CH-1012",
+        "title": "Studio gần Đại học Bách Khoa",
+        "location": "Hai Bà Trưng",
+        "price": 5100000,
+        "room_type": "Studio",
+        "area": 27,
+        "amenities": ["điều hòa", "wifi", "máy giặt"],
+        "image": "https://example.com/ch1012.jpg"
     }
+
 ]
 
 
 LANDLORD_SCHEDULE = {
-    "CH-8802": {
-        "chiều mai": [
-            "14:00",
-            "15:00",
-            "16:00"
-        ],
-        "thứ bảy": [
-            "10:00",
-            "15:00"
-        ]
+
+    "CH-1001": {
+        "chiều mai": ["14:00", "15:00", "16:00"],
+        "thứ bảy": ["09:00", "10:00", "15:00"]
     },
 
-    "CH-102": {
-        "hôm nay": [
-            "16:00",
-            "17:00"
-        ]
+    "CH-1002": {
+        "chiều mai": ["15:30", "17:00"],
+        "thứ bảy": ["09:30", "13:30"]
     },
 
-    "CH-5501": {
-        "thứ bảy": [
-            "10:00",
-            "14:00"
-        ]
+    "CH-1003": {
+        "chiều mai": ["14:30"],
+        "thứ bảy": ["10:00", "16:00"]
+    },
+
+    "CH-1004": {
+        "thứ bảy": ["10:00", "11:00", "14:00"]
+    },
+
+    "CH-1005": {
+        "thứ bảy": ["09:00", "15:00"]
+    },
+
+    "CH-1006": {
+        "chiều mai": ["14:00", "15:00"],
+        "thứ bảy": ["10:00", "16:00"]
+    },
+
+    "CH-1007": {
+        "chiều mai": ["16:30"],
+        "thứ bảy": ["09:00"]
+    },
+
+    "CH-1008": {
+        "thứ bảy": ["10:00", "14:00", "16:00"]
+    },
+
+    "CH-1009": {
+        "chiều mai": ["15:00"],
+        "thứ bảy": ["09:30", "13:30"]
+    },
+
+    "CH-1010": {
+        "thứ bảy": ["10:00", "11:30", "15:30"]
+    },
+
+    "CH-1011": {
+        "chiều mai": ["14:00"]
+    },
+
+    "CH-1012": {
+        "thứ bảy": ["09:00", "10:00"]
     }
+
 }
 
 
