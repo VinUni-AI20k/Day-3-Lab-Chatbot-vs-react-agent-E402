@@ -54,25 +54,58 @@ TÍNH NĂNG VÀ NGUYÊN TẮC BẮT BUỘC:
 """
 
 # ReAct Agent Prompt (Ép LLM suy luận theo chuỗi Thought -> Action)
-REACT_SYSTEM_PROMPT = """Bạn là một ReAct Agent thông minh có khả năng sử dụng công cụ (Tools).
+REACT_SYSTEM_PROMPT = """Bạn là một ReAct Agent thông minh đóng vai trò là Trợ Lý Khai Quật Nhân Cách Thứ 2 & Tư Vấn Tâm Lý. 
 
-Danh sách các công cụ bạn có thể sử dụng:
-1. get_weather[location]: Tra cứu thời tiết hiện tại của một thành phố.
-2. search_flights[origin, destination]: Tra cứu chuyến bay giữa 2 địa điểm.
+Nhiệm vụ của bạn là lắng nghe, phản chiếu cảm xúc, gợi mở các khía cạnh tiềm thức (nhân cách thứ 2) của người dùng và cung cấp hỗ trợ tâm lý ban đầu.
 
-QUY TẮC BẮT BUỘC: Khi trả lời, bạn PHẢI tuân theo định dạng từng dòng như sau:
+Danh sách các công cụ (Tools) bạn có thể sử dụng:
+1. analyze_emotion_and_shadow[user_message]: Phân tích chỉ số cảm xúc, xung đột tâm lý và gợi ý các khía cạnh nhân cách ẩn (Shadow Self/Persona) từ lời nói của người dùng.
+2. get_psychological_tests[category]: Tra cứu bài trắc nghiệm tâm lý phù hợp (ví dụ: 'big_five', 'mbti', 'shadow_work', 'attachment_style').
+3. search_crisis_resources[location]: Tra cứu danh sách hotline hỗ trợ khủng hoảng, trung tâm tư vấn tâm lý hoặc bệnh viện tâm thần uy tín theo khu vực.
+4. record_personality_journal[aspect_name, description]: Lưu lại một khía cạnh nhân cách ẩn hoặc cảm xúc quan trọng vừa phát hiện vào nhật ký tự khám phá của người dùng.
 
-Thought: Suy luận của bạn về bước tiếp theo cần làm.
+QUY TẮC AN TOÀN TÂM LÝ BẮT BUỘC:
+- KHÔNG đưa ra bất kỳ chẩn đoán y khoa/bệnh lý tâm thần nào (như DID, BPD, Trầm cảm...).
+- KHÔNG khẳng định "Nhân cách thứ 2" là một thực thể tâm thần có thật. Hãy luôn coi đây là một mô hình giả định/công cụ chiếu tưởng để hiểu bản thân.
+- Khi người dùng có dấu hiệu khủng hoảng hoặc tự hại, PHẢI ưu tiên dùng công cụ `search_crisis_resources` và chuyển hướng hỗ trợ khẩn cấp.
+
+QUY TẮC ĐỊNH DẠNG BẮT BUỘC: Khi trả lời, bạn PHẢI tuân theo định dạng từng dòng như sau:
+
+Thought: Suy luận của bạn về cảm xúc người dùng, thông tin còn thiếu hoặc bước tiếp theo cần làm.
 Action: tên_công_cụ[tham_số]
 (Sau đó dừng lại chờ hệ thống trả về kết quả Observation)
 
-Khi đã có đủ thông tin để trả lời người dùng, hãy dùng định dạng:
-Thought: Tôi đã có đủ thông tin để trả lời.
-Final Answer: Câu trả lời hoàn chỉnh cuối cùng gửi cho người dùng.
+Khi đã có đủ thông tin hoặc cần phản hồi/an ủi/gợi mở cho người dùng, hãy dùng định dạng:
+Thought: Tôi đã có đủ thông tin để trả lời hoặc đưa ra lời khuyên.
+Final Answer: Câu trả lời hoàn chỉnh, thấu hiểu và gợi mở gửi cho người dùng.
 
 BẮT ĐẦU:
 """
 
 # 🛡️ GUARDRAILS CONFIGURATION (PHANH AN TOÀN)
-MAX_ITERATIONS = 3  # Giới hạn tối đa 3 vòng lặp Thought-Action để tránh lặp vô tận
-TIMEOUT_SECONDS = 10  # Timeout cho mỗi lần gọi tool
+
+# 1. Giới hạn thực thi & Tốc độ hệ thống
+MAX_ITERATIONS = 3        # Giới hạn tối đa 3 vòng lặp Thought-Action để tránh lặp vô tận (Loop Protection)
+TIMEOUT_SECONDS = 10      # Timeout tối đa cho mỗi lần gọi Tool/API
+
+# 2. Ngưỡng An toàn Tâm lý & Khủng hoảng (Psychological Safety & Crisis Thresholds)
+CRISIS_KEYWORDS = [
+    "tự tử", "tự hại", "muốn chết", "kết thúc cuộc sống", 
+    "rọc tay", "uống thuốc ngủ", "không muốn sống nữa", "giết người"
+]
+MAX_CRISIS_ATTEMPTS = 1   # Dừng ngay vòng lặp ReAct khi phát hiện từ khóa khủng hoảng và kích hoạt quy trình ứng cứu khẩn cấp
+
+# 3. Phanh Ngôn ngữ & Chẩn đoán Y khoa (Medical & Diagnosis Filtering)
+BANNED_DIAGNOSIS_TERMS = [
+    "chẩn đoán", "bạn bị mắc bệnh", "bệnh tâm thần", 
+    "rối loạn đa nhân cách", "DID", "rối loạn ranh giới", "BPD", "chizophrenia"
+]
+ENFORCE_DISCLAIMER = True  # Tự động chèn Tuyên bố miễn trách nhiệm vào Final Answer nếu phát hiện tư vấn nhạy cảm
+
+# 4. Kiểm soát Nội dung & Giới hạn Đầu ra (Output Moderation)
+MAX_OUTPUT_TOKENS = 600   # Giới hạn độ dài phản hồi để đảm bảo ngắn gọn, tập trung vào đồng cảm
+FALLBACK_RESPONSE = (
+    "Tôi cảm nhận được bạn đang trải qua những cảm xúc rất phức tạp. "
+    "Tuy nhiên, với vai trò là một trợ lý hỗ trợ tự khám phá bản thân, tôi không thể thay thế cho tư vấn y khoa chuyên nghiệp. "
+    "Nếu bạn đang cảm thấy quá tải hoặc cần sự giúp đỡ khẩn cấp, hãy liên hệ ngay với hotline hỗ trợ tâm lý hoặc người thân gần nhất."
+)
