@@ -15,18 +15,11 @@
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #4)
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
+**Câu hỏi**: *"Sếp nữ của tôi thích làm vườn, sinh nhật tuần sau, ngân sách khoảng 500k. Gợi ý giúp tôi món quà cụ thể và đang bán ở đâu?"*
 
 ### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
-* **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
+* **Phản hồi**: *"Chào bạn, tôi hiểu sếp nữ của bạn thích làm vườn và bạn muốn tìm quà sinh nhật trong ngân sách 500k. Tuy nhiên tôi không có khả năng tra cứu sản phẩm hoặc giá bán thực tế đang có trên thị trường. Tôi có thể gợi ý một số **nhóm quà tham khảo** phù hợp với sở thích làm vườn, ví dụ: bộ dụng cụ làm vườn mini, chậu cây để bàn, hoặc găng tay làm vườn cao cấp — mức giá chỉ mang tính ước tính. Bạn nên kiểm tra thực tế về tình trạng còn hàng, giá và đánh giá sản phẩm trước khi mua."*
+* **Nhận xét**: An toàn, tuân thủ đúng giới hạn (không bịa giá/tồn kho), nhưng chỉ dừng ở gợi ý chung chung, không giải quyết được nhu cầu thực tế của người dùng là tìm sản phẩm cụ thể đang bán ở đâu.
 
-### 🧠 ReAct Agent:
-* **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-* **Action 1**: `get_weather['Hà Nội']`
-* **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-* **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-* **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
