@@ -8,10 +8,20 @@ Xem sơ đồ dữ liệu & luồng thực thi đầy đủ tại docs/PROJECT_P
 import json
 import os
 import re
+import uuid
 from datetime import datetime
+from langchain_core.tools import tool
 
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE_PATH = os.path.join(_BASE_DIR, "config", "movies_cache.json")
+
+def load_movies():
+    return _load_cache()
+
+def save_movies(data):
+    with open(CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
 BOOKINGS_PATH = os.path.join(_BASE_DIR, "config", "bookings_local.json")
 
 _TIME_RE = re.compile(r"^([01]\d|2[0-3]):([0-5]\d)$")
@@ -397,96 +407,237 @@ def book_ticket(film_name: str, cinema: str, time: str, zone: str, quantity: int
         f"Tổng tiền: {total_price:,}đ. Mã đặt vé: {booking_id}."
     )
 
-                        if seat not in booked:
-                            available.append(seat)
-                return available
-    return []
+@tool
+def search_theater(location: str = ""):
+    """
+    Tìm rạp CGV theo tên hoặc khu vực.
+    """
+    films = _load_cache()
+    cinemas = set()
+    kw = _normalize(location)
+    for f in films:
+        for st in f.get("showtimes", []):
+            name = st.get("cinema", "")
+            if not kw or kw in _normalize(name):
+                cinemas.add(name)
+    return sorted(list(cinemas))
 
 @tool
-def book_seats(
-    movie_name: str,
-    cinema: str,
-    date: str,
-    time: str,
-    seats: list[str],
-    customer_name: str
-):
+def search_movie(movie_name: str):
     """
-    Đặt ghế.
+    Tìm phim theo tên hoặc một phần tên.
     """
-    movies = load_movies()
-    for movie in movies:
-        if movie_name.lower() not in movie["film_name"].lower():
-            continue
-        for show in movie["showtimes"]:
-            if (
-                show["cinema"] == cinema
-                and show["date"] == date
-                and show["time"] == time
-            ):
-                seat_map = show["seat_map"]
-                if seat_map is None:
-                    return {
-                        "status": "FAILED",
-                        "message": "Không có sơ đồ ghế."
-                    }
-                booked = seat_map["booked_seats"]
-                for seat in seats:
-                    if seat in booked:
-                        return {
-                            "status": "FAILED",
-                            "message": f"Ghế {seat} đã được đặt."
-                        }
-                booked.extend(seats)
-                show["seats_available"] -= len(seats)
-                save_movies(movies)
-                booking_id = str(uuid.uuid4())
-                return {
-                    "status": "SUCCESS",
-                    "booking_id": booking_id,
-                    "customer": customer_name,
-                    "movie": movie["film_name"],
-                    "cinema": cinema,
-                    "date": date,
-                    "time": time,
-                    "seats": seats
-                }
-    return {
-        "status": "FAILED",
-        "message": "Không tìm thấy suất chiếu."
-    }
+    films = _load_cache()
     
+    # If query is empty or generic, return all movies in cache
+    q = _normalize(movie_name)
+    if not q or q in ["", "phim", "all", "các phim", "đang chiếu", "cgv"]:
+        return [
+            {
+                "film_name": f["film_name"],
+                "genre": f.get("genre", "Chưa rõ"),
+                "duration_min": f.get("duration_min", 0),
+                "rating": f.get("rating", "P"),
+                "poster_path": f.get("poster_path", ""),
+                "status": "Đang chiếu"
+            }
+            for f in films
+        ]
+        
+    film = _find_film(films, movie_name)
+    if not film:
+        # Check partial match on all movies
+        matched = [f for f in films if q in _normalize(f.get("film_name", ""))]
+        if len(matched) > 0:
+            if len(matched) == 1:
+                film = matched[0]
+            else:
+                return [
+                    {
+                        "film_name": f["film_name"],
+                        "genre": f.get("genre", "Chưa rõ"),
+                        "duration_min": f.get("duration_min", 0),
+                        "rating": f.get("rating", "P"),
+                        "poster_path": f.get("poster_path", ""),
+                        "status": "Đang chiếu"
+                    }
+                    for f in matched
+                ]
+
+    if not film:
+        return "LỖI: Không tìm thấy phim."
+        
+    return {
+        "film_name": film["film_name"],
+        "genre": film.get("genre", "Chưa rõ"),
+        "duration_min": film.get("duration_min", 0),
+        "rating": film.get("rating", "P"),
+        "poster_path": film.get("poster_path", ""),
+        "synopsis": film.get("synopsis", "Chưa có mô tả."),
+        "status": "Đang chiếu"
+    }
+
 @tool
-def generate_ticket(
-    booking_id: str,
-    customer_name: str,
-    movie_name: str,
-    cinema: str,
-    date: str,
-    time: str,
-    seats: list[str]
-):
+def search_showtime(movie_name: str, cinema: str = "", date: str = ""):
     """
-    Sinh vé điện tử.
+    Tìm suất chiếu của phim.
     """
+    films = _load_cache()
+    film = _find_film(films, movie_name)
+    if not film:
+        return f"LỖI: Không tìm thấy phim '{movie_name}'."
+    
+    if not date:
+        date = "2026-07-28"  # Default cache date
+        
+    showtimes = _find_showtimes(film, cinema=cinema, date=date)
+    return [
+        {
+            "cinema": st["cinema"],
+            "date": st["date"],
+            "time": st["time"],
+            "seats_available": st["seats_available"]
+        }
+        for st in showtimes
+    ]
+
+@tool
+def get_available_seats(movie_name: str, cinema: str, time: str):
+    """
+    Lấy sơ đồ khu vực ghế còn trống và giá của một suất chiếu.
+    """
+    films = _load_cache()
+    film = _find_film(films, movie_name)
+    if not film:
+        return f"LỖI: Không tìm thấy phim '{movie_name}'."
+        
+    showtimes = _find_showtimes(film, cinema=cinema, time=time)
+    if not showtimes:
+        return f"LỖI: Không tìm thấy suất chiếu lúc {time} tại {cinema}."
+        
+    showtime = showtimes[0]
+    seat_map = showtime.get("seat_map")
+    if not seat_map:
+        return "LỖI: Không có sơ đồ ghế cho suất chiếu này."
+        
+    zones_info = []
+    for zone in seat_map.get("zones", []):
+        avail = _zone_available_seats(film["film_name"], showtime, zone)
+        zones_info.append({
+            "zone": zone["zone"],
+            "price": zone["price"],
+            "seats_available": len(avail)
+        })
+        
+    return {
+        "rows": seat_map.get("rows", []),
+        "cols_per_row": seat_map.get("cols_per_row", 12),
+        "zones": zones_info
+    }
+
+@tool
+def book_seats(movie_name: str, cinema: str, time: str, zone: str, quantity: int):
+    """
+    Đặt/giữ ghế MÔ PHỎNG cho một suất chiếu.
+    """
+    films = _load_cache()
+    film = _find_film(films, movie_name)
+    if not film:
+        return {"status": "FAILED", "message": f"LỖI: Không tìm thấy phim '{movie_name}'."}
+        
+    showtimes = _find_showtimes(film, cinema=cinema, time=time)
+    if not showtimes:
+        return {"status": "FAILED", "message": f"LỖI: Không tìm thấy suất chiếu lúc {time} tại {cinema}."}
+        
+    showtime = showtimes[0]
+    seat_map = showtime.get("seat_map")
+    if not seat_map:
+        return {"status": "FAILED", "message": "LỖI: Không có sơ đồ ghế."}
+        
+    zone_info = next(
+        (z for z in seat_map.get("zones", []) if _normalize(z.get("zone")) == _normalize(zone)), None
+    )
+    if not zone_info:
+        valid_zones = [z["zone"] for z in seat_map.get("zones", [])]
+        return {"status": "FAILED", "message": f"LỖI: Không có loại ghế '{zone}'. Các loại hợp lệ: {valid_zones}."}
+        
+    try:
+        quantity = int(quantity)
+    except (TypeError, ValueError):
+        return {"status": "FAILED", "message": "LỖI: Số vé không hợp lệ."}
+        
+    if quantity <= 0 or quantity > 10:
+        return {"status": "FAILED", "message": "LỖI: Số vé không hợp lệ (chỉ được đặt 1-10 vé/lần)."}
+        
+    available = _zone_available_seats(film["film_name"], showtime, zone_info)
+    if quantity > len(available):
+        return {"status": "FAILED", "message": f"LỖI: Zone '{zone_info['zone']}' chỉ còn {len(available)} ghế trống."}
+        
+    assigned = available[:quantity]
+    total_price = quantity * zone_info.get("price", 0)
+    booking_id = f"BK{datetime.now():%Y%m%d-%H%M%S}"
+    combined_time = f"{showtime.get('date', '')} {showtime.get('time', '')}".strip()
+    
+    _append_booking({
+        "booking_id": booking_id,
+        "film_name": film["film_name"],
+        "cinema": showtime["cinema"],
+        "time": combined_time,
+        "zone": zone_info["zone"],
+        "seat_ids": assigned,
+        "quantity": quantity,
+        "total_price": total_price,
+        "booked_at": datetime.now().isoformat(),
+        "status": "CONFIRMED (DEMO)"
+    })
+    
+    return {
+        "status": "SUCCESS",
+        "booking_id": booking_id,
+        "movie": film["film_name"],
+        "cinema": showtime["cinema"],
+        "date": showtime.get("date", "2026-07-28"),
+        "time": showtime.get("time", ""),
+        "zone": zone_info["zone"],
+        "seats": assigned,
+        "customer": "Khách hàng",
+        "total_price": total_price
+    }
+
+@tool
+def generate_ticket(booking_id: str):
+    """
+    Sinh vé điện tử MÔ PHỎNG sau khi book_seats thành công.
+    """
+    bookings = _load_bookings()
+    booking = next((b for b in bookings if b.get("booking_id") == booking_id), None)
+    if not booking:
+        return f"LỖI: Không tìm thấy giao dịch đặt vé với mã '{booking_id}'."
+        
     ticket_id = f"CGV-{uuid.uuid4().hex[:8].upper()}"
+    time_str = booking.get("time", "")
+    parts = time_str.split(" ")
+    date = parts[0] if len(parts) > 0 else "2026-07-28"
+    time = parts[1] if len(parts) > 1 else ""
+    
     return {
         "ticket_id": ticket_id,
         "booking_id": booking_id,
-        "customer": customer_name,
-        "movie": movie_name,
-        "cinema": cinema,
+        "customer": booking.get("customer", "Khách hàng"),
+        "movie": booking.get("film_name", ""),
+        "cinema": booking.get("cinema", ""),
         "date": date,
         "time": time,
-        "seats": seats,
-        "status": "CONFIRMED"
+        "seats": booking.get("seat_ids", []),
+        "status": "CONFIRMED",
+        "qr_code": f"QR-{ticket_id}"
     }
 
-# Danh sách các tool được đăng ký để Agent sử dụng
-AVAILABLE_TOOLS = {
-    "search_now_showing_films": search_now_showing_films,
-    "get_film_details": get_film_details,
-    "get_showtimes": get_showtimes,
-    "get_seat_map": get_seat_map,
-    "book_ticket": book_ticket,
-}
+AVAILABLE_TOOLS = [
+    search_theater,
+    search_movie,
+    search_showtime,
+    get_available_seats,
+    book_seats,
+    generate_ticket
+]

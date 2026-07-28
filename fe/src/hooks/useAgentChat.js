@@ -49,12 +49,18 @@ export function useAgentChat() {
         const toolName = step.tool || '';
         const result = step.toolResult;
 
-        if (toolName === 'search_movie' && result && typeof result === 'object' && result.film_name) {
-          // Show movie info
-          setCurrentActivity({
-            type: 'movie_detail',
-            data: result
-          });
+        if (toolName === 'search_movie' && result) {
+          if (Array.isArray(result)) {
+            setCurrentActivity({
+              type: 'movies',
+              data: result
+            });
+          } else if (typeof result === 'object' && result.film_name) {
+            setCurrentActivity({
+              type: 'movie_detail',
+              data: result
+            });
+          }
         }
 
         if (toolName === 'search_theater' && Array.isArray(result)) {
@@ -75,11 +81,11 @@ export function useAgentChat() {
           });
         }
 
-        if (toolName === 'get_available_seats' && Array.isArray(result)) {
+        if (toolName === 'get_available_seats' && result) {
           setCurrentActivity({
             type: 'available_seats',
             data: {
-              seats: result,
+              seats: Array.isArray(result) ? result : [],
               filmName: step.filmName || '',
               cinema: step.cinema || '',
               time: step.time || ''

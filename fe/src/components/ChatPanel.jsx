@@ -23,6 +23,26 @@ const QUICK_ACTIONS = [
 ];
 
 /**
+ * Translate technical agent action content to friendly Vietnamese status text
+ */
+function getActiveActionText(agentSteps) {
+  if (!agentSteps || agentSteps.length === 0) return 'Agent đang suy luận...';
+  
+  const lastAction = [...agentSteps].reverse().find(step => step.type === 'action');
+  if (!lastAction) return 'Agent đang suy luận...';
+  
+  const content = lastAction.content || '';
+  if (content.includes('search_theater')) return '🔍 Đang tra cứu danh sách rạp CGV...';
+  if (content.includes('search_movie')) return '🎬 Đang tra cứu thông tin chi tiết phim...';
+  if (content.includes('search_showtime')) return '📅 Đang kiểm tra lịch chiếu và suất chiếu...';
+  if (content.includes('get_available_seats')) return '💺 Đang tải sơ đồ ghế trống...';
+  if (content.includes('book_seats')) return '🎟️ Đang thực hiện giữ ghế đặt vé...';
+  if (content.includes('generate_ticket')) return '🎫 Đang xuất vé điện tử...';
+  
+  return 'Agent đang suy luận...';
+}
+
+/**
  * Format message content - handle simple markdown-like bold markers
  */
 function formatContent(text) {
@@ -99,21 +119,6 @@ export default function ChatPanel({ messages, isTyping, agentSteps, onSendMessag
           </div>
         ))}
 
-        {/* Agent Steps (ReAct Trace) */}
-        {agentSteps.length > 0 && (
-          <div className="agent-steps">
-            {agentSteps.map(step => (
-              <div key={step.id} className={`agent-step agent-step--${step.type}`}>
-                <span className="step-icon">{STEP_ICONS[step.type]}</span>
-                <div className="step-content">
-                  <div className="step-label">{STEP_LABELS[step.type]}</div>
-                  <div className="step-text">{step.content}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* Typing Indicator */}
         {isTyping && (
           <div className="typing-indicator">
@@ -122,7 +127,7 @@ export default function ChatPanel({ messages, isTyping, agentSteps, onSendMessag
               <span className="typing-dot" />
               <span className="typing-dot" />
             </div>
-            <span className="typing-label">Agent đang suy luận...</span>
+            <span className="typing-label">{getActiveActionText(agentSteps)}</span>
           </div>
         )}
 
@@ -138,6 +143,11 @@ export default function ChatPanel({ messages, isTyping, agentSteps, onSendMessag
             className="chat-input"
             value={input}
             onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                handleSubmit(e);
+              }
+            }}
             placeholder="Nhập tin nhắn... (VD: Phim gì đang chiếu?)"
             disabled={isTyping}
           />

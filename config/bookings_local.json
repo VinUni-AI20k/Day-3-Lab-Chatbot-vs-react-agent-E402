@@ -13,5 +13,64 @@
     "total_price": 190000,
     "booked_at": "2026-07-28T16:43:21.546852",
     "status": "CONFIRMED (DEMO)"
+  },
+  {
+    "booking_id": "BK20260728-170855",
+    "film_name": "Phim Điện Ảnh Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
+    "cinema": "CGV Landmark 81",
+    "time": "2026-07-28 20:00",
+    "zone": "VIP - Trung tâm",
+    "seat_ids": [
+      "D3",
+      "D4"
+    ],
+    "quantity": 2,
+    "total_price": 190000,
+    "booked_at": "2026-07-28T17:08:55.686566",
+    "status": "CONFIRMED (DEMO)"
+  },
+  {
+    "booking_id": "BK20260728-170946",
+    "film_name": "Phim Điện Ảnh Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
+    "cinema": "CGV Landmark 81",
+    "time": "2026-07-28 20:00",
+    "zone": "VIP - Trung tâm",
+    "seat_ids": [
+      "D5",
+      "D6"
+    ],
+    "quantity": 2,
+    "total_price": 190000,
+    "booked_at": "2026-07-28T17:09:46.424631",
+    "status": "CONFIRMED (DEMO)"
+  },
+  {
+    "booking_id": "BK20260728-171049",
+    "film_name": "Phim Điện Ảnh Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
+    "cinema": "CGV Landmark 81",
+    "time": "2026-07-28 20:00",
+    "zone": "VIP - Trung tâm",
+    "seat_ids": [
+      "D7",
+      "D8"
+    ],
+    "quantity": 2,
+    "total_price": 190000,
+    "booked_at": "2026-07-28T17:10:49.131830",
+    "status": "CONFIRMED (DEMO)"
+  },
+  {
+    "booking_id": "BK20260728-175028",
+    "film_name": "Lầu Chú Hỏa",
+    "cinema": "CGV Vincom Bà Triệu",
+    "time": "2026-07-28 20:30",
+    "zone": "Thường - Gần màn hình",
+    "seat_ids": [
+      "A1"
+    ],
+    "quantity": 1,
+    "total_price": 60000,
+    "booked_at": "2026-07-28T17:50:28.664191",
+    "status": "CONFIRMED (DEMO)"
   }
 ]

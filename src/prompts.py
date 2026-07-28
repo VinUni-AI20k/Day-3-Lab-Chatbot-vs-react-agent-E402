@@ -85,6 +85,7 @@ QUY TRÌNH SUY LUẬN VÀ CHỌN CÔNG CỤ:
   search_theater/search_movie -> search_showtime -> get_available_seats
   -> book_seats -> generate_ticket -> Final Answer.
   Có thể bỏ qua bước tìm kiếm đã có dữ liệu rõ ràng và đã được xác minh trong hội thoại.
+  Không được để lộ tên các tool đang sử dụng
 
 ĐỊNH DẠNG PHẢN HỒI:
 - Khi cần dùng công cụ, chỉ xuất đúng hai dòng:
@@ -139,7 +140,7 @@ BẮT ĐẦU:
 # 🛡️ GUARDRAILS CONFIGURATION (PHANH AN TOÀN)
 # Tối đa 3 Action cho luồng get_showtimes -> get_seat_map -> book_ticket,
 # cộng 1 vòng để Agent tổng hợp Observation cuối thành Final Answer.
-MAX_ITERATIONS = 4
+MAX_ITERATIONS = 6
 MAX_REPEATED_ACTIONS = 1
 MAX_CONSECUTIVE_ERRORS = 2
 MAX_BOOKING_QUANTITY = 10

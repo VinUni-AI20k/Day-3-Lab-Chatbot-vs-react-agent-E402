@@ -33,8 +33,8 @@ app = FastAPI(title="CGV Movie Ticket Agent API")
 # CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -69,7 +69,6 @@ async def get_seatmap_api(film_name: str, cinema: str = "", date: str = "", time
     return get_available_seats.invoke({
         "movie_name": film_name,
         "cinema": cinema,
-        "date": date,
         "time": time
     })
 
@@ -79,8 +78,8 @@ class BookRequest(BaseModel):
     cinema: str
     date: str
     time: str
-    seats: list[str]
-    customer_name: str
+    zone: str
+    quantity: int
 
 
 @app.post("/api/book")
@@ -89,10 +88,9 @@ async def book_endpoint(req: BookRequest):
     return book_seats.invoke({
         "movie_name": req.film_name,
         "cinema": req.cinema,
-        "date": req.date,
         "time": req.time,
-        "seats": req.seats,
-        "customer_name": req.customer_name
+        "zone": req.zone,
+        "quantity": req.quantity
     })
 
 
@@ -111,9 +109,9 @@ TOOL_KEYS = {
     "search_theater": ["location"],
     "search_movie": ["movie_name"],
     "search_showtime": ["movie_name", "cinema", "date"],
-    "get_available_seats": ["movie_name", "cinema", "date", "time"],
-    "book_seats": ["movie_name", "cinema", "date", "time", "seats", "customer_name"],
-    "generate_ticket": ["booking_id", "customer_name", "movie_name", "cinema", "date", "time", "seats"],
+    "get_available_seats": ["movie_name", "cinema", "time"],
+    "book_seats": ["movie_name", "cinema", "time", "zone", "quantity"],
+    "generate_ticket": ["booking_id"],
 }
 
 
@@ -245,12 +243,26 @@ async def chat_endpoint(req: ChatRequest):
                 current_prompt += f"Thought: {thought}\nAction: {action_str}\nObservation: {json.dumps(tool_result, ensure_ascii=False) if not isinstance(tool_result, str) else tool_result}\n"
 
                 # Emit observation with tool context
-                yield sse_event({
+                obs_data = {
                     "type": "observation",
                     "content": json.dumps(tool_result, ensure_ascii=False) if not isinstance(tool_result, str) else str(tool_result),
                     "tool": action,
                     "toolResult": tool_result
-                })
+                }
+
+                # Attach context params for frontend mapping
+                if action == "search_showtime" and len(args_list) > 0:
+                    obs_data["filmName"] = args_list[0]
+                    if len(args_list) > 1:
+                        obs_data["cinema"] = args_list[1]
+                elif action == "get_available_seats" and len(args_list) > 0:
+                    obs_data["filmName"] = args_list[0]
+                    if len(args_list) > 1:
+                        obs_data["cinema"] = args_list[1]
+                    if len(args_list) > 2:
+                        obs_data["time"] = args_list[2]
+
+                yield sse_event(obs_data)
 
                 continue  # Next iteration
 

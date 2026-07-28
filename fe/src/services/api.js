@@ -2,7 +2,7 @@
  * API service layer for connecting to the backend
  */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://lesson-job-selective-usa.trycloudflare.com';
 
 /**
  * Fetch all movies from the backend
