@@ -1,0 +1,1815 @@
+{
+  "viewing_days": 14,
+  "rooms": [
+    {
+      "id": "HN-001",
+      "type": "phòng trọ",
+      "location": "Cầu Giấy",
+      "price": 2200000,
+      "bedrooms": 1,
+      "address": "13 Dịch Vọng, Cầu Giấy, Hà Nội",
+      "contact": "0900000001",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-002",
+      "type": "căn hộ mini",
+      "location": "Đống Đa",
+      "price": 2600000,
+      "bedrooms": 1,
+      "address": "16 Chùa Láng, Đống Đa, Hà Nội",
+      "contact": "0900000002",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-003",
+      "type": "studio",
+      "location": "Hai Bà Trưng",
+      "price": 3000000,
+      "bedrooms": 1,
+      "address": "19 Bạch Mai, Hai Bà Trưng, Hà Nội",
+      "contact": "0900000003",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-004",
+      "type": "căn hộ dịch vụ",
+      "location": "Thanh Xuân",
+      "price": 3400000,
+      "bedrooms": 1,
+      "address": "22 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+      "contact": "0900000004",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-005",
+      "type": "phòng trọ",
+      "location": "Nam Từ Liêm",
+      "price": 3800000,
+      "bedrooms": 1,
+      "address": "25 Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      "contact": "0900000005",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-006",
+      "type": "căn hộ mini",
+      "location": "Bắc Từ Liêm",
+      "price": 4200000,
+      "bedrooms": 1,
+      "address": "28 Cổ Nhuế, Bắc Từ Liêm, Hà Nội",
+      "contact": "0900000006",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-007",
+      "type": "studio",
+      "location": "Hoàng Mai",
+      "price": 4600000,
+      "bedrooms": 1,
+      "address": "31 Định Công, Hoàng Mai, Hà Nội",
+      "contact": "0900000007",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-008",
+      "type": "căn hộ dịch vụ",
+      "location": "Hà Đông",
+      "price": 5000000,
+      "bedrooms": 1,
+      "address": "34 Mộ Lao, Hà Đông, Hà Nội",
+      "contact": "0900000008",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-009",
+      "type": "phòng trọ",
+      "location": "Ba Đình",
+      "price": 5400000,
+      "bedrooms": 1,
+      "address": "37 Đội Cấn, Ba Đình, Hà Nội",
+      "contact": "0900000009",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-010",
+      "type": "căn hộ mini",
+      "location": "Tây Hồ",
+      "price": 5800000,
+      "bedrooms": 2,
+      "address": "40 Xuân La, Tây Hồ, Hà Nội",
+      "contact": "0900000010",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-011",
+      "type": "studio",
+      "location": "Long Biên",
+      "price": 6200000,
+      "bedrooms": 1,
+      "address": "43 Ngọc Lâm, Long Biên, Hà Nội",
+      "contact": "0900000011",
+      "available": false,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-012",
+      "type": "căn hộ dịch vụ",
+      "location": "Gia Lâm",
+      "price": 6600000,
+      "bedrooms": 1,
+      "address": "46 Trâu Quỳ, Gia Lâm, Hà Nội",
+      "contact": "0900000012",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-013",
+      "type": "phòng trọ",
+      "location": "Cầu Giấy",
+      "price": 2200000,
+      "bedrooms": 1,
+      "address": "49 Dịch Vọng, Cầu Giấy, Hà Nội",
+      "contact": "0900000013",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-014",
+      "type": "căn hộ mini",
+      "location": "Đống Đa",
+      "price": 2600000,
+      "bedrooms": 1,
+      "address": "52 Chùa Láng, Đống Đa, Hà Nội",
+      "contact": "0900000014",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-015",
+      "type": "studio",
+      "location": "Hai Bà Trưng",
+      "price": 3000000,
+      "bedrooms": 1,
+      "address": "55 Bạch Mai, Hai Bà Trưng, Hà Nội",
+      "contact": "0900000015",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-016",
+      "type": "căn hộ dịch vụ",
+      "location": "Thanh Xuân",
+      "price": 3400000,
+      "bedrooms": 1,
+      "address": "58 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+      "contact": "0900000016",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-017",
+      "type": "phòng trọ",
+      "location": "Nam Từ Liêm",
+      "price": 3800000,
+      "bedrooms": 1,
+      "address": "61 Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      "contact": "0900000017",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-018",
+      "type": "căn hộ mini",
+      "location": "Bắc Từ Liêm",
+      "price": 4200000,
+      "bedrooms": 1,
+      "address": "64 Cổ Nhuế, Bắc Từ Liêm, Hà Nội",
+      "contact": "0900000018",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-019",
+      "type": "studio",
+      "location": "Hoàng Mai",
+      "price": 4600000,
+      "bedrooms": 1,
+      "address": "67 Định Công, Hoàng Mai, Hà Nội",
+      "contact": "0900000019",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-020",
+      "type": "căn hộ dịch vụ",
+      "location": "Hà Đông",
+      "price": 5000000,
+      "bedrooms": 2,
+      "address": "70 Mộ Lao, Hà Đông, Hà Nội",
+      "contact": "0900000020",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-021",
+      "type": "phòng trọ",
+      "location": "Ba Đình",
+      "price": 5400000,
+      "bedrooms": 1,
+      "address": "73 Đội Cấn, Ba Đình, Hà Nội",
+      "contact": "0900000021",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-022",
+      "type": "căn hộ mini",
+      "location": "Tây Hồ",
+      "price": 5800000,
+      "bedrooms": 1,
+      "address": "76 Xuân La, Tây Hồ, Hà Nội",
+      "contact": "0900000022",
+      "available": false,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-023",
+      "type": "studio",
+      "location": "Long Biên",
+      "price": 6200000,
+      "bedrooms": 1,
+      "address": "79 Ngọc Lâm, Long Biên, Hà Nội",
+      "contact": "0900000023",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-024",
+      "type": "căn hộ dịch vụ",
+      "location": "Gia Lâm",
+      "price": 6600000,
+      "bedrooms": 1,
+      "address": "82 Trâu Quỳ, Gia Lâm, Hà Nội",
+      "contact": "0900000024",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-025",
+      "type": "phòng trọ",
+      "location": "Cầu Giấy",
+      "price": 2200000,
+      "bedrooms": 1,
+      "address": "85 Dịch Vọng, Cầu Giấy, Hà Nội",
+      "contact": "0900000025",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-026",
+      "type": "căn hộ mini",
+      "location": "Đống Đa",
+      "price": 2600000,
+      "bedrooms": 1,
+      "address": "88 Chùa Láng, Đống Đa, Hà Nội",
+      "contact": "0900000026",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-027",
+      "type": "studio",
+      "location": "Hai Bà Trưng",
+      "price": 3000000,
+      "bedrooms": 1,
+      "address": "91 Bạch Mai, Hai Bà Trưng, Hà Nội",
+      "contact": "0900000027",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-028",
+      "type": "căn hộ dịch vụ",
+      "location": "Thanh Xuân",
+      "price": 3400000,
+      "bedrooms": 1,
+      "address": "94 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+      "contact": "0900000028",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-029",
+      "type": "phòng trọ",
+      "location": "Nam Từ Liêm",
+      "price": 3800000,
+      "bedrooms": 1,
+      "address": "97 Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      "contact": "0900000029",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-030",
+      "type": "căn hộ mini",
+      "location": "Bắc Từ Liêm",
+      "price": 4200000,
+      "bedrooms": 2,
+      "address": "100 Cổ Nhuế, Bắc Từ Liêm, Hà Nội",
+      "contact": "0900000030",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-031",
+      "type": "studio",
+      "location": "Hoàng Mai",
+      "price": 4600000,
+      "bedrooms": 1,
+      "address": "103 Định Công, Hoàng Mai, Hà Nội",
+      "contact": "0900000031",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-032",
+      "type": "căn hộ dịch vụ",
+      "location": "Hà Đông",
+      "price": 5000000,
+      "bedrooms": 1,
+      "address": "106 Mộ Lao, Hà Đông, Hà Nội",
+      "contact": "0900000032",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-033",
+      "type": "phòng trọ",
+      "location": "Ba Đình",
+      "price": 5400000,
+      "bedrooms": 1,
+      "address": "109 Đội Cấn, Ba Đình, Hà Nội",
+      "contact": "0900000033",
+      "available": false,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-034",
+      "type": "căn hộ mini",
+      "location": "Tây Hồ",
+      "price": 5800000,
+      "bedrooms": 1,
+      "address": "112 Xuân La, Tây Hồ, Hà Nội",
+      "contact": "0900000034",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-035",
+      "type": "studio",
+      "location": "Long Biên",
+      "price": 6200000,
+      "bedrooms": 1,
+      "address": "115 Ngọc Lâm, Long Biên, Hà Nội",
+      "contact": "0900000035",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-036",
+      "type": "căn hộ dịch vụ",
+      "location": "Gia Lâm",
+      "price": 6600000,
+      "bedrooms": 1,
+      "address": "118 Trâu Quỳ, Gia Lâm, Hà Nội",
+      "contact": "0900000036",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-037",
+      "type": "phòng trọ",
+      "location": "Cầu Giấy",
+      "price": 2200000,
+      "bedrooms": 1,
+      "address": "121 Dịch Vọng, Cầu Giấy, Hà Nội",
+      "contact": "0900000037",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-038",
+      "type": "căn hộ mini",
+      "location": "Đống Đa",
+      "price": 2600000,
+      "bedrooms": 1,
+      "address": "124 Chùa Láng, Đống Đa, Hà Nội",
+      "contact": "0900000038",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-039",
+      "type": "studio",
+      "location": "Hai Bà Trưng",
+      "price": 3000000,
+      "bedrooms": 1,
+      "address": "127 Bạch Mai, Hai Bà Trưng, Hà Nội",
+      "contact": "0900000039",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-040",
+      "type": "căn hộ dịch vụ",
+      "location": "Thanh Xuân",
+      "price": 3400000,
+      "bedrooms": 2,
+      "address": "130 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+      "contact": "0900000040",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-041",
+      "type": "phòng trọ",
+      "location": "Nam Từ Liêm",
+      "price": 3800000,
+      "bedrooms": 1,
+      "address": "133 Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      "contact": "0900000041",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-042",
+      "type": "căn hộ mini",
+      "location": "Bắc Từ Liêm",
+      "price": 4200000,
+      "bedrooms": 1,
+      "address": "136 Cổ Nhuế, Bắc Từ Liêm, Hà Nội",
+      "contact": "0900000042",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-043",
+      "type": "studio",
+      "location": "Hoàng Mai",
+      "price": 4600000,
+      "bedrooms": 1,
+      "address": "139 Định Công, Hoàng Mai, Hà Nội",
+      "contact": "0900000043",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-044",
+      "type": "căn hộ dịch vụ",
+      "location": "Hà Đông",
+      "price": 5000000,
+      "bedrooms": 1,
+      "address": "142 Mộ Lao, Hà Đông, Hà Nội",
+      "contact": "0900000044",
+      "available": false,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-045",
+      "type": "phòng trọ",
+      "location": "Ba Đình",
+      "price": 5400000,
+      "bedrooms": 1,
+      "address": "145 Đội Cấn, Ba Đình, Hà Nội",
+      "contact": "0900000045",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-046",
+      "type": "căn hộ mini",
+      "location": "Tây Hồ",
+      "price": 5800000,
+      "bedrooms": 1,
+      "address": "148 Xuân La, Tây Hồ, Hà Nội",
+      "contact": "0900000046",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-047",
+      "type": "studio",
+      "location": "Long Biên",
+      "price": 6200000,
+      "bedrooms": 1,
+      "address": "151 Ngọc Lâm, Long Biên, Hà Nội",
+      "contact": "0900000047",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-048",
+      "type": "căn hộ dịch vụ",
+      "location": "Gia Lâm",
+      "price": 6600000,
+      "bedrooms": 1,
+      "address": "154 Trâu Quỳ, Gia Lâm, Hà Nội",
+      "contact": "0900000048",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-049",
+      "type": "phòng trọ",
+      "location": "Cầu Giấy",
+      "price": 2200000,
+      "bedrooms": 1,
+      "address": "157 Dịch Vọng, Cầu Giấy, Hà Nội",
+      "contact": "0900000049",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-050",
+      "type": "căn hộ mini",
+      "location": "Đống Đa",
+      "price": 2600000,
+      "bedrooms": 2,
+      "address": "160 Chùa Láng, Đống Đa, Hà Nội",
+      "contact": "0900000050",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-051",
+      "type": "studio",
+      "location": "Hai Bà Trưng",
+      "price": 3000000,
+      "bedrooms": 1,
+      "address": "163 Bạch Mai, Hai Bà Trưng, Hà Nội",
+      "contact": "0900000051",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-052",
+      "type": "căn hộ dịch vụ",
+      "location": "Thanh Xuân",
+      "price": 3400000,
+      "bedrooms": 1,
+      "address": "166 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+      "contact": "0900000052",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-053",
+      "type": "phòng trọ",
+      "location": "Nam Từ Liêm",
+      "price": 3800000,
+      "bedrooms": 1,
+      "address": "169 Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      "contact": "0900000053",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-054",
+      "type": "căn hộ mini",
+      "location": "Bắc Từ Liêm",
+      "price": 4200000,
+      "bedrooms": 1,
+      "address": "172 Cổ Nhuế, Bắc Từ Liêm, Hà Nội",
+      "contact": "0900000054",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    },
+    {
+      "id": "HN-055",
+      "type": "studio",
+      "location": "Hoàng Mai",
+      "price": 4600000,
+      "bedrooms": 1,
+      "address": "175 Định Công, Hoàng Mai, Hà Nội",
+      "contact": "0900000055",
+      "available": false,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "HN-056",
+      "type": "căn hộ dịch vụ",
+      "location": "Hà Đông",
+      "price": 5000000,
+      "bedrooms": 1,
+      "address": "178 Mộ Lao, Hà Đông, Hà Nội",
+      "contact": "0900000056",
+      "available": true,
+      "amenities": [
+        "Điều hòa",
+        "Nóng lạnh",
+        "Máy giặt chung"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "HN-057",
+      "type": "phòng trọ",
+      "location": "Ba Đình",
+      "price": 5400000,
+      "bedrooms": 1,
+      "address": "181 Đội Cấn, Ba Đình, Hà Nội",
+      "contact": "0900000057",
+      "available": true,
+      "amenities": [
+        "Full nội thất",
+        "Thang máy",
+        "Chỗ để xe"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
+    },
+    {
+      "id": "HN-058",
+      "type": "căn hộ mini",
+      "location": "Tây Hồ",
+      "price": 5800000,
+      "bedrooms": 1,
+      "address": "184 Xuân La, Tây Hồ, Hà Nội",
+      "contact": "0900000058",
+      "available": true,
+      "amenities": [
+        "Có gác lửng",
+        "Bếp riêng",
+        "Giờ giấc tự do"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
+    },
+    {
+      "id": "HN-059",
+      "type": "studio",
+      "location": "Long Biên",
+      "price": 6200000,
+      "bedrooms": 1,
+      "address": "187 Ngọc Lâm, Long Biên, Hà Nội",
+      "contact": "0900000059",
+      "available": true,
+      "amenities": [
+        "Ban công",
+        "Tủ lạnh",
+        "Máy giặt riêng"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
+    },
+    {
+      "id": "HN-060",
+      "type": "căn hộ dịch vụ",
+      "location": "Gia Lâm",
+      "price": 6600000,
+      "bedrooms": 2,
+      "address": "190 Trâu Quỳ, Gia Lâm, Hà Nội",
+      "contact": "0900000060",
+      "available": true,
+      "amenities": [
+        "Free wifi",
+        "Camera an ninh",
+        "Khóa vân tay"
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
+    }
+  ]
+}

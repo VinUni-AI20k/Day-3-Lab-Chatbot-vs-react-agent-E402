@@ -3,8 +3,10 @@
 File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Cases + Multi-Provider.
 """
 
+import inspect
 import json
 import os
+import re
 import sys
 from dotenv import load_dotenv
 
@@ -19,11 +21,14 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
+
+# Registry tra tool thật theo tên để dispatch động trong vòng lặp ReAct
+TOOL_REGISTRY = {fn.__name__: fn for fn in TOOLS}
 
 def load_test_cases():
     """Đọc bộ test cases từ config/test_cases.json của Role 1"""
@@ -44,38 +49,121 @@ def run_baseline_chatbot(user_query: str, provider):
     """
     print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
     print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
-    
+
     # Gọi LLM Provider thực hiện sinh câu trả lời
     response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
     print(f"🤖 Chatbot trả lời:\n{response}")
 
 
+def build_tool_specs() -> str:
+    """Sinh mô tả tool THẬT (tên, tham số, docstring) từ tools.py qua inspect."""
+    lines = []
+    for fn in TOOLS:
+        params = ", ".join(inspect.signature(fn).parameters.keys())
+        doc = (fn.__doc__ or "").strip().splitlines()[0] if fn.__doc__ else ""
+        lines.append(f"- {fn.__name__}[{params}]: {doc}")
+    return "\n".join(lines)
+
+
+def build_react_system_prompt() -> str:
+    """REACT_SYSTEM_PROMPT (Role 3) mô tả tool cũ get_weather/search_flights đã lỗi thời.
+    Ghi đè bằng danh sách tool THẬT lấy trực tiếp từ tools.py mà không sửa prompts.py."""
+    return (
+        REACT_SYSTEM_PROMPT
+        + "\n\n⚠️ LƯU Ý: Bỏ qua hoàn toàn danh sách tool ở trên (get_weather, search_flights) vì KHÔNG CÒN TỒN TẠI.\n"
+        + "Danh sách Tool THẬT duy nhất bạn được phép gọi:\n"
+        + build_tool_specs()
+    )
+
+
+def parse_react_response(response: str):
+    """Trích Thought + (Action tool/args) hoặc Final Answer từ phản hồi thô của LLM."""
+    thought_match = re.search(r"Thought:\s*(.+)", response)
+    thought = thought_match.group(1).strip().splitlines()[0] if thought_match else ""
+
+    final_match = re.search(r"Final Answer:\s*(.+)", response, re.DOTALL)
+    if final_match:
+        return thought, None, None, final_match.group(1).strip()
+
+    action_match = re.search(r"Action:\s*(\w+)\[(.*)\]", response, re.DOTALL)
+    if action_match:
+        tool_name = action_match.group(1).strip()
+        raw_args = action_match.group(2).strip()
+        return thought, tool_name, raw_args, None
+
+    return thought, None, None, None
+
+
+def _parse_raw_args(raw_args: str):
+    """Tách 'a, "b, c", 123' thành list giá trị. Ưu tiên parse như JSON array
+    (an toàn với dấu phẩy bên trong chuỗi có ngoặc kép), fallback về split thô."""
+    if not raw_args:
+        return []
+    try:
+        return [str(v) for v in json.loads(f"[{raw_args}]")]
+    except (json.JSONDecodeError, ValueError):
+        return [v.strip().strip('"\'') for v in raw_args.split(",")]
+
+
+def call_tool(tool_name: str, raw_args: str) -> str:
+    """Gọi tool thật theo tên + args thô ('a, b, c'), tự map theo đúng thứ tự tham số của hàm."""
+    func = TOOL_REGISTRY.get(tool_name)
+    if not func:
+        return json.dumps({"status": "error", "message": f"Tool '{tool_name}' không tồn tại."}, ensure_ascii=False)
+
+    raw_values = _parse_raw_args(raw_args)
+    params = list(inspect.signature(func).parameters.values())
+
+    kwargs = {}
+    for param, value in zip(params, raw_values):
+        if param.annotation is int:
+            digits = re.sub(r"[^\d-]", "", value)
+            value = int(digits) if digits else 0
+        kwargs[param.name] = value
+
+    try:
+        return func(**kwargs)
+    except Exception as e:
+        return json.dumps({"status": "error", "message": f"Lỗi khi gọi tool '{tool_name}': {str(e)}"}, ensure_ascii=False)
+
+
 def run_react_agent(user_query: str, provider):
     """
-    Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
+    Vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails,
+    gọi tool thật từ tools.py và không cho phép LLM tự bịa Observation.
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
+
+    system_prompt = build_react_system_prompt()
+    scratchpad = ""
     step = 0
-    
+
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
-        
-        if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
-            
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
-            print(f"👁️ Observation: {obs}")
-            
-        elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
-            break
-            
-    if step >= MAX_ITERATIONS:
-        print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
+
+        user_prompt = f"Câu hỏi: {user_query}\n{scratchpad}"
+        response = provider.generate(user_prompt, system_prompt=system_prompt)
+
+        thought, tool_name, raw_args, final_answer = parse_react_response(response)
+        if thought:
+            print(f"🧠 Thought: {thought}")
+
+        if final_answer:
+            print(f"🏁 Final Answer: {final_answer}")
+            return
+
+        if not tool_name:
+            print(f"⚠️ Không nhận diện được định dạng phản hồi hợp lệ từ LLM:\n{response}")
+            return
+
+        print(f"🛠️ Action: {tool_name}[{raw_args}]")
+        observation = call_tool(tool_name, raw_args)
+        print(f"👁️ Observation: {observation}")
+
+        scratchpad += f"\nThought: {thought}\nAction: {tool_name}[{raw_args}]\nObservation: {observation}\n"
+
+    print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
 
 
 if __name__ == "__main__":
@@ -90,12 +178,38 @@ if __name__ == "__main__":
     
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
-    
-    # Chạy thử câu test số 3
-    sample_query = tests[2]["question"]
-    
+
+    # Câu hỏi demo mẫu kích hoạt chuỗi tìm và đặt lịch xem nhà.
+    sample_query = (
+        "Tôi muốn tìm phòng trọ ở Cầu Giấy giá dưới 4 triệu, nếu có phòng phù hợp thì "
+        "đặt lịch xem nhà giúp tôi vào ngày 30/07/2026 lúc 15:00, tên tôi là Huy."
+    )
+
     print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
     run_baseline_chatbot(sample_query, provider)
     
     print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
     run_react_agent(sample_query, provider)
+
+    for position, test in enumerate(tests, start=1):
+        test_id = test.get("id", position)
+        category = test.get("category", "Chưa phân loại")
+        question = test.get("question", "")
+        expected_behavior = test.get("expected_behavior", "Không có mô tả")
+
+        print(f"\n{'=' * 88}")
+        print(f"🧪 TEST CASE #{test_id} ({position}/{len(tests)})")
+        print(f"🏷️  Phân loại : {category}")
+        print(f"❓ Câu hỏi    : {question or '[Trống]'}")
+        print(f"🎯 Kỳ vọng    : {expected_behavior}")
+        print(f"{'-' * 88}")
+
+        if not question.strip():
+            print("⚠️  BỎ QUA: Test case không có câu hỏi.")
+            print(f"{'=' * 88}")
+            continue
+
+        run_react_agent(question, provider)
+        print(f"{'-' * 88}")
+        print(f"✅ KẾT THÚC TEST CASE #{test_id}")
+        print(f"{'=' * 88}")
