@@ -1,0 +1,53 @@
+%% ============================================================
+%% HYBRID FLOWCHART: Chatbot Path vs ReAct Agent Path
+%% Khớp với logic thật: src/app.py, src/ai_levels/level3_reactive_agent.py
+%% Role 5B - Flowchart Architect: Đào Bình Minh
+%% ============================================================
+
+flowchart TD
+    A["🧑 User gửi câu hỏi"] --> B{"⚙️ Chế độ đang chọn\n(dropdown UI / --level CLI)"}
+
+    %% ===== CHATBOT PATH (Cấp 2 - run_baseline_chatbot) =====
+    B -- "Cấp 2 · LLM Chatbot\n(Q&A lý thuyết, không cần data real-time)" --> C["💬 Chatbot Path"]
+    C --> C1["1 LLM call duy nhất\nCHATBOT_BASELINE_PROMPT + history\nKHÔNG gọi Tool"]
+    C1 --> C2["📤 Trả lời cho User\n(Tool calls = 0)"]
+
+    %% ===== REACT AGENT PATH (Cấp 3 - run_reactive_agent) =====
+    B -- "Cấp 3 · ReAct Agent\n(multi-step, cần Tool)" --> D["🤖 ReAct Agent Path"]
+    D --> D1["💭 Build prompt\nhistory + query + scratchpad\n→ gọi LLM với REACT_SYSTEM_PROMPT"]
+
+    D1 --> D1A{"🔌 Provider lỗi\nkết nối/API key?"}
+    D1A -- "Có" --> D1B["⚠️ Trả lỗi kết nối ngay\n(kiểm tra OPENAI_API_KEY/mạng)"] --> C2
+    D1A -- "Không" --> D1C{"Model output rỗng?"}
+
+    D1C -- "Rỗng" --> D1D["👁️ Observation:\nLỖI mô hình không trả nội dung"] --> D9
+    D1C -- "Có nội dung" --> D2{"📝 Có Final Answer?"}
+
+    D2 -- "Có" --> D7["🏁 Final Answer\nTrả lời hoàn chỉnh"] --> C2
+    D2 -- "Không, có Action" --> D3["🔍 Parse Action\ntên_tool[tham_số]"]
+
+    D3 --> D3A{"Cú pháp Action\nhợp lệ?"}
+    D3A -- "Không" --> D3B["👁️ Observation:\nLỖI PARSER + gợi ý sửa cú pháp"] --> D9
+    D3A -- "Hợp lệ" --> D3C{"🔁 Action + tham số\nnày đã gọi trước đó?"}
+
+    D3C -- "Trùng lặp" --> D3D["👁️ Observation:\nLỖI đã gọi rồi, không lặp lại\n(KHÔNG thực thi tool)"] --> D9
+    D3C -- "Chưa từng gọi" --> D4["⚡ Action\nThực thi Tool thật\n(_safe_execute, timeout 10s)"]
+
+    D4 --> D5["👁️ Observation\nKết quả thật hoặc 'LỖI: ...'\n(exception/timeout đều thành chuỗi lỗi)"]
+    D5 --> D9{"🛑 Còn vòng lặp?\n(iteration < MAX_ITERATIONS)"}
+
+    D9 -- "Còn" --> D1
+    D9 -- "Hết (chạm MAX_ITERATIONS=6)" --> D6["⚠️ Guardrail dừng vòng lặp\nTrả lời tốt nhất hiện có + xin lỗi"]
+    D6 --> C2
+
+    %% ===== STYLING =====
+    style A fill:#4CAF50,stroke:#388E3C,color:#fff
+    style B fill:#FF9800,stroke:#F57C00,color:#fff
+    style C fill:#2196F3,stroke:#1565C0,color:#fff
+    style D fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style C2 fill:#4CAF50,stroke:#388E3C,color:#fff
+    style D1B fill:#f44336,stroke:#c62828,color:#fff
+    style D3B fill:#f44336,stroke:#c62828,color:#fff
+    style D3D fill:#f44336,stroke:#c62828,color:#fff
+    style D9 fill:#f44336,stroke:#c62828,color:#fff
+    style D6 fill:#f44336,stroke:#c62828,color:#fff
