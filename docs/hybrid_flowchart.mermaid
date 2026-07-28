@@ -1,0 +1,24 @@
+```mermaid
+flowchart TD
+    U["Người dùng gửi yêu cầu"] --> C{"Yêu cầu có đủ thông tin chưa?"}
+
+    C -->|Chưa đủ| Q["Hỏi thêm: người nhận, sở thích, dịp, độ tuổi, ngân sách"]
+    Q --> C
+
+    C -->|Đã đủ| D{"Có cần tra cứu hoặc xử lý nhiều bước?"}
+
+    D -->|Không| B["Chatbot path"]
+    B --> B1["Phân tích tính cách hoặc đưa lời khuyên quà tặng chung"]
+    B1 --> F["Trả lời người dùng"]
+
+    D -->|Có| A["ReAct Agent path"]
+    A --> T1["Phân tích hồ sơ tính cách"]
+    T1 --> T2["Tra cứu danh mục quà tặng"]
+    T2 --> T3["Lọc theo sở thích và ngân sách"]
+    T3 --> T4["Kiểm tra điều kiện hoặc độ phù hợp"]
+    T4 --> S["Tổng hợp và xếp hạng gợi ý"]
+    S --> F
+
+    T2 -->|Tool lỗi hoặc không có kết quả| E["Fallback an toàn: thông báo hạn chế và hỏi lại"]
+    E --> F
+```
