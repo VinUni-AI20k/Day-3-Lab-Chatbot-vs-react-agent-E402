@@ -1,0 +1,57 @@
+{
+  "topic": "Trợ Lý Sàng Lọc Hồ Sơ Tuyển Dụng & Hẹn Phỏng Vấn",
+  "topic_id": 9,
+  "description": "Agent hỗ trợ nhà tuyển dụng: tra cứu hồ sơ ứng viên, đối chiếu yêu cầu vị trí tuyển dụng, và đặt lịch phỏng vấn.",
+  "test_cases": [
+    {
+      "id": "TC-01",
+      "category": "simple_theory",
+      "difficulty": "🟢",
+      "question": "Quy trình tuyển dụng của công ty gồm những vòng nào?",
+      "purpose": "Hỏi đáp thông thường, không cần dữ liệu thời gian thực.",
+      "expected_agent_behavior": "Trả lời ngay từ kiến thức nền/system prompt, KHÔNG gọi tool.",
+      "requires_tool": false,
+      "tools_expected": []
+    },
+    {
+      "id": "TC-02",
+      "category": "simple_policy",
+      "difficulty": "🟢",
+      "question": "Hồ sơ ứng viên cần đạt tối thiểu bao nhiêu năm kinh nghiệm để được chuyển sang vòng phỏng vấn kỹ thuật?",
+      "purpose": "Hỏi đáp quy định/chính sách tuyển dụng có sẵn.",
+      "expected_agent_behavior": "Trả lời ngay theo policy đã cấu hình trong system prompt, không cần gọi tool.",
+      "requires_tool": false,
+      "tools_expected": []
+    },
+    {
+      "id": "TC-03",
+      "category": "multi_step_single_tool",
+      "difficulty": "🟡",
+      "question": "Ứng viên có mã CV-1042 (Nguyễn Văn A) có kỹ năng Python và SQL không? Vị trí ứng tuyển là gì?",
+      "purpose": "Yêu cầu dữ liệu thực tế về hồ sơ ứng viên — Agent phải gọi tool tra cứu, không được tự bịa thông tin.",
+      "expected_agent_behavior": "Thought: cần tra cứu hồ sơ → Action: get_candidate_profile('CV-1042') → Observation: dữ liệu thật → Final Answer dựa trên Observation.",
+      "requires_tool": true,
+      "tools_expected": ["get_candidate_profile"]
+    },
+    {
+      "id": "TC-04",
+      "category": "multi_step_two_tools",
+      "difficulty": "🟡",
+      "question": "Ứng viên mã CV-2078 (Trần Thị B) có đáp ứng đủ yêu cầu cho vị trí Data Analyst không? Nếu đủ điều kiện, hãy đặt lịch phỏng vấn với anh Minh vào 14h thứ Năm tuần sau.",
+      "purpose": "Phụ thuộc chuỗi 2 bước: tra hồ sơ + đối chiếu yêu cầu vị trí, rồi mới quyết định có đặt lịch hay không.",
+      "expected_agent_behavior": "Action 1: get_candidate_profile('CV-2078') → Observation 1. Action 2: check_job_requirements('Data Analyst') → Observation 2. Nếu match → Action 3: schedule_interview(...) → Final Answer tổng hợp cả 2 nguồn dữ liệu.",
+      "requires_tool": true,
+      "tools_expected": ["get_candidate_profile", "check_job_requirements", "schedule_interview"]
+    },
+    {
+      "id": "TC-05",
+      "category": "edge_case_trap",
+      "difficulty": "🔴",
+      "question": "Đặt lịch phỏng vấn cho ứng viên mã CV-9999 vào lúc 3 giờ sáng ngày 30/02.",
+      "purpose": "Câu bẫy: mã ứng viên không tồn tại + ngày tháng không hợp lệ (30/02 không có thật) + giờ giấc phi lý.",
+      "expected_agent_behavior": "Tool trả lỗi 'candidate not found' và/hoặc 'invalid date' → Agent KHÔNG được bịa lịch hẹn, phải dừng lại và trả lời lịch sự rằng không thể thực hiện, đề nghị người dùng cung cấp lại thông tin hợp lệ. Guardrail MAX_ITERATIONS phải chặn nếu Agent cố lặp lại hành động sai.",
+      "requires_tool": true,
+      "tools_expected": ["get_candidate_profile", "schedule_interview"]
+    }
+  ]
+}
