@@ -101,8 +101,8 @@ SEARCH_CONCEPTS = {
     "nhac indie": ("nhac indie", "indie"),
     "moi quan he nghiem tuc": ("moi quan he nghiem tuc", "serious"),
     "huong noi": ("huong noi", "introvert"),
-    "nam": (" ban nam", "gender=nam", "gender=male"),
-    "nu": (" ban nu", "gender=nu", "gender=female"),
+    "nam": (" ban nam", "gender=nam", "gender=male", "con trai", " trai ", " nam "),
+    "nu": (" ban nu", "gender=nu", "gender=female", "con gai", " gai ", " nu "),
     "piano": ("piano",),
     "nau an": ("nau an", "cooking"),
     "dan len": ("dan len", "knitting"),
@@ -137,18 +137,23 @@ def get_user_profile(user_id: str = "current_user") -> str:
     if profile is None:
         return f"LỖI: Không tìm thấy hồ sơ '{user_id}'."
 
+    # Dùng .get() với fallback cho mọi field: hồ sơ có thể vừa được tạo từ form web
+    # và chưa chắc đã điền đủ mọi trường (vd MSSV, tính cách) — tool không được phép
+    # ném KeyError, phải luôn trả về chuỗi (kể cả khi thiếu dữ liệu).
     preference = (
         f"; ưu tiên: {profile['preference']}"
         if profile.get("preference")
         else ""
     )
     return (
-        f"Profile {profile_type}: {profile['name']} "
-        f"(MSSV: {profile['student_id']}), {profile['age']} tuổi, "
-        f"{profile['gender']}, {profile['personality']}; "
-        f"sở thích: {', '.join(profile['interests'])}; "
-        f"mục tiêu: {profile['goal']}{preference}.\n"
-        f"Vector đặc trưng: {profile['vector']}"
+        f"Profile {profile_type}: {profile.get('name', 'Chưa cập nhật')} "
+        f"(MSSV: {profile.get('student_id', 'Chưa cập nhật')}), "
+        f"{profile.get('age', '?')} tuổi, "
+        f"{profile.get('gender', 'Chưa cập nhật')}, "
+        f"{profile.get('personality', 'Chưa cập nhật')}; "
+        f"sở thích: {', '.join(profile.get('interests', [])) or 'Chưa cập nhật'}; "
+        f"mục tiêu: {profile.get('goal', 'Chưa cập nhật')}{preference}.\n"
+        f"Vector đặc trưng: {profile.get('vector', [])}"
     )
 
 
@@ -263,19 +268,20 @@ def calculate_compatibility(
             continue
 
         score = round(
-            _cosine_similarity(user["vector"], candidate["vector"]) * 100
+            _cosine_similarity(user.get("vector", []), candidate["vector"]) * 100
         )
-        user_interests = {_normalize(item): item for item in user["interests"]}
+        user_interests = {_normalize(item): item for item in user.get("interests", [])}
         candidate_interests = {
             _normalize(item): item for item in candidate["interests"]
         }
         shared_keys = set(user_interests) & set(candidate_interests)
         shared_interests = [user_interests[key] for key in sorted(shared_keys)]
-        same_goal = _normalize(user["goal"]) == _normalize(candidate["goal"])
+        user_goal = user.get("goal", "")
+        same_goal = bool(user_goal) and _normalize(user_goal) == _normalize(candidate["goal"])
 
         strengths = []
         if same_goal:
-            strengths.append(f"cùng mục tiêu {user['goal'].lower()}")
+            strengths.append(f"cùng mục tiêu {user_goal.lower()}")
         if shared_interests:
             strengths.append(f"cùng thích {', '.join(shared_interests)}")
         strengths_text = (
@@ -336,11 +342,11 @@ def synthesize_recommendation(user_id: str, top_candidate: str) -> str:
     if candidate is None:
         return f"LỖI: Không tìm thấy hồ sơ ứng viên '{top_candidate}'."
 
-    score = round(_cosine_similarity(user["vector"], candidate["vector"]) * 100)
+    score = round(_cosine_similarity(user.get("vector", []), candidate["vector"]) * 100)
     compatibility = calculate_compatibility(user_id, candidate["name"])
     return (
         "[GÓI TỔNG HỢP CHO LLM]\n"
-        f"- Người dùng: {user['name']}\n"
+        f"- Người dùng: {user.get('name', 'Chưa cập nhật')}\n"
         f"- Ứng viên: {candidate['name']}\n"
         f"- Điểm vector: {score}/100\n"
         f"- Bằng chứng:\n{compatibility}\n"
