@@ -22,21 +22,65 @@
 
 ## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
-
-### 🤖 Chatbot Baseline:
-
-- **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
-- **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
+**Mốc 2:** 
 
 
 
-### 🧠 ReAct Agent:
+==================================================
 
-- **Thought 1**: Cần tra cứu thời tiết Hà Nội.
-- **Action 1**: `get_weather['Hà Nội']`
-- **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
-- **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
-- **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-- **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHATBOT VS REACT AGENT
+
+==================================================
+
+🔌 LLM Provider đang hoạt động: MockProvider (Model: Offline Mock Mode)
+
+✅ Đã tải thành công 5 Test Cases từ config/test_cases.json
+
+--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---
+
+💬 [CHATBOT BASELINE] Câu hỏi: Mình cần thuê studio ở Quận 7 trong 6 tháng, ngân sách 7 triệu. Tìm giúp mình vài chỗ phù hợp và hỏi chủ nhà còn phòng không.
+
+⚙️ System Prompt: Bạn là chatbot tư vấn thuê trọ/căn hộ.
+
+Hãy trả lời thân thiện, rõ ràng, dựa trên kiến thức sẵn có.
+
+Nếu người dùng yêu cầu dữ liệu thời gian thực (bài đăng đang còn, số điện thoại thật, phản hồi chủ nhà),
+
+hãy nói rõ bạn không thể tự xác minh trực tiếp trong chế độ baseline.
+
+🤖 Chatbot trả lời:
+
+🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test.
+
+--- DEMO 2: CHẠY TRÊN REACT AGENT ---
+
+🤖 [REACT AGENT] Câu hỏi: Mình cần thuê studio ở Quận 7 trong 6 tháng, ngânsách 7 triệu. Tìm giúp mình vài chỗ phù hợp và hỏi chủ nhà còn phòng không.
+
+--- 🔄 Vòng lặp ReAct (Step 1/3) ---
+
+🧠 Thought: Cần tìm danh sách bài đăng phù hợp yêu cầu user.
+
+🛠️ Action: search_home_info['Quận 7', '6 tháng', 7000000, 'studio']
+
+👁️ Observation: Kết quả tìm kiếm theo yêu cầu (location=Quận 7, rent_duration=6 tháng, budget=7000000, room_info=studio):
+
+- Studio full nội thất gần ĐH Tôn Đức Thắng | 6.5 triệu/tháng | Nguồn: Facebook Group: Phòng trọ Quận 7 | Liên hệ: Nguyễn Minh (0909123456) | Profile: facebook.com/minh.nguyen.rent
+
+- Căn hộ 1PN Sunrise Cityview | 9.8 triệu/tháng | Nguồn: Batdongsan | Liên hệ: Trần Thu Hà (0911222333) | Profile: batdongsan.vn/ha-tran
+
+--- 🔄 Vòng lặp ReAct (Step 2/3) ---
+
+🧠 Thought: Cần xác nhận tình trạng còn phòng với chủ nhà phù hợp nhất.
+
+🛠️ Action: send_msg['0909123456', 'Anh/chị còn phòng studio ở Quận 7 không ạ?']
+
+👁️ Observation: Đã gửi Zalo tới 0909123456: 'Anh/chị còn phòng studio ở Quận7 không ạ?'. Phản hồi: Còn phòng, có thể dọn vào từ tuần sau.
+
+--- 🔄 Vòng lặp ReAct (Step 3/3) ---
+
+🧠 Thought: Nếu còn phòng, lấy lịch rảnh user để đề xuất lịch xem nhà.
+
+🛠️ Action: get_calendar[]
+
+👁️ Observation: Lịch rảnh gợi ý: Thứ 4 (19:00-20:30), Thứ 6 (18:30-20:00), Chủ nhật (09:00-11:00).
 

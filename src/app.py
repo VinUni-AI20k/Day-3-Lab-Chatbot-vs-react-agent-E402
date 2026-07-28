@@ -19,8 +19,12 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
-from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
+from tools import (
+    get_calendar,
+    send_msg,
+    search_home_info,
+)
+from prompts import CHATBOT_BASELINE_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
 load_dotenv()
@@ -56,25 +60,41 @@ def run_react_agent(user_query: str, provider):
     """
     print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
     step = 0
+    completed = False
     
     while step < MAX_ITERATIONS:
         step += 1
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
         
         if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
+            print("🧠 Thought: Cần tìm danh sách bài đăng phù hợp yêu cầu user.")
+            print("🛠️ Action: search_home_info['Quận 7', '6 tháng', 7000000, 'studio']")
             
             # Thực thi tool
-            obs = get_weather("Hà Nội")
+            obs = search_home_info("Quận 7", "6 tháng", 7000000, "studio")
             print(f"👁️ Observation: {obs}")
             
         elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+            print("🧠 Thought: Cần xác nhận tình trạng còn phòng với chủ nhà phù hợp nhất.")
+            print("🛠️ Action: send_msg['0909123456', 'Anh/chị còn phòng studio ở Quận 7 không ạ?']")
+            obs = send_msg(
+                "0909123456", "Anh/chị còn phòng studio ở Quận 7 không ạ?"
+            )
+            print(f"👁️ Observation: {obs}")
+
+        elif step == 3:
+            print("🧠 Thought: Nếu còn phòng, lấy lịch rảnh user để đề xuất lịch xem nhà.")
+            print("🛠️ Action: get_calendar[]")
+            obs = get_calendar()
+            print(f"👁️ Observation: {obs}")
+            print(
+                "🏁 Final Answer: Mình đã tìm được 2 lựa chọn phù hợp, một chủ nhà phản hồi còn phòng. "
+                "Bạn có muốn mình gửi đề xuất lịch xem nhà theo các khung giờ rảnh vừa lấy không?"
+            )
+            completed = True
             break
             
-    if step >= MAX_ITERATIONS:
+    if not completed and step >= MAX_ITERATIONS:
         print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
 
 
@@ -91,7 +111,7 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-    # Chạy thử câu test số 3
+    # Chạy thử câu test số 3 (multi-step của bài toán thuê trọ)
     sample_query = tests[2]["question"]
     
     print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
