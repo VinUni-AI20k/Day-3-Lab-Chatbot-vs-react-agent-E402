@@ -11,7 +11,7 @@
 | 🛠️ **Tool Interaction** | `4/5` | Cần tra cứu dữ liệu sản phẩm qua API sàn TMĐT, so sánh giá và lọc theo tiêu chí. |
 | 🔀 **Dynamic Decision** | `4/5` | Phản hồi của người dùng ở bước trước quyết định hướng tìm kiếm/tinh chỉnh gợi ý ở bước sau. |
 | ⏳ **Long Horizon** | `4/5` | Quy trình gồm nhiều lượt: khai thác thông tin, tìm kiếm, tinh chỉnh theo phản hồi, chốt gợi ý. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN NÊN DÙNG REACT AGENT!** |
 
 ---
 
