@@ -1,0 +1,31 @@
+graph TD
+    A[User Query] --> B{Độ phức tạp của câu hỏi?}
+    B -- Đơn giản (Chỉ cần kiến thức chung) --> C[Chatbot Baseline Path]
+    B -- Phức tạp (Cần truy xuất dữ liệu & công cụ) --> D[ReAct Agent Path]
+    
+    C --> E[LLM Generate Response]
+    E --> F[Trả kết quả cho người dùng]
+    
+    D --> G[Thought: Phân tích & Suy luận]
+    G --> H{Đã đủ thông tin chưa?}
+    H -- Rồi --> I[Final Answer]
+    I --> F
+    
+    H -- Chưa --> J[Action: Gọi Công cụ]
+    J --> K{Kiểm tra Guardrails}
+    K -- Vi phạm --> L[Từ chối / Chờ cấp quyền]
+    L --> F
+    
+    K -- An toàn --> M[Thực thi Tool]
+    M --> N[Observation: Nhận kết quả từ Tool]
+    N --> G
+    
+    subgraph Tools
+        T1[search_home_info]
+        T2[send_msg]
+        T3[get_calendar]
+    end
+    
+    M -.-> T1
+    M -.-> T2
+    M -.-> T3
