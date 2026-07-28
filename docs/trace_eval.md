@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `4/5` | Hệ thống cần suy luận nhiều bước: từ đánh giá thông tin đầu vào, trích xuất tham số (Tool arg), đến xử lý LLM và tổng hợp kết quả Web search. |
+| 🛠️ **Tool Interaction** | `5/5` | Quy trình phụ thuộc mạnh vào việc sử dụng công cụ (Web search) để lấy thông tin và trích xuất tham chiếu (Link). |
+| 🔀 **Dynamic Decision** | `5/5` | Có vòng lặp ra quyết định động rõ ràng: kiểm tra điều kiện "Đủ" hay "Chưa đủ" để quyết định gọi tool hay quay lại "Thu thập" thêm thông tin. |
+| ⏳ **Long Horizon** | `4/5` | Chuỗi hành động tương đối dài và phức tạp, có thể lặp lại nhiều lần ở khâu thu thập thông tin trước khi ra được Output cuối cùng. |
+| **TỔNG ĐIỂM FIT** | **18/20** | **KẾT LUẬN: BÀI TOÁN RẤT PHÙ HỢP ĐỂ XÂY DỰNG AGENT (Đặc biệt mô hình có vòng lặp như LangGraph/StateGraph)!** |
 
 ---
 
