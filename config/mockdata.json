@@ -1,4 +1,17 @@
 {
+  "USER_DATABASE": {
+    "current_user": {
+      "student_id": "2A202601001",
+      "name": "Minh",
+      "age": 21,
+      "gender": "Nam",
+      "personality": "Hướng nội, điềm tĩnh",
+      "interests": ["đọc sách", "cà phê yên tĩnh", "công nghệ"],
+      "goal": "Mối quan hệ nghiêm túc",
+      "preference": "Người biết lắng nghe, có mục tiêu rõ ràng",
+      "vector": [0.2, 0.9, 0.8, 0.95]
+    }
+  },
   "CANDIDATES_DATABASE": [
     {
       "id": "cand_01",
