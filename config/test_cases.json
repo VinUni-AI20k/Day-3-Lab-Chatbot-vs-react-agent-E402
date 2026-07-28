@@ -2,31 +2,36 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Khoa Tim mạch thường khám những bệnh gì?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn về các bệnh tim mạch phổ biến.",
+    "tools_needed": []
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Tôi cần chuẩn bị gì trước khi đi khám tổng quát?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn: nhịn ăn, mang theo giấy tờ BHYT, kết quả xét nghiệm cũ, v.v.",
+    "tools_needed": []
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Cần 1 Tool)",
+    "question": "Kiểm tra lịch của bác sĩ khoa Tim mạch vào ngày mai có chỗ trống không?",
+    "expected_behavior": "Agent gọi tool check_doctor_schedule('Tim mạch', 'ngày mai') rồi báo cáo kết quả lịch trống/bận.",
+    "tools_needed": ["check_doctor_schedule"]
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Multi-step (Cần 2 Tools)",
+    "question": "Tôi bị đau đầu dữ dội kèm chóng mặt và buồn nôn từ sáng đến giờ. Hãy tư vấn tôi nên gặp bác sĩ chuyên khoa nào và đặt lịch khám ngay hôm nay cho tôi với tên bệnh nhân là Nguyễn Văn An.",
+    "expected_behavior": "Agent gọi get_symptom_advice('đau đầu, chóng mặt, buồn nôn') → xác định chuyên khoa Thần kinh → gọi book_appointment('Nguyễn Văn An', 'Thần kinh', ...) → thông báo kết quả đặt lịch.",
+    "tools_needed": ["get_symptom_advice", "book_appointment"]
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Đặt lịch khám ngày 32 tháng 13 năm 2026 với bác sĩ Siêu Nhân tại khoa Vũ Trụ cho bệnh nhân tên ABC.",
+    "expected_behavior": "Tool báo lỗi ngày không hợp lệ và bác sĩ/khoa không tồn tại. Guardrail ngắt sau MAX_ITERATIONS bước và Agent trả về thông báo lịch sự, không crash.",
+    "tools_needed": ["check_doctor_schedule", "book_appointment"]
   }
 ]

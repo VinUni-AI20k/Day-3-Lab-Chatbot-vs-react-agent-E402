@@ -25,23 +25,29 @@ class BaseLLMProvider:
 
 
 class GeminiProvider(BaseLLMProvider):
-    """Google Gemini Provider"""
+    """Google Gemini Provider — gọi REST API trực tiếp, không cần SDK google-genai"""
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
-        
+
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
             return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
         try:
-            from google import genai
-            client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=contents
+            url = (
+                f"https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{self.model_name}:generateContent?key={self.api_key}"
             )
-            return response.text
+            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+            payload = {
+                "contents": [{"parts": [{"text": contents}]}]
+            }
+            res = requests.post(url, json=payload, timeout=30)
+            if res.status_code == 200:
+                data = res.json()
+                return data["candidates"][0]["content"]["parts"][0]["text"]
+            else:
+                return f"[Gemini API Error {res.status_code}]: {res.text}"
         except Exception as e:
             return f"[Gemini Exception]: {str(e)}"
 

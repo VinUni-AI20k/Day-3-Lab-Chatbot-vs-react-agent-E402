@@ -1,0 +1,68 @@
+---
+title: "Hybrid Decision Flowchart — Chatbot vs ReAct Agent"
+description: "Sơ đồ phân luồng quyết định khi nào đi đường Chatbot, khi nào đi đường ReAct Agent"
+topic: "Trợ Lý Đặt Lịch Khám Bệnh & Tư Vấn Chuyên Khoa"
+author: "Role 5 — VinUni Lab 3"
+---
+
+```mermaid
+flowchart TD
+    A([👤 Người dùng gửi câu hỏi]) --> B{🤔 Phân tích\ncâu hỏi}
+
+    B --> C{Câu hỏi cần\ndữ liệu thực tế?}
+
+    %% ─── CHATBOT PATH ───
+    C -- "❌ Không\n(Lý thuyết / Q&A chung)" --> D[💬 CHATBOT PATH\nCấp 2 — LLM Thuần]
+    D --> D1[1 LLM call duy nhất\nKhông gọi Tool]
+    D1 --> D2{Chatbot\ncó đủ kiến thức?}
+    D2 -- "✅ Có" --> D3([✅ Trả lời trực tiếp\nNhanh & Rẻ])
+    D2 -- "❌ Không" --> D4([⚠️ Safe Fallback\nGợi ý gọi tổng đài])
+
+    %% ─── REACT AGENT PATH ───
+    C -- "✅ Có\n(Cần tra cứu / Đa bước)" --> E{🔍 Phân loại\nmức độ phức tạp}
+
+    E -- "1 Tool\nVí dụ: tra lịch bác sĩ" --> F1[🤖 REACT AGENT PATH\nCấp 3 — 1 Tool Call]
+    E -- "2+ Tools\nVí dụ: triệu chứng → đặt lịch" --> F2[🤖 REACT AGENT PATH\nCấp 3 — Multi-Tool]
+    E -- "Câu bẫy / Tham số lạ" --> F3[🛡️ GUARDRAIL PATH\nEdge Case Handler]
+
+    F1 --> G[Thought → Action → Observation\nVòng lặp ReAct]
+    F2 --> G
+    F3 --> G
+
+    G --> H{Tool trả về\nkết quả hợp lệ?}
+
+    H -- "✅ Thành công" --> I{Đủ thông tin\ntrả lời chưa?}
+    I -- "✅ Đủ rồi" --> J([🏁 Final Answer\nCó bằng chứng từ Tool])
+    I -- "❌ Cần thêm" --> G
+
+    H -- "❌ Tool báo lỗi" --> K{Lỗi\nliên tiếp ≥ 3?}
+    K -- "❌ Chưa" --> L[🔄 Retry / Điều chỉnh\ntham số hoặc thử tool khác]
+    L --> G
+    K -- "✅ Rồi" --> M([🛡️ Guardrail Triggered\nSafe Fallback lịch sự])
+
+    G --> N{Đạt MAX_ITERATIONS\n= 5 bước?}
+    N -- "✅ Đạt giới hạn" --> M
+    N -- "❌ Chưa" --> H
+
+    %% ─── BONUS CẤP 4 ───
+    J --> O{Người dùng\nhỏi tiếp?}
+    O -- "✅ Có (Multi-turn)" --> P[🧠 AUTONOMOUS AGENT\nCấp 4 BONUS\nPlanning + Memory]
+    P --> Q[Tự chia nhỏ mục tiêu\nNhớ ngữ cảnh cũ]
+    Q --> G
+    O -- "❌ Kết thúc" --> R([👋 Kết thúc phiên])
+
+    %% ─── STYLING ───
+    style A fill:#4A90D9,color:#fff,stroke:#2c5f8a
+    style D fill:#27AE60,color:#fff,stroke:#1e8449
+    style D1 fill:#58D68D,color:#333,stroke:#27AE60
+    style D3 fill:#A9DFBF,color:#333,stroke:#27AE60
+    style D4 fill:#FAD7A0,color:#333,stroke:#E67E22
+    style F1 fill:#8E44AD,color:#fff,stroke:#6c3483
+    style F2 fill:#8E44AD,color:#fff,stroke:#6c3483
+    style F3 fill:#E74C3C,color:#fff,stroke:#c0392b
+    style G fill:#2E86C1,color:#fff,stroke:#1a5276
+    style J fill:#1ABC9C,color:#fff,stroke:#17a589
+    style M fill:#E74C3C,color:#fff,stroke:#c0392b
+    style P fill:#F39C12,color:#fff,stroke:#d68910
+    style Q fill:#FAD7A0,color:#333,stroke:#F39C12
+```
