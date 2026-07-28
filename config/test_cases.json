@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Chính sách đổi trả hàng của shop là gì?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn (chính sách chung), không cần tra cứu đơn hàng cụ thể."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Tôi cần chuẩn bị những gì khi muốn đổi trả một sản phẩm mua online?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn về quy trình chung, không cần gọi Tool."
   },
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "question": "Đơn hàng #ORD-002 của tôi hiện đang ở trạng thái nào rồi?",
+    "expected_behavior": "Agent gọi tool lookup_order('ORD-002') rồi trả lời trạng thái đơn hàng cụ thể cho khách."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "question": "Đơn hàng #ORD-001 tôi nhận bị lỗi sản phẩm, tôi có đổi trả được không và cần làm những bước gì?",
+    "expected_behavior": "Agent gọi lookup_order('ORD-001') để xác nhận đơn đã giao, sau đó gọi check_return_eligibility('ORD-001') để kiểm tra điều kiện đổi trả, rồi tổng hợp hướng dẫn các bước tiếp theo."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Đơn hàng #XX-000-KHONGTONTAI tôi mua cách đây 6 tháng, tôi muốn hoàn tiền 100% ngay bây giờ.",
+    "expected_behavior": "Tool lookup_order báo lỗi không tìm thấy đơn hàng. Guardrail ngắt sau tối đa 3 bước (MAX_ITERATIONS) và trả lời lịch sự từ chối kèm giải thích lý do, không bịa số tiền hoàn."
   }
 ]
