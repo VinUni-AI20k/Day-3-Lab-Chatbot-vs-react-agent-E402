@@ -1,16 +1,6 @@
 {
   "USER_DATABASE": {
-    "current_user": {
-      "student_id": "2A202601001",
-      "name": "Minh",
-      "age": 21,
-      "gender": "Nam",
-      "personality": "Hướng nội, điềm tĩnh",
-      "interests": ["đọc sách", "cà phê yên tĩnh", "công nghệ"],
-      "goal": "Mối quan hệ nghiêm túc",
-      "preference": "Người biết lắng nghe, có mục tiêu rõ ràng",
-      "vector": [0.2, 0.9, 0.8, 0.95]
-    }
+    "current_user": {}
   },
   "CANDIDATES_DATABASE": [
     {
@@ -19,10 +9,22 @@
       "name": "Mai",
       "age": 22,
       "gender": "Nữ",
+      "hometown": "Hà Nội",
+      "mbti": "INFJ",
       "personality": "Hướng nội vừa phải, tinh tế",
-      "interests": ["đọc sách", "cà phê", "nghệ thuật"],
+      "bio": "Yêu sách, nghệ thuật và những buổi chiều cà phê yên tĩnh.",
+      "interests": [
+        "đọc sách",
+        "cà phê",
+        "nghệ thuật"
+      ],
       "goal": "Mối quan hệ nghiêm túc",
-      "vector": [0.3, 0.6, 0.9, 0.9]
+      "vector": [
+        0.3,
+        0.6,
+        0.9,
+        0.9
+      ]
     },
     {
       "id": "cand_02",
@@ -30,10 +32,22 @@
       "name": "Lan",
       "age": 21,
       "gender": "Nữ",
+      "hometown": "Hải Dương",
+      "mbti": "ESFP",
       "personality": "Cởi mở, năng động",
-      "interests": ["du lịch", "công nghệ", "cà phê"],
+      "bio": "Thích khám phá vùng đất mới và luôn bắt kịp xu hướng công nghệ.",
+      "interests": [
+        "du lịch",
+        "công nghệ",
+        "cà phê"
+      ],
       "goal": "Mối quan hệ nghiêm túc",
-      "vector": [0.8, 0.8, 0.4, 0.85]
+      "vector": [
+        0.8,
+        0.8,
+        0.4,
+        0.85
+      ]
     },
     {
       "id": "cand_03",
@@ -41,10 +55,22 @@
       "name": "An",
       "age": 20,
       "gender": "Nữ",
+      "hometown": "Hà Nội",
+      "mbti": "ISFP",
       "personality": "Hòa đồng, cá tính",
-      "interests": ["mèo", "nhạc indie", "đọc sách"],
+      "bio": "Yêu động vật, nhạc indie và những cuộc trò chuyện chân thành.",
+      "interests": [
+        "mèo",
+        "nhạc indie",
+        "đọc sách"
+      ],
       "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
-      "vector": [0.6, 0.3, 0.7, 0.6]
+      "vector": [
+        0.6,
+        0.3,
+        0.7,
+        0.6
+      ]
     },
     {
       "id": "cand_04",
@@ -52,10 +78,252 @@
       "name": "Phương",
       "age": 22,
       "gender": "Nam",
+      "hometown": "Nam Định",
+      "mbti": "ENFJ",
       "personality": "Chu đáo, hài hước",
-      "interests": ["đọc sách", "cà phê", "phim ảnh"],
+      "bio": "Thích xem phim, pha cà phê và lắng nghe câu chuyện của người khác.",
+      "interests": [
+        "đọc sách",
+        "cà phê",
+        "phim ảnh"
+      ],
       "goal": "Mối quan hệ nghiêm túc",
-      "vector": [0.5, 0.5, 0.85, 0.8]
+      "vector": [
+        0.5,
+        0.5,
+        0.85,
+        0.8
+      ]
+    },
+    {
+      "id": "cand_05",
+      "student_id": "2A202601005",
+      "name": "Đức",
+      "age": 23,
+      "gender": "Nam",
+      "hometown": "Hà Nội",
+      "mbti": "ENTP",
+      "personality": "Hướng ngoại, năng nổ",
+      "bio": "Đam mê thể thao và âm nhạc, luôn tìm kiếm những trải nghiệm mới.",
+      "interests": [
+        "bóng đá",
+        "du lịch",
+        "âm nhạc"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.85,
+        0.5,
+        0.3,
+        0.8
+      ]
+    },
+    {
+      "id": "cand_06",
+      "student_id": "2A202601006",
+      "name": "Thảo",
+      "age": 20,
+      "gender": "Nữ",
+      "hometown": "Huế",
+      "mbti": "INFP",
+      "personality": "Nhẹ nhàng, sâu sắc",
+      "bio": "Sống chậm, yêu nghệ thuật và những điều tinh tế của Huế.",
+      "interests": [
+        "vẽ tranh",
+        "thơ",
+        "trà đạo"
+      ],
+      "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
+      "vector": [
+        0.25,
+        0.3,
+        0.9,
+        0.5
+      ]
+    },
+    {
+      "id": "cand_07",
+      "student_id": "2A202601007",
+      "name": "Huy",
+      "age": 22,
+      "gender": "Nam",
+      "hometown": "Đà Nẵng",
+      "mbti": "ESFP",
+      "personality": "Hài hước, phóng khoáng",
+      "bio": "Yêu biển, thích chụp ảnh và khám phá quán ăn ngon.",
+      "interests": [
+        "lướt sóng",
+        "nhiếp ảnh",
+        "ẩm thực"
+      ],
+      "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
+      "vector": [
+        0.9,
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "id": "cand_08",
+      "student_id": "2A202601008",
+      "name": "Hà",
+      "age": 21,
+      "gender": "Nữ",
+      "hometown": "TP. Hồ Chí Minh",
+      "mbti": "ESTJ",
+      "personality": "Quyết đoán, thực tế",
+      "bio": "Năng động, đam mê khởi nghiệp và sống có kế hoạch rõ ràng.",
+      "interests": [
+        "khởi nghiệp",
+        "công nghệ",
+        "gym"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.7,
+        0.9,
+        0.3,
+        0.85
+      ]
+    },
+    {
+      "id": "cand_09",
+      "student_id": "2A202601009",
+      "name": "Khang",
+      "age": 24,
+      "gender": "Nam",
+      "hometown": "Cần Thơ",
+      "mbti": "ISFJ",
+      "personality": "Trầm tính, chu đáo",
+      "bio": "Thích chăm sóc mọi người bằng những bữa ăn tự nấu và một khu vườn nhỏ.",
+      "interests": [
+        "nấu ăn",
+        "làm vườn",
+        "đọc sách"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.3,
+        0.4,
+        0.85,
+        0.9
+      ]
+    },
+    {
+      "id": "cand_10",
+      "student_id": "2A202601010",
+      "name": "Vy",
+      "age": 19,
+      "gender": "Nữ",
+      "hometown": "Nghệ An",
+      "mbti": "ENFP",
+      "personality": "Sôi nổi, tò mò",
+      "bio": "Luôn tràn đầy năng lượng, thích chinh phục những cung đường mới.",
+      "interests": [
+        "nhạc indie",
+        "leo núi",
+        "nhiếp ảnh"
+      ],
+      "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
+      "vector": [
+        0.75,
+        0.35,
+        0.55,
+        0.45
+      ]
+    },
+    {
+      "id": "cand_11",
+      "student_id": "2A202601011",
+      "name": "Bảo",
+      "age": 21,
+      "gender": "Nam",
+      "hometown": "Hải Phòng",
+      "mbti": "INTJ",
+      "personality": "Điềm đạm, logic",
+      "bio": "Thích tư duy chiến lược, xem công nghệ là một phần cuộc sống.",
+      "interests": [
+        "cờ vua",
+        "công nghệ",
+        "đọc sách"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.25,
+        0.85,
+        0.75,
+        0.85
+      ]
+    },
+    {
+      "id": "cand_12",
+      "student_id": "2A202601012",
+      "name": "Nhi",
+      "age": 22,
+      "gender": "Nữ",
+      "hometown": "Đắk Lắk",
+      "mbti": "ISFJ",
+      "personality": "Ấm áp, chu đáo",
+      "bio": "Yêu công việc thiện nguyện và những buổi sáng bên ly cà phê Ban Mê.",
+      "interests": [
+        "cà phê",
+        "thiện nguyện",
+        "đọc sách"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.35,
+        0.4,
+        0.85,
+        0.9
+      ]
+    },
+    {
+      "id": "cand_13",
+      "student_id": "2A202601013",
+      "name": "Yuna",
+      "age": 23,
+      "gender": "Nữ",
+      "hometown": "Seoul, Hàn Quốc (trao đổi tại VinUni)",
+      "mbti": "INTP",
+      "personality": "Tinh tế, kỷ luật",
+      "bio": "Sinh viên trao đổi yêu công nghệ, kỷ luật trong học tập và đam mê nhảy.",
+      "interests": [
+        "k-pop dance",
+        "công nghệ",
+        "đọc sách"
+      ],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [
+        0.4,
+        0.8,
+        0.7,
+        0.85
+      ]
+    },
+    {
+      "id": "cand_14",
+      "student_id": "2A202601014",
+      "name": "David",
+      "age": 24,
+      "gender": "Nam",
+      "hometown": "Boston, Mỹ (trao đổi tại VinUni)",
+      "mbti": "ENFJ",
+      "personality": "Cởi mở, hài hước",
+      "bio": "Sinh viên trao đổi thích khám phá văn hoá Việt Nam qua ẩm thực và du lịch.",
+      "interests": [
+        "bóng rổ",
+        "du lịch",
+        "ẩm thực"
+      ],
+      "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
+      "vector": [
+        0.8,
+        0.55,
+        0.35,
+        0.45
+      ]
     }
   ]
 }

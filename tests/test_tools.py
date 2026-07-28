@@ -8,14 +8,39 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from tools import (  # noqa: E402
     AVAILABLE_TOOLS,
+    USER_DATABASE,
     calculate_compatibility,
     get_user_profile,
     search_candidate_profiles,
     synthesize_recommendation,
 )
 
+# USER_DATABASE khởi đầu RỖNG (chưa ai nộp form trên web) — các test dưới đây mô
+# phỏng trạng thái "người dùng đã nộp form" bằng cách tự seed 1 "current_user"
+# tạm thời trong setUp/tearDown, giống hệt cách web/server.py ghi hồ sơ thật.
+MINH_PROFILE = {
+    "student_id": "2A202601001",
+    "name": "Minh",
+    "age": 21,
+    "gender": "Nam",
+    "personality": "Hướng nội, điềm tĩnh",
+    "interests": ["đọc sách", "cà phê yên tĩnh", "công nghệ"],
+    "goal": "Mối quan hệ nghiêm túc",
+    "vector": [0.2, 0.9, 0.8, 0.95],
+}
+
 
 class CupidToolsTests(unittest.TestCase):
+    def setUp(self):
+        self._original_current_user = USER_DATABASE.get("current_user")
+        USER_DATABASE["current_user"] = dict(MINH_PROFILE)
+
+    def tearDown(self):
+        if self._original_current_user is None:
+            USER_DATABASE.pop("current_user", None)
+        else:
+            USER_DATABASE["current_user"] = self._original_current_user
+
     def test_registry_contains_canonical_tool_names(self):
         self.assertEqual(
             set(AVAILABLE_TOOLS),
@@ -39,6 +64,13 @@ class CupidToolsTests(unittest.TestCase):
     def test_get_user_profile_returns_safe_errors(self):
         self.assertTrue(get_user_profile("missing").startswith("LỖI:"))
         self.assertTrue(get_user_profile(None).startswith("LỖI:"))
+
+    def test_get_user_profile_handles_empty_user_database_gracefully(self):
+        # Trước khi người dùng nộp form trên web, USER_DATABASE không có "current_user"
+        # — tool phải trả về LỖI: sạch sẽ, không được ném KeyError/crash.
+        USER_DATABASE.pop("current_user", None)
+        result = get_user_profile("current_user")
+        self.assertTrue(result.startswith("LỖI:"))
 
     def test_search_candidate_profiles_filters_data(self):
         result = search_candidate_profiles("đọc sách")

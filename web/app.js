@@ -4,10 +4,12 @@
 
 let userData = {
     name: "Minh",
+    studentId: "",
     age: "21",
     gender: "Nam",
     goal: "Mối quan hệ nghiêm túc",
     interests: "đọc sách, cà phê yên tĩnh, công nghệ",
+    personality: "",
     answers: {}
 };
 
@@ -43,10 +45,12 @@ function toggleThinkingDrawer() {
 function handleBasicFormSubmit(event) {
     event.preventDefault();
     userData.name = document.getElementById('input-name').value || "Minh";
+    userData.studentId = document.getElementById('input-student-id').value || "";
     userData.age = document.getElementById('input-age').value || "21";
     userData.gender = document.getElementById('input-gender').value || "Nam";
     userData.goal = document.getElementById('input-goal').value || "Mối quan hệ nghiêm túc";
     userData.interests = document.getElementById('input-interests').value || "đọc sách, cà phê yên tĩnh";
+    userData.personality = document.getElementById('input-personality').value || "";
 
     goToStep('step-questionnaire-prompt');
 }
@@ -157,10 +161,12 @@ async function runCupidAgent() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 name: userData.name,
+                student_id: userData.studentId,
                 age: userData.age,
                 gender: userData.gender,
                 goal: userData.goal,
                 interests: userData.interests,
+                personality: userData.personality,
                 questionnaire_answers: userData.answers
             })
         });
@@ -182,7 +188,7 @@ async function runCupidAgent() {
 function updateDashboard(data) {
     const match = data.match;
     document.getElementById('match-cand-name').textContent = `${match.name}, ${match.age}t`;
-    document.getElementById('match-cand-mbti').textContent = `${match.mbti} • Hướng nội tinh tế`;
+    document.getElementById('match-cand-mbti').textContent = `${match.mbti} • ${match.personality || ''}`;
     document.getElementById('match-cand-bio').textContent = `"${match.bio}"`;
     document.getElementById('match-icebreaker').textContent = `"${match.icebreaker}"`;
 
