@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Thế nào là một căn phòng trọ lý tưởng cho sinh viên?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn về các tiêu chí chọn phòng."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Tôi nên chú ý điều gì khi ký hợp đồng thuê nhà?",
+    "expected_behavior": "Chatbot đưa ra lời khuyên pháp lý và lưu ý khi thuê nhà từ kiến thức chung."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Cần Tool 1 bước)",
+    "question": "Tôi muốn tìm một căn hộ mini ở quận Cầu Giấy, Hà Nội, giá dưới 8 triệu.",
+    "expected_behavior": "Agent gọi tool search_properties để tra cứu danh sách phòng hợp lệ."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Multi-step (Cần gọi nhiều Tools liên tiếp)",
+    "question": "Tìm cho tôi phòng trọ ở Đống Đa giá khoảng 3 triệu. Nếu có, hãy xem chi tiết tiện ích của phòng đầu tiên rồi đặt lịch xem giúp tôi vào sáng thứ 7 tuần này.",
+    "expected_behavior": "Agent gọi search_properties, sau đó gọi check_property_details, rồi gọi book_viewing."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "🔴 Edge Case (Bẫy Guardrail / Trượt lịch)",
+    "question": "Tôi muốn tìm biệt thự nghỉ dưỡng ở Quận 1, giá dưới 1 triệu, có chỗ đậu trực thăng.",
+    "expected_behavior": "Tool search_properties không tìm thấy, Agent xin lỗi người dùng hoặc báo không có kết quả."
   }
 ]

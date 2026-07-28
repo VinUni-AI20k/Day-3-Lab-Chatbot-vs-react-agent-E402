@@ -3,47 +3,131 @@
 Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
 """
 
-def get_weather(location: str) -> str:
+import json
+import os
+
+def load_data():
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_path = os.path.join(base_dir, "data", "datamock.json")
+    try:
+        with open(data_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+def search_properties(city: str = "", district: str = "", type: str = "", max_price: int = 999999999) -> str:
     """
-    Tra cứu thời tiết hiện tại của một thành phố.
+    Tra cứu danh sách các phòng trọ/căn hộ thỏa mãn điều kiện.
     
     Args:
-        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
+        city (str): Thành phố (vd: 'Hà Nội', 'Hồ Chí Minh'). Bỏ trống nếu không chắc.
+        district (str): Quận/Huyện (vd: 'Cầu Giấy', 'Đống Đa'). Bỏ trống nếu không chắc.
+        type (str): Loại phòng (vd: 'phòng trọ', 'căn hộ mini', 'nhà nguyên căn'). Bỏ trống để tìm tất cả.
+        max_price (int): Mức giá tối đa mong muốn (VNĐ). Mặc định là 999999999.
         
     Returns:
-        str: Thông tin thời tiết chi tiết
+        str: Danh sách tóm tắt các căn thỏa mãn.
     """
-    loc_lower = location.lower()
-    if "hà nội" in loc_lower or "ha noi" in loc_lower:
-        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
-    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
-        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
-    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
-        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
-    else:
-        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
+    data = load_data()
+    results = []
+    for item in data:
+        if item.get("status") != "available":
+            continue
+            
+        c = item.get("address", {}).get("city", "").lower()
+        d = item.get("address", {}).get("district", "").lower()
+        t = item.get("type", "").lower()
+        p = item.get("price", 999999999)
+        
+        if city and city.lower() not in c:
+            continue
+        if district and district.lower() not in d:
+            continue
+        if type and type.lower() not in t:
+            continue
+        if p > max_price:
+            continue
+            
+        results.append(item)
+    
+    if not results:
+        return f"Không tìm thấy kết quả nào phù hợp ở {district}, {city} với giá dưới {max_price} VNĐ."
+        
+    # Chỉ trả về tối đa 5 kết quả đầu tiên để tránh bị quá tải ngữ cảnh LLM
+    top_results = results[:5]
+    res_str = f"Tìm thấy {len(results)} kết quả. Dưới đây là 5 lựa chọn tốt nhất:\n"
+    for r in top_results:
+        res_str += f"- ID: {r['id']} | Tên: {r['title']} | Giá: {r['price']} VNĐ | Loại: {r['type']}\n"
+    
+    res_str += "\n(Gợi ý: Dùng tool check_property_details để xem tiện ích và lịch trống của 1 ID cụ thể)"
+    return res_str
 
-
-def search_flights(origin: str, destination: str) -> str:
+def check_property_details(property_id: str) -> str:
     """
-    Tra cứu chuyến bay giữa hai địa điểm.
+    Xem thông tin chi tiết (tiện ích, mô tả, lịch trống) của 1 căn cụ thể.
     
     Args:
-        origin (str): Nơi đi (Ví dụ: 'TP.HCM')
-        destination (str): Nơi đến (Ví dụ: 'Hà Nội')
+        property_id (str): Mã căn (ví dụ: PROP-0012)
         
     Returns:
-        str: Danh sách chuyến bay khả dụng và giá vé
+        str: Thông tin chi tiết của căn nhà.
     """
-    return (
-        f"Chuyến bay từ {origin} -> {destination} ngày mai:\n"
-        f"1. VN123 (08:00) - Giá: 1,500,000 VNĐ (Còn vé)\n"
-        f"2. VJ456 (14:30) - Giá: 1,200,000 VNĐ (Còn vé)"
-    )
+    data = load_data()
+    for item in data:
+        if item.get("id") == property_id:
+            amens = ", ".join(item.get("amenities", ["Không rõ"]))
+            desc = item.get("description", "Không có mô tả.")
+            slots = ", ".join(item.get("viewing_slots", []))
+            if not slots:
+                slots = "Hiện không có lịch trống để xem nhà."
+            
+            return (
+                f"Chi tiết căn {property_id}:\n"
+                f"- Tiện ích: {amens}\n"
+                f"- Mô tả: {desc}\n"
+                f"- Lịch trống có thể xem: {slots}\n"
+                f"- Liên hệ chủ nhà: {item.get('contact', {}).get('name')} - {item.get('contact', {}).get('phone')}"
+            )
+    return f"Lỗi: Không tìm thấy căn nhà nào có mã {property_id}."
+
+def book_viewing(property_id: str, time_slot: str, user_name: str, phone: str) -> str:
+    """
+    Đặt lịch xem nhà và cập nhật lại file datamock.json.
+    
+    Args:
+        property_id (str): Mã căn (ví dụ: PROP-0012).
+        time_slot (str): Thời gian muốn xem (vd: '2026-08-01T10:30:00').
+        user_name (str): Tên khách hàng.
+        phone (str): Số điện thoại khách hàng.
+        
+    Returns:
+        str: Kết quả đặt lịch (thành công hoặc thất bại).
+    """
+    data = load_data()
+    for item in data:
+        if item.get("id") == property_id:
+            slots = item.get("viewing_slots", [])
+            if time_slot in slots:
+                # Xóa slot này khỏi danh sách
+                slots.remove(time_slot)
+                item["viewing_slots"] = slots
+                
+                # Ghi đè lại vào datamock.json
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                data_path = os.path.join(base_dir, "data", "datamock.json")
+                with open(data_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                    
+                return f"ĐẶT LỊCH THÀNH CÔNG! Đã xác nhận lịch xem căn {property_id} lúc {time_slot} cho khách hàng {user_name} ({phone}). Hệ thống đã loại bỏ giờ này khỏi lịch trống."
+            else:
+                return f"Lỗi: Khung giờ {time_slot} không khả dụng cho căn {property_id}. Vui lòng chọn khung giờ khác từ check_property_details."
+                
+    return f"Lỗi: Không tìm thấy căn nhà nào có mã {property_id} để đặt lịch."
 
 
 # Danh sách các tool được đăng ký để Agent sử dụng
 AVAILABLE_TOOLS = {
-    "get_weather": get_weather,
-    "search_flights": search_flights,
+    "search_properties": search_properties,
+    "check_property_details": check_property_details,
+    "book_viewing": book_viewing,
 }
