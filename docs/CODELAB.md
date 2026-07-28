@@ -19,7 +19,7 @@ requiredTools: ["Python 3.10+", "pip", "VS Code hoặc Editor bất kỳ", "Git"
 commonErrors: ["Nhúng sẵn kết quả tool vào system prompt của chatbot baseline", "Để model tự bịa Observation thay vì application chèn kết quả tool thực tế", "Không có max_iterations khiến agent lặp vô hạn", "Commit API key hoặc PII vào repo"]
 requiresSubmission: true
 ---
-# Lab 03 — Chatbot vs ReAct Agent 
+# Lab 03 — Chatbot vs ReAct Agent
 
 **AI Agent · Day 3 · ~240 phút****VinUni AI Codelab × GDGoC · Cập nhật 2026-07-27**
 
@@ -31,12 +31,12 @@ Câu hỏi trọng tâm xuyên suốt Lab:
 
 ### 🧩 4 Cấp Độ Tiến Hóa Của AI Hội Thoại (From Rule-Based to Autonomous Agent)
 
-| Cấp độ | Loại hệ thống | Cách hoạt động | Đánh giá & Ứng dụng trong Bài Lab |
-| :---: | :--- | :--- | :--- |
-| **Cấp 1** | **Rule-Based Bot** | Khớp từ khóa if/else cố định | Nhanh nhưng cứng nhắc, không có LLM (*Lịch sử*) |
-| **Cấp 2** | **LLM Chatbot** | Dùng LLM sinh text mượt mà | Trả lời tự nhiên nhưng không có tool ➔ **Chatbot Baseline** |
-| **Cấp 3** | **Reactive Agent** | Vòng lặp `Thought -> Action -> Observation` | Gọi tool thực tế, trích xuất dữ liệu ➔ **ReAct Agent (Trọng tâm)** |
-| **Cấp 4** | **Autonomous Agent** | Tự chia nhỏ mục tiêu (Planning) + Bộ nhớ (Memory) | Giải quyết bài toán dài hạn ➔ 🎁 **Phần Bonus Nâng cao (+10%)** |
+|    Cấp độ    | Loại hệ thống           | Cách hoạt động                                      | Đánh giá & Ứng dụng trong Bài Lab                                           |
+| :--------------: | :------------------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------- |
+| **Cấp 1** | **Rule-Based Bot**   | Khớp từ khóa if/else cố định                      | Nhanh nhưng cứng nhắc, không có LLM (*Lịch sử*)                          |
+| **Cấp 2** | **LLM Chatbot**      | Dùng LLM sinh text mượt mà                          | Trả lời tự nhiên nhưng không có tool ➔**Chatbot Baseline**          |
+| **Cấp 3** | **Reactive Agent**   | Vòng lặp`Thought -> Action -> Observation`          | Gọi tool thực tế, trích xuất dữ liệu ➔**ReAct Agent (Trọng tâm)** |
+| **Cấp 4** | **Autonomous Agent** | Tự chia nhỏ mục tiêu (Planning) + Bộ nhớ (Memory) | Giải quyết bài toán dài hạn ➔ 🎁**Phần Bonus Nâng cao (+10%)**     |
 
 ---
 
@@ -91,7 +91,7 @@ flowchart LR
 | **Tool Registry**    | Khai báo các món đồ nghề (Tools) cho AI gọi                   | `src/tools.py` (Role 2)            |
 | **System Prompt**    | Ép AI suy luận dạng Thought ➔ Action & Guardrails                | `src/prompts.py` (Role 3)          |
 | **Agent Integrator** | Điều phối vòng lặp ReAct (`Thought -> Action -> Observation`) | `src/app.py` (Role 4 - Integrator) |
-| **Observability**    | Ghi log trace để debug và làm báo cáo so sánh                 | `docs/trace_eval.md` (Role 5)      |
+| **Observability**    | Ghi log trace để debug và làm báo cáo so sánh                 | `docs/trace_eval.md` (Role 5A)     |
 
 :::checkpoint{title="Hoàn thành khi"}
 [ ] Terminal hiển thị `(.venv)`, gõ `python src/app.py` chạy thành công không báo lỗi.
@@ -149,7 +149,7 @@ Baseline **KHÔNG** được: gọi tool, nhúng sẵn kết quả tool vào pro
 
 1. **Role 3**: Mở `src/prompts.py` — soạn `CHATBOT_BASELINE_PROMPT`.
 2. **Role 4**: Mở `src/app.py` — chạy hàm `run_baseline_chatbot()` trên 5 câu test trong `config/test_cases.json`.
-3. **Role 5**: Lưu phản hồi vào `docs/trace_eval.md` và phân loại output: *correct*, *safe fallback* hay *hallucinated*.
+3. **Role 5A**: Lưu phản hồi vào `docs/trace_eval.md` và phân loại output: *correct*, *safe fallback* hay *hallucinated*.
 
 :::caution{title="Đừng vội kết luận Agent luôn thắng"}
 Câu hỏi của bài Lab: Khi nào chi phí orchestration của Agent đáng giá? Với câu hỏi Q&A lý thuyết đơn giản, Chatbot thuần vẫn nhanh và rẻ hơn Agent!
@@ -157,7 +157,7 @@ Câu hỏi của bài Lab: Khi nào chi phí orchestration của Agent đáng gi
 
 :::checkpoint{title="Hoàn thành khi"}
 [ ] Chatbot dùng đúng 1 LLM call, số lần gọi tool = 0.
-[ ] Raw answer đã được Role 5 lưu vào `docs/trace_eval.md` và phân loại output từng case.
+[ ] Raw answer đã được Role 5A lưu vào `docs/trace_eval.md` và phân loại output từng case.
 :::
 
 :::caution{title="Troubleshooting — Vấn đề thường gặp"}
@@ -269,7 +269,7 @@ stateDiagram-v2
 
 1. **Role 3**: Soạn `REACT_SYSTEM_PROMPT` và cấu hình phanh Guardrails `MAX_ITERATIONS` trong `src/prompts.py`.
 2. **Role 4 (Integrator)**: Thực hiện `git pull` kéo file của Role 1, 2, 3 về ➔ Vibe Code ghép nối vòng lặp `run_react_agent()` trong `src/app.py`.
-3. **Role 5**: Chạy `python src/app.py` và dán chuỗi log trace vào `docs/trace_eval.md`.
+3. **Role 5A**: Chạy `python src/app.py` và dán chuỗi log trace vào `docs/trace_eval.md`.
 
 :::checkpoint{title="Hoàn thành khi"}
 [ ] Agent chạy qua đúng chuỗi `Thought -> Action -> Observation`.
@@ -306,9 +306,9 @@ Phát hiện một failed trace (lỗi lặp vô hạn, gọi sai tên tool, nh�
 
 ### Bạn làm:
 
-1. **Role 1 & Role 5**: Cố tình đặt 1 câu hỏi bẫy (Edge Case) trong `config/test_cases.json` để ép Agent bộc lộ lỗi.
+1. **Role 1 & Role 5A**: Cố tình đặt 1 câu hỏi bẫy (Edge Case) trong `config/test_cases.json` để ép Agent bộc lộ lỗi.
 2. **Role 3 & Role 4**: Nâng cấp System Prompt & Parser trong `src/prompts.py` và `src/app.py` thành phiên bản **Agent V2** có khả năng tự phục hồi (Recovery) và Safe Fallback.
-3. **Role 5**: Ghi lại so sánh Before/After vào `docs/trace_eval.md`.
+3. **Role 5A**: Ghi lại so sánh Before/After vào `docs/trace_eval.md`.
 
 :::checkpoint{title="Hoàn thành khi"}
 [ ] Có ít nhất 1 Failed Trace được phân tích nguyên nhân gốc trong `docs/trace_eval.md`.
@@ -358,7 +358,7 @@ Chạy bộ Test Cases trên cả Chatbot Baseline và ReAct Agent, hoàn thiệ
 ### 📋 CHECKLIST ARTIFACTS BẮT BUỘC KHI NỘP BÀI
 
 - [X] 📘 [README.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/README.md) — Tổng quan kiến trúc & Rubric chấm điểm.
-- [X] 📋 [docs/PHAN_CONG_CONG_VIEC.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/PHAN_CONG_CONG_VIEC.md) — Sổ tay phân công 5 Roles & Checklist theo mốc.
+- [X] 📋 [docs/PHAN_CONG_CONG_VIEC.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/PHAN_CONG_CONG_VIEC.md) — Sổ tay phân công 6 Roles & Checklist theo mốc.
 - [X] 💡 [docs/DANH_SACH_DE_TAI.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/DANH_SACH_DE_TAI.md) — Danh sách 10 chủ đề gợi ý.
 - [X] 📊 [docs/trace_eval.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/trace_eval.md) — Báo cáo Log Trace & Bảng đánh giá Scoring Matrix.
 - [X] 🟢 [config/test_cases.json](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/config/test_cases.json) — Bộ đề Test Cases.
