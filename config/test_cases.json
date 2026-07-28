@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Chính sách đổi trả hàng của shop thường kéo dài bao nhiêu ngày là hợp lý?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn (không cần tra cứu đơn hàng cụ thể)."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Nêu 3 lưu ý khi đóng gói hàng để trả lại cho shop.",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn, không cần gọi tool."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Cần 1 Tool)",
+    "question": "Đơn hàng #DH10234 của tôi đang ở trạng thái nào và bao giờ thì tới nơi?",
+    "expected_behavior": "Agent gọi tool get_order_status('DH10234') rồi suy luận/diễn giải thời gian giao dự kiến."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "question": "Kiểm tra đơn hàng #DH10234 đã giao chưa, và nếu giao rồi thì tôi có còn đủ điều kiện đổi trả không?",
+    "expected_behavior": "Agent gọi tool get_order_status('DH10234') để biết ngày giao, sau đó gọi tool check_return_eligibility(order_id, ngày_giao) để xác định còn trong hạn đổi trả hay không."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Tra cứu đơn hàng #DH99999999999 được đặt ngày 32/13/2026, tôi muốn đổi trả ngay.",
+    "expected_behavior": "Tool báo lỗi vì mã đơn không tồn tại/ngày không hợp lệ. Guardrail ngắt sau tối đa 3 lần thử, không bịa dữ liệu đơn hàng, và trả lời lịch sự yêu cầu người dùng cung cấp lại mã đơn/ngày chính xác."
   }
 ]
