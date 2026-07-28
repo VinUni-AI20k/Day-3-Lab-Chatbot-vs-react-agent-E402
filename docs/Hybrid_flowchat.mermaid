@@ -1,0 +1,31 @@
+flowchart TD
+    A[User query] --> B{Yêu cầu kiến thức chung?}
+    B -- Có --> C[Chatbot Baseline]
+    C --> Z[Final answer]
+    B -- Không --> D{Có yêu cầu tìm nhà hoặc dữ liệu lịch?}
+    D -- Không --> E[Từ chối ngoài phạm vi / hỏi lại]
+    E --> Z
+    D -- Có --> F[ReAct Agent]
+    F --> G{Đủ thông tin tìm kiếm?}
+    G -- Không --> H[Hỏi vị trí, ngân sách, loại phòng]
+    H --> Z
+    G -- Có --> I[search_rentals]
+    I --> J{Có kết quả?}
+    J -- Không --> K[Thông báo không có căn phù hợp]
+    K --> Z
+    J -- Có --> L{Người dùng chỉ muốn xem thông tin?}
+    L -- Có --> M[get_rental_detail / trả kết quả]
+    M --> Z
+    L -- Không --> N[check_landlord_calendar]
+    N --> O{Slot còn trống?}
+    O -- Không --> P[Đề xuất slot khác]
+    P --> Z
+    O -- Có --> Q{Đủ tên, SĐT, ngày giờ?}
+    Q -- Không --> R[Hỏi thông tin còn thiếu]
+    R --> Z
+    Q -- Có --> S[book_viewing_appointment]
+    S --> T{Booking thành công?}
+    T -- Không --> U[Thông báo lỗi và fallback]
+    U --> Z
+    T -- Có --> V[send_confirmation_notification]
+    V --> Z[Final answer]
