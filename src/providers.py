@@ -27,23 +27,64 @@ class BaseLLMProvider:
 class GeminiProvider(BaseLLMProvider):
     """Google Gemini Provider"""
     def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
-        
+        # 1. Clean up API key against quotes/spaces
+        raw_key = api_key or os.getenv("GEMINI_API_KEY") or ""
+        self.api_key = raw_key.strip().strip('"').strip("'")
+        self.model_name = self._normalize_model_name(model or os.getenv("LLM_MODEL") or "gemini-2.5-flash")
+
+    @staticmethod
+    def _normalize_model_name(model_name: str) -> str:
+        if not model_name:
+            return "gemini-2.5-flash"
+        model_name = model_name.strip()
+        if model_name.startswith("gemini/"):
+            return model_name[len("gemini/"):]
+        return model_name
+
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
             return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
+
         try:
             from google import genai
-            client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=contents
-            )
-            return response.text
-        except Exception as e:
-            return f"[Gemini Exception]: {str(e)}"
+            from google.genai import types
+        except Exception as exc:
+            return f"[Gemini Error]: Không thể import google.genai ({exc}). Hãy cài đặt 'google-genai' hoặc đổi LLM_PROVIDER sang mock."
+
+        client = genai.Client(api_key=self.api_key)
+
+        # 2. Use native GenerateContentConfig for system instructions
+        config = types.GenerateContentConfig(system_instruction=system_prompt) if system_prompt else None
+
+        candidate_models = []
+        seen = set()
+        for m in [self.model_name, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+            if m and m not in seen:
+                seen.add(m)
+                candidate_models.append(m)
+
+        last_error = None
+        for model_name in candidate_models:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=config
+                )
+                self.model_name = model_name
+                return response.text
+            except Exception as exc:
+                last_error = exc
+                # 3. Continue fallback on invalid key or not found errors
+                error_text = str(exc).lower()
+                if any(err in error_text for err in ["not found", "404", "invalid_argument", "400"]):
+                    continue
+                return f"[Gemini Exception]: {exc}"
+
+        return (
+            "[Gemini Exception]: Không thể gọi API Gemini. "
+            f"Vui lòng kiểm tra GEMINI_API_KEY và tên model. Chi tiết: {last_error}"
+        )
 
 
 class OpenAIProvider(BaseLLMProvider):
