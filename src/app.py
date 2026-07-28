@@ -1,6 +1,6 @@
 """
 🚀 CORE AGENT APP (Dành cho Role 4: Core Agent Developer)
-File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Cases.
+File chính ghép nối tất cả các thành phần: Tools + Prompts + Test Cases + Multi-Provider.
 """
 
 import json
@@ -18,14 +18,15 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
-# Import các thành phần từ file của Role 2 & Role 3
+# Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
 from tools import AVAILABLE_TOOLS, get_weather, search_flights
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
+from providers import get_llm_provider
 
 load_dotenv()
 
 def load_test_cases():
-    """Đọc bộ 5 test cases từ config/test_cases.json của Role 1"""
+    """Đọc bộ test cases từ config/test_cases.json của Role 1"""
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     config_path = os.path.join(base_dir, "config", "test_cases.json")
     
@@ -37,17 +38,19 @@ def load_test_cases():
         return json.load(f)
 
 
-def run_baseline_chatbot(user_query: str):
+def run_baseline_chatbot(user_query: str, provider):
     """
     Dựng Chatbot gốc (Baseline) không có công cụ.
-    Chỉ mô phỏng trả lời bằng LLM + System Prompt.
     """
     print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
     print(f"⚙️ System Prompt: {CHATBOT_BASELINE_PROMPT.strip()}")
-    print("🤖 Chatbot trả lời: (Không có Tool nên không tra cứu được dữ liệu thời gian thực)")
+    
+    # Gọi LLM Provider thực hiện sinh câu trả lời
+    response = provider.generate(user_query, system_prompt=CHATBOT_BASELINE_PROMPT)
+    print(f"🤖 Chatbot trả lời:\n{response}")
 
 
-def run_react_agent(user_query: str):
+def run_react_agent(user_query: str, provider):
     """
     Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
     """
@@ -80,6 +83,11 @@ if __name__ == "__main__":
     print("🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHATBOT VS REACT AGENT")
     print("==================================================")
     
+    # Khởi tạo Multi-Provider LLM Adapter (Đọc từ biến môi trường LLM_PROVIDER)
+    provider = get_llm_provider()
+    model_name = getattr(provider, "model_name", "Offline Mock Mode")
+    print(f"🔌 LLM Provider đang hoạt động: {provider.__class__.__name__} (Model: {model_name})")
+    
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
@@ -87,7 +95,7 @@ if __name__ == "__main__":
     sample_query = tests[2]["question"]
     
     print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
-    run_baseline_chatbot(sample_query)
+    run_baseline_chatbot(sample_query, provider)
     
     print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
-    run_react_agent(sample_query)
+    run_react_agent(sample_query, provider)
