@@ -1,0 +1,48 @@
+{
+  "CANDIDATES_DATABASE": [
+    {
+      "id": "cand_01",
+      "student_id": "2A202601002",
+      "name": "Mai",
+      "age": 22,
+      "gender": "Nữ",
+      "personality": "Hướng nội vừa phải, tinh tế",
+      "interests": ["đọc sách", "cà phê", "nghệ thuật"],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [0.3, 0.6, 0.9, 0.9]
+    },
+    {
+      "id": "cand_02",
+      "student_id": "2A202601316",
+      "name": "Lan",
+      "age": 21,
+      "gender": "Nữ",
+      "personality": "Cởi mở, năng động",
+      "interests": ["du lịch", "công nghệ", "cà phê"],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [0.8, 0.8, 0.4, 0.85]
+    },
+    {
+      "id": "cand_03",
+      "student_id": "2A202601004",
+      "name": "An",
+      "age": 20,
+      "gender": "Nữ",
+      "personality": "Hòa đồng, cá tính",
+      "interests": ["mèo", "nhạc indie", "đọc sách"],
+      "goal": "Tìm bạn đồng hành / Tìm hiểu từ từ",
+      "vector": [0.6, 0.3, 0.7, 0.6]
+    },
+    {
+      "id": "cand_04",
+      "student_id": "2A202601315",
+      "name": "Phương",
+      "age": 22,
+      "gender": "Nam",
+      "personality": "Chu đáo, hài hước",
+      "interests": ["đọc sách", "cà phê", "phim ảnh"],
+      "goal": "Mối quan hệ nghiêm túc",
+      "vector": [0.5, 0.5, 0.85, 0.8]
+    }
+  ]
+}
