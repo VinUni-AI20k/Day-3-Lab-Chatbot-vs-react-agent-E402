@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cupid Agent — AI Matchmaking & Compatibility Studio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Ambient Background Glows -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- Main App Wrapper -->
+    <div class="app-container">
+        
+        <!-- Header Nav -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-text">CUPID <span class="logo-sub">AGENT</span></span>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-purple">ReAct Engine v2.0</span>
+                <span class="badge badge-gold">Vector Synastry</span>
+            </div>
+        </header>
+
+        <!-- Main Dynamic Content Container -->
+        <main class="main-content">
+
+            <!-- STEP 1: LANDING INTRO HERO -->
+            <section id="step-intro" class="step-section active">
+                <div class="hero-card glass-panel">
+                    <div class="hero-badge">AI MATCHMAKING ENGINE</div>
+                    <h1 class="hero-title">Khám Phá Kết Nối Sâu Sắc Với <span class="text-gradient">Cupid ReAct Agent</span></h1>
+                    <p class="hero-subtitle">
+                        Minh bạch từng bước suy luận <code class="code-inline">Thought ➔ Action ➔ Observation</code> 
+                        để tìm kiếm người phù hợp dựa trên dữ liệu thực tế và tính cách.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="goToStep('step-form')">
+                            <span>Bắt Đầu Ngay</span>
+                            <span class="btn-arrow">➔</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 2: BASIC INFO FORM -->
+            <section id="step-form" class="step-section">
+                <div class="form-card glass-panel">
+                    <div class="step-indicator">BƯỚC 1 / 3</div>
+                    <h2 class="section-title">Hồ Sơ Căn Bản</h2>
+                    <p class="section-desc">Thiết lập thông tin ban đầu để Cupid Agent khởi tạo Feature Vector đại diện.</p>
+
+                    <form id="basic-info-form" onsubmit="handleBasicFormSubmit(event)">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="input-name">Họ và Tên</label>
+                                <input type="text" id="input-name" required value="Minh" placeholder="Ví dụ: Minh">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-age">Tuổi</label>
+                                <input type="number" id="input-age" required value="21" min="18" max="99">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-gender">Giới Tính</label>
+                                <select id="input-gender">
+                                    <option value="Nam" selected>Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-goal">Mục Tiêu Hẹn Hò</label>
+                                <select id="input-goal">
+                                    <option value="Mối quan hệ nghiêm túc" selected>Mối quan hệ lâu dài / Nghiêm túc</option>
+                                    <option value="Tìm bạn đồng hành">Tìm bạn đồng hành / Khám phá</option>
+                                    <option value="Hướng tới kết hôn">Hướng tới kết hôn</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label for="input-interests">Sở Thích & Lối Sống</label>
+                            <input type="text" id="input-interests" required value="đọc sách, cà phê yên tĩnh, công nghệ" placeholder="Ví dụ: đọc sách, cà phê, du lịch">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="goToStep('step-intro')">Quay Lại</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span>Tiếp Theo</span>
+                                <span class="btn-arrow">➔</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- STEP 3: QUESTIONNAIRE PROMPT & COUNT SELECTOR -->
+            <section id="step-questionnaire-prompt" class="step-section">
+                <div class="prompt-card glass-panel">
+                    <div class="step-indicator">BƯỚC 2 / 3</div>
+                    <h2 class="section-title">Trắc Nghiệm Tâm Lý & Hệ Giá Trị</h2>
+                    <p class="section-desc">
+                        Lựa chọn số lượng câu hỏi trắc nghiệm để Agent tính toán Feature Vector chính xác hơn.
+                    </p>
+
+                    <div class="count-selector-box glass-panel-inner">
+                        <label for="question-count-select">Chọn Số Lượng Câu Hỏi Trắc Nghiệm:</label>
+                        <select id="question-count-select" onchange="updateQuestionCount(this.value)">
+                            <option value="5">5 Câu (Khảo sát nhanh)</option>
+                            <option value="10">10 Câu (Tiêu chuẩn)</option>
+                            <option value="15" selected>15 Câu (Toàn diện & Chuyên sâu)</option>
+                        </select>
+                    </div>
+
+                    <div class="prompt-choices">
+                        <button class="choice-card choice-primary" onclick="startQuestionnaire()">
+                            <div class="choice-tag">KHUYÊN DÙNG</div>
+                            <h3>Bắt Đầu Trắc Nghiệm (<span id="prompt-count-label">15</span> Câu)</h3>
+                            <p>Tự động chuyển tiếp mượt mà ngay sau khi bấm chọn đáp án.</p>
+                        </button>
+
+                        <button class="choice-card choice-secondary" onclick="skipQuestionnaire()">
+                            <h3>Bỏ Qua & Phân Tích Nhanh</h3>
+                            <p>Sử dụng Feature Vector ước tính từ thông tin căn bản.</p>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 3B: QUESTIONNAIRE DRAWER -->
+            <section id="step-questionnaire-modal" class="step-section">
+                <div class="questionnaire-card glass-panel">
+                    <div class="q-header">
+                        <div>
+                            <span class="q-category-tag" id="q-category">Tài Chính</span>
+                            <span class="q-progress-text" id="q-progress-text">Câu 1 / 15</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="q-progress-fill" style="width: 6.66%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="q-body">
+                        <h3 class="q-prompt" id="q-prompt">Câu hỏi đang tải...</h3>
+                        <p class="q-desc" id="q-desc"></p>
+
+                        <div class="q-options" id="q-options">
+                            <!-- Dynamic Options -->
+                        </div>
+                    </div>
+
+                    <div class="q-footer">
+                        <button class="btn btn-secondary" id="btn-prev-q" onclick="prevQuestion()" disabled>Trước</button>
+                        <span class="auto-next-tip">Tự động chuyển câu khi chọn đáp án</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: REDESIGNED DASHBOARD (CHATBOT IN CENTER, COLLAPSIBLE THINKING) -->
+            <section id="step-dashboard" class="step-section">
+                <div class="dashboard-redesign-grid">
+
+                    <!-- LEFT COLUMN: MATCH CANDIDATE & RADAR SUMMARY -->
+                    <div class="dash-left-col">
+                        <!-- Match Card -->
+                        <div class="dash-card glass-panel profile-match-card">
+                            <div class="match-badge">MATCH 91%</div>
+                            <div class="avatar-wrapper">
+                                <div class="avatar-img">👩🏻</div>
+                            </div>
+                            <h2 class="cand-name" id="match-cand-name">Mai, 22t</h2>
+                            <p class="cand-mbti" id="match-cand-mbti">INFJ • Hướng nội tinh tế</p>
+                            <p class="cand-bio" id="match-cand-bio">"Yêu thích các góc cà phê yên tĩnh và đọc sách."</p>
+
+                            <div class="icebreaker-box glass-panel-inner">
+                                <div class="ib-header">Gợi Ý Mở Đầu Icebreaker</div>
+                                <p class="ib-text" id="match-icebreaker">"Chào Mai, mình thấy bạn cũng thích không gian cà phê yên tĩnh và đọc sách. Dạo này bạn đang đọc cuốn sách nào hay không?"</p>
+                                <button class="btn btn-small btn-secondary" onclick="copyIcebreaker()">Sao Chép</button>
+                            </div>
+                        </div>
+
+                        <!-- Compact Radar Chart -->
+                        <div class="dash-card glass-panel radar-card-compact">
+                            <h3 class="dash-title-sm">Biểu Đồ Synastry Radar</h3>
+                            <div class="canvas-container">
+                                <canvas id="synastryRadarCanvas" width="280" height="240"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CENTER COLUMN (HERO FOCAL POINT): CHATBOT ASSISTANT & TOGGLE THINKING -->
+                    <div class="dash-center-col">
+                        <div class="dash-card glass-panel chatbot-hero-panel">
+                            
+                            <!-- Chatbot Header -->
+                            <div class="chat-hero-header">
+                                <div>
+                                    <h2 class="chat-hero-title">Cupid AI Assistant</h2>
+                                    <p class="chat-hero-desc">Hỏi đáp trực tiếp hoặc yêu cầu tìm kiếm theo danh mục</p>
+                                </div>
+                                
+                                <!-- TOGGLE AGENT THINKING BUTTON -->
+                                <button class="btn-toggle-thinking" onclick="toggleThinkingDrawer()">
+                                    <span>🧠 Agent Thinking</span>
+                                    <span id="thinking-badge" class="badge-count">3 Steps</span>
+                                </button>
+                            </div>
+
+                            <!-- COLLAPSIBLE AGENT THINKING DRAWER (HIDDEN BY DEFAULT) -->
+                            <div id="thinking-drawer" class="thinking-drawer collapsed">
+                                <div class="drawer-header">
+                                    <span>ReAct Agent Thinking Steps</span>
+                                    <button class="btn-close-drawer" onclick="toggleThinkingDrawer()">✕</button>
+                                </div>
+                                <div class="trace-steps-container" id="trace-steps">
+                                    <!-- Dynamic Thinking Steps -->
+                                </div>
+                            </div>
+
+                            <!-- Chat History Thread (Large & Clean) -->
+                            <div class="chat-history-large" id="chat-history">
+                                <div class="chat-msg bot-msg">
+                                    <div class="msg-author">Cupid Agent</div>
+                                    <div class="msg-text">Chào bạn! Tôi đã phân tích và tìm thấy ứng viên <strong>Mai (91% Match)</strong> cho bạn. Bạn có thể hỏi tôi bất kỳ điều gì hoặc yêu cầu tìm kiếm theo tiêu chí cụ thể (ví dụ: <em>"Tìm ứng viên thích đi du lịch"</em>, <em>"Gợi ý địa điểm hẹn hò"</em>).</div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Action Chips -->
+                            <div class="chat-quick-chips">
+                                <button class="chip-btn" onclick="sendQuickChat('Tìm ứng viên thích đi du lịch & cà phê')">Thích du lịch</button>
+                                <button class="chip-btn" onclick="sendQuickChat('Tư vấn địa điểm hẹn hò yên tĩnh')">Chỗ hẹn hò yên tĩnh</button>
+                                <button class="chip-btn" onclick="sendQuickChat('Cách bắt chuyện tự nhiên với INFJ')">Cách bắt chuyện INFJ</button>
+                            </div>
+
+                            <!-- Chat Input Box -->
+                            <form class="chat-input-row-large" onsubmit="handleChatSubmit(event)">
+                                <input type="text" id="chat-input" placeholder="Nhập câu hỏi hoặc yêu cầu tìm kiếm..." required>
+                                <button type="submit" class="btn btn-primary">Gửi ➔</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

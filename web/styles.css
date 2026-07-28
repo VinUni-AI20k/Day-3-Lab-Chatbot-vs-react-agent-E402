@@ -1,0 +1,846 @@
+/* -----------------------------------------------------------------------------
+ * 💘 CUPID AGENT DESIGN SYSTEM (Clean Professional Modern CSS)
+ * ----------------------------------------------------------------------------- */
+
+:root {
+    --bg-dark: #12071F;
+    --bg-dark-accent: #1B0C2E;
+    --panel-glass: rgba(255, 255, 255, 0.05);
+    --panel-border: rgba(255, 255, 255, 0.1);
+    
+    --color-primary: #E53855;
+    --color-primary-hover: #FF4A68;
+    --color-accent-rose: #F4A5B7;
+    --color-gold: #F7D070;
+    --color-purple-light: #C084FC;
+    
+    --text-main: #FAF5FB;
+    --text-muted: #A89BB0;
+    --text-dim: #7A6C84;
+    
+    --font-display: 'Playfair Display', 'Cormorant Garamond', serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    
+    --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset & Core */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Ambient Glow Backgrounds */
+.ambient-glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(140px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+.glow-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #e5385555 0%, transparent 70%);
+    top: -150px;
+    left: -150px;
+}
+
+.glow-2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #c084fc44 0%, transparent 70%);
+    bottom: -150px;
+    right: -150px;
+}
+
+/* Layout Container */
+.app-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--panel-border);
+    margin-bottom: 28px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.logo-sub {
+    color: var(--color-accent-rose);
+    font-weight: 400;
+}
+
+.header-badges {
+    display: flex;
+    gap: 10px;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-purple {
+    background: rgba(192, 132, 252, 0.12);
+    color: var(--color-purple-light);
+    border: 1px solid rgba(192, 132, 252, 0.25);
+}
+
+.badge-gold {
+    background: rgba(247, 208, 112, 0.12);
+    color: var(--color-gold);
+    border: 1px solid rgba(247, 208, 112, 0.25);
+}
+
+/* Main Content & Step Sections */
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-section {
+    display: none;
+    width: 100%;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.step-section.active {
+    display: block;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Glass Panels */
+.glass-panel {
+    background: var(--panel-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.glass-panel-inner {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
+/* Step 1: Hero Card */
+.hero-card {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 50px 36px;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    background: rgba(229, 56, 85, 0.12);
+    color: var(--color-primary);
+    border: 1px solid rgba(229, 56, 85, 0.25);
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 44px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-accent-rose), var(--color-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.code-inline {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-gold);
+    background: rgba(247, 208, 112, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    border: none;
+    outline: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), #B81B34);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(229, 56, 85, 0.35);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(229, 56, 85, 0.5);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main);
+    border: 1px solid var(--panel-border);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 16px;
+}
+
+/* Step 2: Form */
+.form-card {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.step-indicator {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-accent-rose);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.section-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-group.full-width {
+    margin-bottom: 28px;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+input, select {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+input:focus, select:focus {
+    border-color: var(--color-accent-rose);
+    box-shadow: 0 0 12px rgba(244, 165, 183, 0.18);
+}
+
+select option {
+    background: var(--bg-dark);
+    color: var(--text-main);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Step 3: Prompt Cards & Count Selector */
+.prompt-card {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.count-selector-box {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.count-selector-box select {
+    width: 300px;
+    text-align: center;
+}
+
+.prompt-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 28px;
+}
+
+.choice-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-md);
+    padding: 24px 20px;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    position: relative;
+    outline: none;
+}
+
+.choice-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-rose);
+    background: rgba(244, 165, 183, 0.06);
+}
+
+.choice-tag {
+    position: absolute;
+    top: -8px;
+    right: 14px;
+    background: var(--color-gold);
+    color: #12071F;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.choice-card h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: var(--text-main);
+}
+
+.choice-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Questionnaire Modal */
+.questionnaire-card {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.q-header {
+    margin-bottom: 20px;
+}
+
+.q-category-tag {
+    background: rgba(192, 132, 252, 0.12);
+    color: var(--color-purple-light);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.q-progress-text {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent-rose), var(--color-primary));
+    transition: width 0.3s ease;
+}
+
+.q-prompt {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.q-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.q-option-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.q-option-item:hover, .q-option-item.selected {
+    border-color: var(--color-accent-rose);
+    background: rgba(244, 165, 183, 0.12);
+    transform: translateX(4px);
+}
+
+.q-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auto-next-tip {
+    font-size: 11px;
+    color: var(--color-accent-rose);
+    font-family: var(--font-mono);
+}
+
+/* -----------------------------------------------------------------------------
+ * 💘 DASHBOARD REDESIGN (CENTER FOCAL CHATBOT & COLLAPSIBLE THINKING)
+ * ----------------------------------------------------------------------------- */
+
+.dashboard-redesign-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+}
+
+.dash-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dash-center-col {
+    width: 100%;
+}
+
+/* Candidate Card (Left Column) */
+.profile-match-card {
+    text-align: center;
+    padding: 28px 24px;
+}
+
+.match-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--color-primary), #FF4A68);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+
+.avatar-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px auto;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid var(--color-accent-rose);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.cand-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.cand-mbti {
+    font-size: 12px;
+    color: var(--color-accent-rose);
+    margin-bottom: 10px;
+}
+
+.cand-bio {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.icebreaker-box {
+    text-align: left;
+    padding: 14px;
+}
+
+.ib-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-gold);
+    margin-bottom: 4px;
+}
+
+.ib-text {
+    font-size: 12px;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+/* Compact Radar Card (Left Column) */
+.radar-card-compact {
+    padding: 20px;
+    text-align: center;
+}
+
+.dash-title-sm {
+    font-family: var(--font-display);
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* HERO CHATBOT PANEL (Center Focal Point) */
+.chatbot-hero-panel {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    min-height: 580px;
+}
+
+.chat-hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--panel-border);
+    margin-bottom: 20px;
+}
+
+.chat-hero-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--text-main);
+}
+
+.chat-hero-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* TOGGLE AGENT THINKING BUTTON */
+.btn-toggle-thinking {
+    background: rgba(192, 132, 252, 0.12);
+    border: 1px solid rgba(192, 132, 252, 0.3);
+    color: var(--color-purple-light);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.btn-toggle-thinking:hover {
+    background: rgba(192, 132, 252, 0.22);
+}
+
+.badge-count {
+    background: var(--color-purple-light);
+    color: #12071F;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* COLLAPSIBLE AGENT THINKING DRAWER */
+.thinking-drawer {
+    background: rgba(27, 12, 46, 0.95);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+    transition: var(--transition-smooth);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.thinking-drawer.collapsed {
+    display: none;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-gold);
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-close-drawer {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Chat History (Large & Spacious) */
+.chat-history-large {
+    flex: 1;
+    max-height: 360px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-right: 8px;
+}
+
+.chat-msg {
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bot-msg {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--panel-border);
+    color: var(--text-main);
+    align-self: flex-start;
+    max-width: 85%;
+}
+
+.user-msg {
+    background: rgba(229, 56, 85, 0.18);
+    border: 1px solid rgba(229, 56, 85, 0.35);
+    color: #fff;
+    align-self: flex-end;
+    max-width: 80%;
+}
+
+.msg-author {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-accent-rose);
+    margin-bottom: 4px;
+}
+
+.chat-quick-chips {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.chip-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.chip-btn:hover {
+    border-color: var(--color-accent-rose);
+    color: var(--text-main);
+    background: rgba(244, 165, 183, 0.12);
+}
+
+.chat-input-row-large {
+    display: flex;
+    gap: 12px;
+}
+
+.chat-input-row-large input {
+    flex: 1;
+    padding: 14px 18px;
+    font-size: 14px;
+}
+
+/* ReAct Step Items Inside Collapsible Drawer */
+.trace-steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.trace-step-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+.step-tag {
+    color: var(--color-gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.thought-text {
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.action-text {
+    color: var(--color-purple-light);
+    margin-bottom: 4px;
+}
+
+.obs-text {
+    color: var(--color-accent-rose);
+    background: rgba(244, 165, 183, 0.08);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dashboard-redesign-grid {
+        grid-template-columns: 1fr;
+    }
+}
