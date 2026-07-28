@@ -1,61 +1,20 @@
 import json
 import uuid
+import os
+from datetime import datetime
 
 # ===============================================================
 # MỐC 1: DATABASE GIẢ LẬP DANH SÁCH PHÒNG TRỌ (MOCK DATA)
 # ===============================================================
-MOCK_ROOMS = [
-    {
-        "id": "NT-CG-101", "type": "phòng trọ", "location": "Cầu Giấy", 
-        "price": 3500000, "bedrooms": 1, "address": "12 Dịch Vọng, Cầu Giấy", 
-        "contact": "0901234567", "available": True, "amenities": ["Điều hòa", "Nóng lạnh", "Máy giặt chung"]
-    },
-    {
-        "id": "CH-Q1-202", "type": "căn hộ mini", "location": "Quận 1", 
-        "price": 8500000, "bedrooms": 1, "address": "123 Nguyễn Huệ, Quận 1", 
-        "contact": "0912345678", "available": True, "amenities": ["Full nội thất", "Thang máy", "Bảo vệ 24/7"]
-    },
-    {
-        "id": "NT-BT-303", "type": "phòng trọ", "location": "Bình Thạnh", 
-        "price": 2500000, "bedrooms": 1, "address": "45 Xô Viết Nghệ Tĩnh, Bình Thạnh", 
-        "contact": "0923456789", "available": False, "amenities": ["Giờ giấc tự do", "Bếp nấu ăn"]
-    },
-    {
-        "id": "CH-Q7-404", "type": "chung cư", "location": "Quận 7", 
-        "price": 12000000, "bedrooms": 2, "address": "789 Nguyễn Văn Linh, Quận 7", 
-        "contact": "0934567890", "available": True, "amenities": ["Hồ bơi", "Gym", "Ban công", "Nội thất cao cấp"]
-    },
-    {
-        "id": "NT-Q3-505", "type": "phòng trọ", "location": "Quận 3", 
-        "price": 4500000, "bedrooms": 1, "address": "12 Võ Văn Tần, Quận 3", 
-        "contact": "0945678901", "available": True, "amenities": ["Có gác lửng", "Ban công", "Chỗ để xe rộng"]
-    },
-    {
-        "id": "CH-TB-606", "type": "căn hộ dịch vụ", "location": "Tân Bình", 
-        "price": 6000000, "bedrooms": 1, "address": "99 Cộng Hòa, Tân Bình", 
-        "contact": "0956789012", "available": True, "amenities": ["Dọn phòng", "Free wifi", "Thang máy"]
-    },
-    {
-        "id": "NT-GV-707", "type": "ký túc xá", "location": "Gò Vấp", 
-        "price": 1500000, "bedrooms": 4, "address": "55 Phan Văn Trị, Gò Vấp", 
-        "contact": "0967890123", "available": True, "amenities": ["Giường tầng", "Tủ đồ cá nhân", "Bếp chung", "Máy lạnh"]
-    },
-    {
-        "id": "CH-Q10-808", "type": "studio", "location": "Quận 10", 
-        "price": 5500000, "bedrooms": 1, "address": "234 Sư Vạn Hạnh, Quận 10", 
-        "contact": "0978901234", "available": False, "amenities": ["Máy lạnh", "Giường nệm", "Tủ lạnh mini"]
-    },
-    {
-        "id": "NT-TP-909", "type": "nhà nguyên căn", "location": "Tân Phú", 
-        "price": 9000000, "bedrooms": 3, "address": "77 Lũy Bán Bích, Tân Phú", 
-        "contact": "0989012345", "available": True, "amenities": ["Sân phơi rộng", "2 Toilet", "Hẻm xe hơi"]
-    },
-    {
-        "id": "CH-Q2-111", "type": "căn hộ cao cấp", "location": "Quận 2", 
-        "price": 18000000, "bedrooms": 2, "address": "Thảo Điền, Quận 2", 
-        "contact": "0990123456", "available": True, "amenities": ["View sông", "Hồ bơi tràn", "Bảo mật vân tay"]
-    }
-]
+MOCK_ROOMS = []
+try:
+    # Xác định đường dẫn tuyệt đối đến file data/mock.json
+    mock_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "mock.json")
+    with open(mock_file_path, "r", encoding="utf-8") as f:
+        mock_data = json.load(f)
+        MOCK_ROOMS = mock_data.get("rooms", [])
+except Exception as e:
+    print(f"⚠️ Cảnh báo: Không thể tải file mock.json - Lỗi: {e}")
 
 # Lưu trữ danh sách lịch hẹn
 APPOINTMENTS = []
@@ -124,10 +83,27 @@ def book_viewing_appointment(room_id: str, customer_name: str, date: str, time: 
         Chuỗi JSON xác nhận đặt lịch thành công hoặc thất bại.
     """
     try:
-        # Kiểm tra xem phòng có tồn tại và còn trống không
-        room_exists = any(r["id"] == room_id and r["available"] == True for r in MOCK_ROOMS)
-        if not room_exists:
-            return json.dumps({"status": "error", "message": f"Phòng {room_id} không tồn tại hoặc đã được cho thuê."}, ensure_ascii=False)
+        # Kiểm tra xem phòng có tồn tại không
+        room = next((r for r in MOCK_ROOMS if r["id"] == room_id), None)
+        if not room:
+            return json.dumps({"status": "error", "message": f"Phòng {room_id} không tồn tại."}, ensure_ascii=False)
+            
+        if not room.get("available", False):
+            return json.dumps({"status": "error", "message": f"Phòng {room_id} đã được cho thuê."}, ensure_ascii=False)
+            
+        # Kiểm tra ngày nghỉ (days_off) của chủ nhà
+        try:
+            dt = datetime.strptime(date, "%d/%m/%Y")
+            # Chuyển đổi weekday() của Python (0=Thứ 2, 6=Chủ nhật) sang format yêu cầu (0=Chủ nhật, 1=Thứ 2)
+            day_index = (dt.weekday() + 1) % 7
+            
+            viewing_schedule = room.get("viewing_schedule", {})
+            days_off = viewing_schedule.get("days_off", [])
+            
+            if day_index in days_off:
+                return json.dumps({"status": "error", "message": f"Chủ nhà không nhận lịch xem phòng vào ngày {date}. Xin vui lòng đổi sang ngày khác."}, ensure_ascii=False)
+        except ValueError:
+            return json.dumps({"status": "error", "message": "Định dạng ngày không hợp lệ. Vui lòng dùng định dạng dd/mm/yyyy (VD: 20/11/2023)."}, ensure_ascii=False)
             
         appointment_id = str(uuid.uuid4())[:8]
         appointment = {
