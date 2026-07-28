@@ -4,6 +4,43 @@ Chủ đề: Trợ Lý Tra Cứu Đơn Hàng & Xử Lý Đổi Trả (Dữ liệ
 Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
 """
 
+def get_order_status(order_id: str) -> str:
+    """Tra cứu trạng thái giao hàng và thông tin vận chuyển của đơn hàng theo Mã đơn hàng (order_id).
+
+    Dùng khi người dùng hỏi về trạng thái đơn hàng, ngày giao hàng dự kiến hoặc đơn hàng đã giao chưa.
+
+    Args:
+        order_id (str): Mã đơn hàng cần tra cứu (Ví dụ: 'ORD-123', 'DH10234').
+
+    Returns:
+        str: Chuỗi thông tin trạng thái đơn hàng hoặc thông báo lỗi nếu mã đơn không tồn tại/không hợp lệ.
+
+    Example:
+        >>> get_order_status('DH10234')
+        "THÔNG TIN TRẠNG THÁI ĐƠN HÀNG [DH10234]:..."
+    """
+    try:
+        if not order_id or not isinstance(order_id, str):
+            return "LỖI: Mã đơn hàng phải là chuỗi ký tự hợp lệ và không được để trống."
+        
+        order_clean = str(order_id).strip().upper()
+        if not order_clean:
+            return "LỖI: Mã đơn hàng không được để trống."
+
+        if any(k in order_clean for k in ["DH99999999999", "99999999999", "NOTFOUND", "INVALID"]):
+            return f"LỖI: Mã đơn hàng [{order_clean}] không tồn tại trên hệ thống. Vui lòng kiểm tra lại mã đơn hàng."
+
+        return (
+            f"THÔNG TIN TRẠNG THÁI ĐƠN HÀNG [{order_clean}]:\n"
+            f"- Trạng thái: Đã giao hàng thành công\n"
+            f"- Ngày nhận hàng: 3 ngày trước\n"
+            f"- Ngành hàng: Thiết bị điện tử\n"
+            f"- Tình trạng đổi trả: Trong thời hạn hỗ trợ đổi trả (dưới 7 ngày)"
+        )
+    except Exception as e:
+        return f"LỖI: Không thể tra cứu trạng thái đơn hàng do lỗi hệ thống ({str(e)})."
+
+
 def get_order_info(order_id: str) -> str:
     """Tra cứu thông tin chi tiết của một đơn hàng theo Mã đơn hàng (order_id).
 
@@ -18,19 +55,25 @@ def get_order_info(order_id: str) -> str:
 
     Example:
         >>> get_order_info('ORD-123')
-        "📦 THÔNG TIN ĐƠN HÀNG [ORD-123]:..."
+        "THÔNG TIN ĐƠN HÀNG [ORD-123]:..."
     """
-    order_clean = order_id.strip().upper()
-    if not order_clean:
-        return "LỖI: Mã đơn hàng không được để trống."
+    try:
+        if not order_id or not isinstance(order_id, str):
+            return "LỖI: Mã đơn hàng phải là chuỗi ký tự hợp lệ và không được để trống."
         
-    return (
-        f"📦 THÔNG TIN ĐƠN HÀNG [{order_clean}]:\n"
-        f"- Trạng thái: Đã giao hàng thành công\n"
-        f"- Ngày nhận hàng: 3 ngày trước\n"
-        f"- Ngành hàng: Thiết bị điện tử / Thời trang\n"
-        f"- Tình trạng đổi trả: Trong thời hạn hỗ trợ đổi trả (dưới 7 ngày)"
-    )
+        order_clean = str(order_id).strip().upper()
+        if not order_clean:
+            return "LỖI: Mã đơn hàng không được để trống."
+            
+        return (
+            f"THÔNG TIN ĐƠN HÀNG [{order_clean}]:\n"
+            f"- Trạng thái: Đã giao hàng thành công\n"
+            f"- Ngày nhận hàng: 3 ngày trước\n"
+            f"- Ngành hàng: Thiết bị điện tử / Thời trang\n"
+            f"- Tình trạng đổi trả: Trong thời hạn hỗ trợ đổi trả (dưới 7 ngày)"
+        )
+    except Exception as e:
+        return f"LỖI: Không thể tra cứu đơn hàng do lỗi hệ thống ({str(e)})."
 
 
 def check_return_policy(category: str, days_since_purchase: int) -> str:
@@ -48,30 +91,44 @@ def check_return_policy(category: str, days_since_purchase: int) -> str:
 
     Example:
         >>> check_return_policy('Điện tử', 5)
-        "✅ ĐỦ ĐIỀU KIỆN: Ngành 'Điện tử' cho phép đổi trả trong 7 ngày..."
+        "ĐỦ ĐIỀU KIỆN: Ngành 'Điện tử' cho phép đổi trả trong 7 ngày..."
     """
-    cat_lower = category.lower()
-    
-    if any(k in cat_lower for k in ["thực phẩm", "tươi sống", "đông lạnh", "đồ ăn"]):
-        return f"❌ KHÔNG ÁP DỤNG: Sản phẩm thuộc ngành '{category}' là hàng tiêu dùng/tươi sống, KHÔNG hỗ trợ đổi trả theo chính sách."
+    try:
+        if category is None:
+            return "LỖI: Ngành hàng không được để trống."
+            
+        try:
+            days = int(days_since_purchase)
+        except (ValueError, TypeError):
+            return f"LỖI: Số ngày mua hàng '{days_since_purchase}' không hợp lệ (phải là số nguyên)."
+
+        if days < 0:
+            return "LỖI: Số ngày tính từ lúc nhận hàng không thể là số âm."
+
+        cat_lower = str(category).lower()
         
-    elif any(k in cat_lower for k in ["điện tử", "công nghệ", "thiết bị", "gia dụng"]):
-        max_days = 7
-        if days_since_purchase <= max_days:
-            return f"✅ ĐỦ ĐIỀU KIỆN: Ngành '{category}' cho phép đổi trả trong {max_days} ngày. Đơn hàng ({days_since_purchase} ngày) ĐỦ ĐIỀU KIỆN (Yêu cầu nguyên tem, vỏ hộp)."
-        return f"❌ QUÁ THỜI HẠN: Ngành '{category}' chỉ hỗ trợ đổi trả trong {max_days} ngày. Đơn hàng ({days_since_purchase} ngày) đã quá hạn."
-        
-    elif any(k in cat_lower for k in ["thời trang", "quần áo", "giày dép", "phụ kiện"]):
-        max_days = 14
-        if days_since_purchase <= max_days:
-            return f"✅ ĐỦ ĐIỀU KIỆN: Ngành '{category}' cho phép đổi trả trong {max_days} ngày. Đơn hàng ({days_since_purchase} ngày) ĐỦ ĐIỀU KIỆN (Yêu cầu nguyên mác, chưa qua sử dụng)."
-        return f"❌ QUÁ THỜI HẠN: Ngành '{category}' chỉ hỗ trợ đổi trả trong {max_days} ngày. Đơn hàng ({days_since_purchase} ngày) đã quá hạn."
-        
-    else:
-        max_days = 7
-        if days_since_purchase <= max_days:
-            return f"✅ ĐỦ ĐIỀU KIỆN: Sản phẩm ngành '{category}' được hỗ trợ đổi trả trong {max_days} ngày."
-        return f"❌ QUÁ THỜI HẠN: Sản phẩm ngành '{category}' đã quá thời hạn đổi trả ({days_since_purchase}/{max_days} ngày)."
+        if any(k in cat_lower for k in ["thực phẩm", "tươi sống", "đông lạnh", "đồ ăn"]):
+            return f"KHÔNG ÁP DỤNG: Sản phẩm thuộc ngành '{category}' là hàng tiêu dùng/tươi sống, KHÔNG hỗ trợ đổi trả theo chính sách."
+            
+        elif any(k in cat_lower for k in ["điện tử", "công nghệ", "thiết bị", "gia dụng"]):
+            max_days = 7
+            if days <= max_days:
+                return f"ĐỦ ĐIỀU KIỆN: Ngành '{category}' cho phép đổi trả trong {max_days} ngày. Đơn hàng ({days} ngày) ĐỦ ĐIỀU KIỆN (Yêu cầu nguyên tem, vỏ hộp)."
+            return f"QUÁ THỜI HẠN: Ngành '{category}' chỉ hỗ trợ đổi trả trong {max_days} ngày. Đơn hàng ({days} ngày) đã quá hạn."
+            
+        elif any(k in cat_lower for k in ["thời trang", "quần áo", "giày dép", "phụ kiện"]):
+            max_days = 14
+            if days <= max_days:
+                return f"ĐỦ ĐIỀU KIỆN: Ngành '{category}' cho phép đổi trả trong {max_days} ngày. Đơn hàng ({days} ngày) ĐỦ ĐIỀU KIỆN (Yêu cầu nguyên mác, chưa qua sử dụng)."
+            return f"QUÁ THỜI HẠN: Ngành '{category}' chỉ hỗ trợ đổi trả trong {max_days} ngày. Đơn hàng ({days} ngày) đã quá hạn."
+            
+        else:
+            max_days = 7
+            if days <= max_days:
+                return f"ĐỦ ĐIỀU KIỆN: Sản phẩm ngành '{category}' được hỗ trợ đổi trả trong {max_days} ngày."
+            return f"QUÁ THỜI HẠN: Sản phẩm ngành '{category}' đã quá thời hạn đổi trả ({days}/{max_days} ngày)."
+    except Exception as e:
+        return f"LỖI: Không thể kiểm tra chính sách đổi trả ({str(e)})."
 
 
 def calculate_refund_amount(order_id: str, product_price: float, reason: str) -> str:
@@ -90,29 +147,44 @@ def calculate_refund_amount(order_id: str, product_price: float, reason: str) ->
 
     Example:
         >>> calculate_refund_amount('ORD-123', 500000.0, 'Sản phẩm bị lỗi')
-        "💰 BẢNG TÍNH TIỀN HOÀN DỰ KIẾN [ORD-123]:..."
+        "BẢNG TÍNH TIỀN HOÀN DỰ KIẾN [ORD-123]:..."
     """
-    order_clean = order_id.strip().upper()
-    reason_lower = reason.lower()
-    
-    # Nếu lỗi do shop/sản phẩm: Miễn phí thu hồi
-    if any(k in reason_lower for k in ["lỗi", "hỏng", "sai", "vỡ", "kém", "tì vết"]):
-        shipping_fee = 0.0
-        refund = product_price
-        note = "Miễn phí vận chuyển thu hồi (Lỗi do nhà bán/sản phẩm)."
-    else:
-        # Khách đổi ý: Trừ phí ship thu hồi 30,000 VNĐ
-        shipping_fee = 30000.0
-        refund = max(0.0, product_price - shipping_fee)
-        note = f"Trừ {shipping_fee:,.0f} VNĐ phí vận chuyển thu hồi (Do lý do cá nhân từ khách hàng)."
+    try:
+        if not order_id:
+            return "LỖI: Mã đơn hàng không được để trống."
+
+        try:
+            price = float(product_price)
+        except (ValueError, TypeError):
+            return f"LỖI: Giá sản phẩm '{product_price}' không hợp lệ (phải là số)."
+
+        if price < 0:
+            return "LỖI: Giá sản phẩm không thể là số âm."
+
+        order_clean = str(order_id).strip().upper()
+        reason_str = str(reason or "")
+        reason_lower = reason_str.lower()
         
-    return (
-        f"💰 BẢNG TÍNH TIỀN HOÀN DỰ KIẾN [{order_clean}]:\n"
-        f"- Giá trị sản phẩm: {product_price:,.0f} VNĐ\n"
-        f"- Lý do đổi trả: {reason}\n"
-        f"- Chi phí vận chuyển: {note}\n"
-        f"👉 TỔNG TIỀN HOÀN LẠI DỰ KIẾN: {refund:,.0f} VNĐ"
-    )
+        # Nếu lỗi do shop/sản phẩm: Miễn phí thu hồi
+        if any(k in reason_lower for k in ["lỗi", "hỏng", "sai", "vỡ", "kém", "tì vết"]):
+            shipping_fee = 0.0
+            refund = price
+            note = "Miễn phí vận chuyển thu hồi (Lỗi do nhà bán/sản phẩm)."
+        else:
+            # Khách đổi ý: Trừ phí ship thu hồi 30,000 VNĐ
+            shipping_fee = 30000.0
+            refund = max(0.0, price - shipping_fee)
+            note = f"Trừ {shipping_fee:,.0f} VNĐ phí vận chuyển thu hồi (Do lý do cá nhân từ khách hàng)."
+            
+        return (
+            f"BẢNG TÍNH TIỀN HOÀN DỰ KIẾN [{order_clean}]:\n"
+            f"- Giá trị sản phẩm: {price:,.0f} VNĐ\n"
+            f"- Lý do đổi trả: {reason_str}\n"
+            f"- Chi phí vận chuyển: {note}\n"
+            f"TỔNG TIỀN HOÀN LẠI DỰ KIẾN: {refund:,.0f} VNĐ"
+        )
+    except Exception as e:
+        return f"LỖI: Không thể tính tiền hoàn trả ({str(e)})."
 
 
 def create_return_request(order_id: str, items_to_return: str, reason: str, bank_account: str) -> str:
@@ -131,24 +203,30 @@ def create_return_request(order_id: str, items_to_return: str, reason: str, bank
 
     Example:
         >>> create_return_request('ORD-123', 'Tai nghe Sony', 'Lỗi kết nối', 'MBBank 0987654321')
-        "🎉 THÀNH CÔNG: Đã khởi tạo yêu cầu đổi trả cho đơn hàng [ORD-123]!..."
+        "THÀNH CÔNG: Đã khởi tạo yêu cầu đổi trả cho đơn hàng [ORD-123]!..."
     """
-    order_clean = order_id.strip().upper()
-    if not order_clean:
-        return "LỖI: Mã đơn hàng không hợp lệ."
+    try:
+        if not order_id:
+            return "LỖI: Mã đơn hàng không hợp lệ."
+
+        order_clean = str(order_id).strip().upper()
+        if not order_clean:
+            return "LỖI: Mã đơn hàng không hợp lệ."
+            
+        rma_code = f"RMA-{order_clean}"
+        tracking_return = f"RET-GHN-{order_clean}"
         
-    rma_code = f"RMA-{order_clean}"
-    tracking_return = f"RET-GHN-{order_clean}"
-    
-    return (
-        f"🎉 THÀNH CÔNG: Đã khởi tạo yêu cầu đổi trả cho đơn hàng [{order_clean}]!\n"
-        f"- Mã Yêu Cầu (RMA): {rma_code}\n"
-        f"- Sản phẩm trả: {items_to_return}\n"
-        f"- Lý do: {reason}\n"
-        f"- Tài khoản nhận hoàn tiền: {bank_account}\n"
-        f"- Mã vận đơn thu hồi hàng: {tracking_return}\n"
-        f"📌 Hướng dẫn: Đóng gói sản phẩm, dán mã {rma_code} bên ngoài kiện hàng. Shipper sẽ liên hệ lấy hàng trong 24h."
-    )
+        return (
+            f"THÀNH CÔNG: Đã khởi tạo yêu cầu đổi trả cho đơn hàng [{order_clean}]!\n"
+            f"- Mã Yêu Cầu (RMA): {rma_code}\n"
+            f"- Sản phẩm trả: {items_to_return}\n"
+            f"- Lý do: {reason}\n"
+            f"- Tài khoản nhận hoàn tiền: {bank_account}\n"
+            f"- Mã vận đơn thu hồi hàng: {tracking_return}\n"
+            f"Hướng dẫn: Đóng gói sản phẩm, dán mã {rma_code} bên ngoài kiện hàng. Shipper sẽ liên hệ lấy hàng trong 24h."
+        )
+    except Exception as e:
+        return f"LỖI: Không thể tạo yêu cầu đổi trả ({str(e)})."
 
 
 def track_shipping_status(tracking_number: str) -> str:
@@ -162,21 +240,28 @@ def track_shipping_status(tracking_number: str) -> str:
 
     Example:
         >>> track_shipping_status('GHN987654')
-        "🚚 HÀNH TRÌNH VẬN CHUYỂN [GHN987654]:..."
+        "HÀNH TRÌNH VẬN CHUYỂN [GHN987654]:..."
     """
-    tn_clean = tracking_number.strip().upper()
-    if not tn_clean:
-        return "LỖI: Mã vận đơn không được để trống."
-        
-    return (
-        f"🚚 HÀNH TRÌNH VẬN CHUYỂN [{tn_clean}]:\n"
-        f"- Trạng thái: Đang trong tiến trình luân chuyển bưu kiện.\n"
-        f"- Cập nhật mới nhất: Bưu kiện đã rời Kho tổng Tân Bình, đang chuyển sang Bưu cục Giao nhận."
-    )
+    try:
+        if not tracking_number:
+            return "LỖI: Mã vận đơn không được để trống."
+
+        tn_clean = str(tracking_number).strip().upper()
+        if not tn_clean:
+            return "LỖI: Mã vận đơn không được để trống."
+            
+        return (
+            f"HÀNH TRÌNH VẬN CHUYỂN [{tn_clean}]:\n"
+            f"- Trạng thái: Đang trong tiến trình luân chuyển bưu kiện.\n"
+            f"- Cập nhật mới nhất: Bưu kiện đã rời Kho tổng Tân Bình, đang chuyển sang Bưu cục Giao nhận."
+        )
+    except Exception as e:
+        return f"LỖI: Không thể tra cứu vận đơn ({str(e)})."
 
 
 # Danh sách các tool được đăng ký để Agent sử dụng
 AVAILABLE_TOOLS = {
+    "get_order_status": get_order_status,
     "get_order_info": get_order_info,
     "check_return_policy": check_return_policy,
     "calculate_refund_amount": calculate_refund_amount,
