@@ -8,135 +8,42 @@ xem nhà trọ / căn hộ cho thuê.
 """
 
 
-def search_properties(location: str, budget: int) -> str:
+def get_weather(location: str) -> str:
     """
-    Tìm kiếm danh sách nhà trọ hoặc căn hộ phù hợp theo khu vực và ngân sách.
-
+    Tra cứu thời tiết hiện tại của một thành phố.
+    
     Args:
-        location (str): Khu vực cần tìm
-            (Ví dụ: "Cầu Giấy", "Thủ Đức", "Hai Bà Trưng")
-
-        budget (int): Ngân sách tối đa (VNĐ/tháng)
-
+        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
+        
     Returns:
-        str: Danh sách nhà phù hợp.
+        str: Thông tin thời tiết chi tiết
     """
-
-    if location.lower() == "cầu giấy":
-        return (
-            f"Kết quả tìm kiếm tại {location} (<= {budget:,} VNĐ):\n"
-            "1. Phòng trọ Nguyễn Phong Sắc - 4.500.000 VNĐ/tháng\n"
-            "2. Chung cư mini Duy Tân - 5.000.000 VNĐ/tháng"
-        )
-
-    if location.lower() == "thủ đức":
-        return (
-            f"Kết quả tìm kiếm tại {location} (<= {budget:,} VNĐ):\n"
-            "1. Căn hộ Studio Linh Trung - 5.500.000 VNĐ/tháng\n"
-            "2. Phòng trọ Kha Vạn Cân - 3.800.000 VNĐ/tháng"
-        )
-
-    return f"Không tìm thấy nhà phù hợp tại {location}."
+    loc_lower = location.lower()
+    if "hà nội" in loc_lower or "ha noi" in loc_lower:
+        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
+    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
+        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
+    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
+        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
+    else:
+        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
 
 
-def check_property_availability(property_name: str) -> str:
+def search_flights(origin: str, destination: str) -> str:
     """
-    Kiểm tra tình trạng còn trống của nhà trọ hoặc căn hộ.
-
+    Tra cứu chuyến bay giữa hai địa điểm.
+    
     Args:
-        property_name (str): Tên nhà trọ hoặc căn hộ.
-
+        origin (str): Nơi đi (Ví dụ: 'TP.HCM')
+        destination (str): Nơi đến (Ví dụ: 'Hà Nội')
+        
     Returns:
-        str: Thông tin còn phòng hay đã hết phòng.
+        str: Danh sách chuyến bay khả dụng và giá vé
     """
-
-    available = {
-        "Phòng trọ Nguyễn Phong Sắc": True,
-        "Chung cư mini Duy Tân": False,
-        "Căn hộ Studio Linh Trung": True,
-    }
-
-    if property_name not in available:
-        return f"Không tìm thấy thông tin của '{property_name}'."
-
-    if available[property_name]:
-        return f"{property_name} hiện còn phòng."
-
-    return f"{property_name} hiện đã hết phòng."
-
-
-def schedule_property_viewing(
-    property_name: str,
-    customer_name: str,
-    viewing_time: str,
-) -> str:
-    """
-    Đặt lịch hẹn xem nhà.
-
-    Args:
-        property_name (str):
-            Tên nhà trọ hoặc căn hộ.
-
-        customer_name (str):
-            Tên khách hàng.
-
-        viewing_time (str):
-            Thời gian xem nhà.
-            Ví dụ: "2026-08-05 14:00"
-
-    Returns:
-        str: Kết quả đặt lịch.
-    """
-
     return (
-        f"Đã đặt lịch xem '{property_name}' cho khách "
-        f"{customer_name} vào lúc {viewing_time}."
-    )
-
-
-def cancel_viewing_schedule(
-    customer_name: str,
-    property_name: str,
-) -> str:
-    """
-    Hủy lịch xem nhà.
-
-    Args:
-        customer_name (str):
-            Tên khách hàng.
-
-        property_name (str):
-            Nhà trọ hoặc căn hộ đã đặt lịch.
-
-    Returns:
-        str: Kết quả hủy lịch.
-    """
-
-    return (
-        f"Đã hủy lịch xem '{property_name}' "
-        f"của khách {customer_name}."
-    )
-
-
-def get_property_details(property_name: str) -> str:
-    """
-    Xem thông tin chi tiết của một nhà trọ hoặc căn hộ.
-
-    Args:
-        property_name (str):
-            Tên nhà trọ hoặc căn hộ.
-
-    Returns:
-        str: Thông tin chi tiết.
-    """
-
-    return (
-        f"Thông tin của {property_name}:\n"
-        "- Diện tích: 30m²\n"
-        "- Nội thất: Đầy đủ\n"
-        "- Có chỗ để xe\n"
-        "- Có điều hòa\n"
-        "- Gần trường đại học và siêu thị"
+        f"Chuyến bay từ {origin} -> {destination} ngày mai:\n"
+        f"1. VN123 (08:00) - Giá: 1,500,000 VNĐ (Còn vé)\n"
+        f"2. VJ456 (14:30) - Giá: 1,200,000 VNĐ (Còn vé)"
     )
 
 
@@ -145,9 +52,6 @@ def get_property_details(property_name: str) -> str:
 # =====================================================
 
 AVAILABLE_TOOLS = {
-    "search_properties": search_properties,
-    "check_property_availability": check_property_availability,
-    "schedule_property_viewing": schedule_property_viewing,
-    "cancel_viewing_schedule": cancel_viewing_schedule,
-    "get_property_details": get_property_details,
+    "get_weather": get_weather,
+    "search_flights": search_flights,
 }
