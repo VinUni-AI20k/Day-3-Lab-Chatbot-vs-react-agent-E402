@@ -1,4 +1,4 @@
-Các tools sử dụng:
+Các tools sử dụng trong AI Agent:
 search_theater()          # Tìm rạp CGV
 search_movie()            # Tìm phim đang chiếu
 search_showtime()         # Tìm suất chiếu
