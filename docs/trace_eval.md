@@ -17,10 +17,10 @@
 
 ## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
 
-**Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
+**Câu hỏi**: *"Tôi muốn tìm phòng trọ ở Cầu Giấy giá dưới 4 triệu, nếu có phòng phù hợp thì đặt lịch xem nhà giúp tôi vào ngày 30/07/2026 lúc 15:00, tên tôi là Huy."*
 
 ### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Tôi không có truy cập Internet thời gian thực nên không biết thời tiết hôm nay ở Hà Nội."*
+* **Phản hồi**: *"Xin lỗi, nhưng tôi không có quyền truy cập vào thông tin cho thuê phòng trọ hiện tại, vì vậy tôi không thể tìm kiếm hoặc xác nhận dữ liệu bất động sản. Tôi cũng không thể đặt lịch hẹn xem nhà cho bạn. "*
 * **Nhận xét**: An toàn nhưng không giải quyết được nhu cầu thực tế của người dùng.
 
 ### 🧠 ReAct Agent:
