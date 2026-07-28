@@ -43,8 +43,8 @@
 **Câu hỏi**: *"Tôi muốn trả áo hoodie trong đơn ORD1001 vì bị sai size. Đơn này có đủ điều kiện đổi trả không?"*
 
 ### 🤖 Chatbot Baseline:
-* **Phản hồi**: *"Để kiểm tra chính xác điều kiện đổi trả của đơn hàng ORD1001, mình cần sử dụng công cụ tra cứu đơn hàng từ hệ thống nội bộ."*
-* **Nhận xét**: An toàn vì không bịa trạng thái đơn hàng, nhưng chưa giải quyết được nhu cầu cụ thể do không có tool.
+* **Phản hồi** (chạy thật qua OpenAI `gpt-4o-mini`, ngày 2026-07-28): *"Cảm ơn bạn đã liên hệ! Tuy nhiên, tôi hiện không có khả năng truy cập vào thông tin cụ thể về đơn hàng hoặc kiểm tra điều kiện đổi trả cho mã đơn hàng cụ thể như ORD1001. Để biết rõ hơn về điều kiện đổi trả, bạn có thể tham khảo chính sách đổi trả trên trang web của chúng tôi hoặc liên hệ với bộ phận chăm sóc khách hàng để nhận được sự hỗ trợ tốt nhất. Nếu bạn cần biết thông tin gì khác về quy trình đổi trả, tôi rất sẵn lòng giúp đỡ!"*
+* **Nhận xét**: An toàn vì không bịa trạng thái đơn hàng hay điều kiện đổi trả, nhưng chưa giải quyết được nhu cầu cụ thể do không có tool tra cứu.
 
 ### 🧠 ReAct Agent:
 * **Thought 1**: Cần tra cứu đơn hàng trước khi kết luận có đổi trả được không.
