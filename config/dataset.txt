@@ -1,0 +1,1 @@
+DATASET = "https://huggingface.co/datasets/cnamuangtoun/resume-job-description-fit"
