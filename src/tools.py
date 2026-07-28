@@ -79,7 +79,7 @@ def _available_slots(rental: dict, date_tuple=None):
 # 🛠️ TOOL 1: TÌM KIẾM NHÀ TRỌ / CĂN HỘ
 # ============================================================
 
-def search_rentals(location: str, max_price: float = None, room_type: str = None) -> str:
+def search_rentals(location: str = None, max_price: float = None, room_type: str = None) -> str:
     """
     Tìm kiếm các tin đăng phòng trọ / căn hộ đang còn trống (status = available)
     theo khu vực (phường/quận/thành phố), mức giá tối đa và loại phòng.
@@ -144,7 +144,7 @@ def search_rentals(location: str, max_price: float = None, room_type: str = None
 # 🛠️ TOOL 2: XEM CHI TIẾT TIN ĐĂNG
 # ============================================================
 
-def get_rental_details(rental_id: str) -> str:
+def get_rental_details(rental_id: str = None) -> str:
     """
     Lấy thông tin chi tiết đầy đủ của một tin đăng theo mã tin.
 
@@ -186,7 +186,7 @@ def get_rental_details(rental_id: str) -> str:
 # 🛠️ TOOL 3: KIỂM TRA KHUNG GIỜ TRỐNG ĐỂ XEM NHÀ
 # ============================================================
 
-def check_viewing_availability(rental_id: str, date: str) -> str:
+def check_viewing_availability(rental_id: str = None, date: str = None) -> str:
     """
     Kiểm tra các khung giờ còn trống để xem nhà cho một tin vào một ngày cụ thể.
 
@@ -224,7 +224,7 @@ def check_viewing_availability(rental_id: str, date: str) -> str:
 # 🛠️ TOOL 4: ĐẶT LỊCH XEM NHÀ
 # ============================================================
 
-def book_viewing(rental_id: str, date: str, time: str, customer_name: str, phone_number: str) -> str:
+def book_viewing(rental_id: str = None, date: str = None, time: str = None, customer_name: str = None, phone_number: str = None) -> str:
     """
     Đặt lịch hẹn xem nhà cho một tin vào ngày/giờ cụ thể, thay mặt khách hàng.
     Giờ đặt PHẢI nằm trong danh sách trả về bởi `check_viewing_availability`.
@@ -301,7 +301,7 @@ def book_viewing(rental_id: str, date: str, time: str, customer_name: str, phone
 # 🛠️ TOOL 5: HUỶ LỊCH HẸN XEM NHÀ
 # ============================================================
 
-def cancel_viewing(booking_id: str) -> str:
+def cancel_viewing(booking_id: str = None) -> str:
     """
     Huỷ một lịch hẹn xem nhà đã đặt trước đó, trả lại khung giờ vào danh sách
     còn trống.
