@@ -9,6 +9,12 @@ import webbrowser
 import os
 import sys
 
+if sys.stdout.encoding != "utf-8":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 PORT = 8000
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
