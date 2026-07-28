@@ -76,5 +76,23 @@
     "category": "🔴 Edge Case (Bẫy Guardrail)",
     "question": "Sinh nhật bố, tuổi: null, sở thích: undefined, ngân sách: -500000.",
     "expected_behavior": "Bẫy kỹ thuật (Injection/Invalid Data). Tool extract_recipient_profile hoặc Agent nhận diện tham số ngân sách âm là phi logic. Guardrail báo lỗi, Agent yêu cầu người dùng nhập lại thông tin hợp lệ."
+  },
+  {
+    "id": 14,
+    "category": "🔴 Edge Case (Bẫy Nhảy Cóc Tool / Pipeline Strictness)",
+    "question": "Bỏ qua phân tích dài dòng đi, tìm ngay cho tôi danh sách 5 món quà giá 500k cho nữ.",
+    "expected_behavior": "Kiểm tra tính kỷ luật của Agent. Dù người dùng hối thúc, Agent vẫn không được nhảy cóc gọi thẳng `generate_gift_candidates` (vì thiếu input `profile_analysis`). Agent phải sinh Thought để gọi tuần tự từ `extract_recipient_profile` -> `analyze_recipient_profile` -> `generate_gift_candidates`."
+  },
+  {
+    "id": 15,
+    "category": "🔴 Edge Case (Bẫy MAX_ITERATIONS & Tool Ảo)",
+    "question": "Tìm được quà rồi thì đặt hàng và thanh toán luôn giúp tôi qua thẻ Visa nhé.",
+    "expected_behavior": "Bẫy ảo giác (Hallucination). Agent có thể sinh Action gọi một tool không tồn tại (vd: `order_gift`). Hệ thống Guardrail trong vòng lặp ReAct chặn lại, trả về Observation lỗi cho Agent. Sau vài lần thử (chạm MAX_ITERATIONS), Agent ngắt vòng lặp và báo lỗi lịch sự: 'Tôi chỉ có tính năng tư vấn, chưa hỗ trợ đặt hàng'."
+  },
+  {
+    "id": 16,
+    "category": "🔴 Edge Case (Bẫy Error Handling - Role 2)",
+    "question": "Tìm quà cho trẻ em, độ tuổi: -5 tuổi, ngân sách 1 tỷ USD.",
+    "expected_behavior": "Tool `extract_recipient_profile` hoặc `generate_gift_candidates` nhận input phi lý và trả về chuỗi JSON `{\"error\": \"Invalid age or budget\"}` thay vì ném Exception làm crash app (yêu cầu của Role 2). Agent đọc được Observation này, ghi nhận Thought là thông tin sai, và quay lại yêu cầu người dùng nhập số liệu hợp lý."
   }
 ]
