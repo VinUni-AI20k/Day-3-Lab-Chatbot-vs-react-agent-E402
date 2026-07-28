@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent UI — Base & React Agent</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#7c3aed;--success:#16a34a}
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#071029 0%, #081427 100%);color:#e6eef8}
+    .container{max-width:1100px;margin:32px auto;padding:24px}
+    header h1{margin:0 0 6px 0;font-size:20px}
+    header p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;box-shadow:0 4px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .card h2{margin:0 0 8px 0;font-size:18px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    input[type=text]{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:#fff;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .console{background:#010417;border-radius:8px;padding:12px;height:260px;overflow:auto;font-family:Consolas,monospace;font-size:13px;color:#cfe9ff;border:1px solid rgba(255,255,255,0.02)}
+    .log{margin:0 0 8px 0;line-height:1.35}
+    .tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;margin-right:8px}
+    .tag.base{background:rgba(124,58,237,0.12);color:var(--accent);border:1px solid rgba(124,58,237,0.14)}
+    .tag.react{background:rgba(6,182,212,0.06);color:#06b6d4;border:1px solid rgba(6,182,212,0.08)}
+    footer{margin-top:16px;color:var(--muted);font-size:13px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>NYC không phải rác, cố ấy đã từng là tất cả</h1>
+      <p>Nhân cách thứ 2 của tôi tôn trọng và cổ điển</p>
+    </header>
+
+    <div class="grid">
+      <section class="card" id="base-card">
+        <h2><span class="tag base">BASE</span> Chatbot Baseline</h2>
+        <div class="controls">
+          <input id="base-query" type="text" placeholder="Nhập câu hỏi của bạn.." value="Bạn cần giúp đỡ gì hôm nay?">
+          <button id="run-base">Chạy Baseline</button>
+          <button id="clear-base" class="secondary">Xóa</button>
+        </div>
+        <div class="console" id="base-console" aria-live="polite"></div>
+      </section>
+
+      <section class="card" id="react-card">
+        <h2><span class="tag react">REACT AGENT</span> ReAct Agent (Thought → Action → Observation)</h2>
+        <div class="controls">
+          <input id="react-query" type="text" placeholder="Nhập câu hỏi" value="Hãy đưa ra câu hỏi của bạn..">
+          <button id="run-react">Chạy ReAct</button>
+          <button id="clear-react" class="secondary">Xóa</button>
+        </div>
+        <div class="console" id="react-console" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <footer>
+      Sẽ là dối lòng khi anh chẳng ngại âu lo...
+    </footer>
+  </div>
+
+  <script>
+    // Helpers
+    function timestamp() {
+      return new Date().toLocaleTimeString();
+    }
+    function appendLog(consoleEl, text, cls) {
+      const p = document.createElement('div');
+      p.className = 'log ' + (cls||'');
+      p.textContent = `[${timestamp()}] ${text}`;
+      consoleEl.appendChild(p);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // BASE action: call backend /api/run_baseline
+    document.getElementById('run-base').addEventListener('click', async () => {
+      const q = document.getElementById('base-query').value.trim();
+      const out = document.getElementById('base-console');
+      out.innerHTML = '';
+      appendLog(out, '⚙️ System Prompt: CHATBOT_BASELINE_PROMPT');
+      appendLog(out, `💬 User: ${q}`);
+
+      appendLog(out, '⏳ Đang gọi backend...');
+      try {
+        const res = await fetch('/api/run_baseline', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        appendLog(out, `🤖 Chatbot trả lời: ${data.response}`);
+      } catch (err) {
+        appendLog(out, `❗ Lỗi khi gọi backend: ${err.message}`);
+      }
+    });
+
+    document.getElementById('clear-base').addEventListener('click', () => {
+      document.getElementById('base-console').innerHTML = '';
+    });
+
+    // REACT action: call backend /api/run_react
+    document.getElementById('run-react').addEventListener('click', async () => {
+      const q = document.getElementById('react-query').value.trim();
+      const out = document.getElementById('react-console');
+      out.innerHTML = '';
+      appendLog(out, `💬 User: ${q}`);
+
+      appendLog(out, '--- 🔄 Vòng lặp ReAct bắt đầu (gọi backend) ---');
+      try {
+        const res = await fetch('/api/run_react', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+
+        // Render returned steps
+        for (const s of data.steps || []) {
+          if (s.role === 'thought') appendLog(out, `🧠 Thought: ${s.text}`);
+          else if (s.role === 'action') appendLog(out, `🛠️ Action: ${s.text}`);
+          else if (s.role === 'observation') appendLog(out, `👁️ Observation: ${s.text}`);
+          else appendLog(out, `${s.role}: ${s.text}`);
+        }
+
+        appendLog(out, `🏁 Final Answer: ${data.final_answer}`);
+        appendLog(out, '--- ✅ ReAct Agent hoàn tất ---');
+      } catch (err) {
+        appendLog(out, `❗ Lỗi khi gọi backend: ${err.message}`);
+      }
+    });
+
+    document.getElementById('clear-react').addEventListener('click', () => {
+      document.getElementById('react-console').innerHTML = '';
+    });
+  </script>
+</body>
+</html>
