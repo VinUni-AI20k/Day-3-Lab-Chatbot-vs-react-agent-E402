@@ -1,0 +1,338 @@
+[
+  {
+    "id": "U001",
+    "name": "An",
+    "age": 26,
+    "gender": "female",
+    "interested_in": [
+      "male"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "nhiếp ảnh",
+      "cà phê"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "phát triển bản thân"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U002",
+    "name": "Bình",
+    "age": 27,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "nhiếp ảnh",
+      "đọc sách"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "phát triển bản thân"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U003",
+    "name": "Cường",
+    "age": 25,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "cà phê",
+      "chạy bộ"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "sự nghiệp"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "none"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U004",
+    "name": "Dũng",
+    "age": 28,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "cà phê",
+      "âm nhạc",
+      "nấu ăn"
+    ],
+    "values": [
+      "gia đình",
+      "phát triển bản thân",
+      "tôn trọng"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U005",
+    "name": "Hải",
+    "age": 29,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "yoga",
+      "đọc sách",
+      "ẩm thực"
+    ],
+    "values": [
+      "trung thực",
+      "tôn trọng",
+      "học hỏi"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "none"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U006",
+    "name": "Khánh",
+    "age": 26,
+    "gender": "male",
+    "interested_in": [
+      "male"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "nhiếp ảnh",
+      "cà phê"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "phát triển bản thân"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U007",
+    "name": "Long",
+    "age": 27,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "nhiếp ảnh",
+      "cà phê"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "phát triển bản thân"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": true,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": false
+    }
+  },
+  {
+    "id": "U008",
+    "name": "Minh",
+    "age": 26,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "TP.HCM",
+    "interests": [
+      "game",
+      "công nghệ",
+      "bóng đá"
+    ],
+    "values": [
+      "tự do",
+      "tham vọng",
+      "sự nghiệp"
+    ],
+    "relationship_goal": "short_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U009",
+    "name": "Ngọc",
+    "age": 24,
+    "gender": "female",
+    "interested_in": [
+      "male"
+    ],
+    "location": "Đà Nẵng",
+    "interests": [
+      "biển",
+      "du lịch",
+      "đọc sách"
+    ],
+    "values": [
+      "gia đình",
+      "trung thực",
+      "tự do"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": true,
+      "drinking": "none"
+    },
+    "deal_breakers": {
+      "smoking": false
+    }
+  },
+  {
+    "id": "U010",
+    "name": "Phương",
+    "age": 25,
+    "gender": "female",
+    "interested_in": [
+      "male"
+    ],
+    "location": "TP.HCM",
+    "interests": [
+      "âm nhạc",
+      "phim ảnh",
+      "cà phê"
+    ],
+    "values": [
+      "tôn trọng",
+      "trung thực",
+      "sự nghiệp"
+    ],
+    "relationship_goal": "short_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U011",
+    "name": "Quân",
+    "age": 30,
+    "gender": "male",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "du lịch",
+      "game",
+      "công nghệ"
+    ],
+    "values": [
+      "gia đình",
+      "tự do",
+      "tham vọng"
+    ],
+    "relationship_goal": "short_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "social"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  },
+  {
+    "id": "U012",
+    "name": "Trang",
+    "age": 25,
+    "gender": "female",
+    "interested_in": [
+      "female"
+    ],
+    "location": "Hà Nội",
+    "interests": [
+      "nghệ thuật",
+      "yoga",
+      "đọc sách"
+    ],
+    "values": [
+      "tôn trọng",
+      "bình đẳng",
+      "phát triển bản thân"
+    ],
+    "relationship_goal": "long_term",
+    "attributes": {
+      "smoking": false,
+      "drinking": "none"
+    },
+    "deal_breakers": {
+      "smoking": true
+    }
+  }
+]

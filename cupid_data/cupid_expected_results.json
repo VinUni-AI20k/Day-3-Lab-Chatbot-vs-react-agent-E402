@@ -1,0 +1,127 @@
+{
+  "test_case_1": {
+    "requires_mock_data": false,
+    "expected_tool_calls": []
+  },
+  "test_case_2": {
+    "requires_mock_data": false,
+    "expected_tool_calls": []
+  },
+  "test_case_3": {
+    "user_id": "U001",
+    "expected_tool_calls": [
+      "find_candidate_matches"
+    ],
+    "expected_top_3": [
+      {
+        "candidate_id": "U002",
+        "name": "Bình",
+        "goal": 100.0,
+        "values": 100.0,
+        "interests": 50.0,
+        "location": 100.0,
+        "total": 90.0,
+        "shared_interests": [
+          "du lịch",
+          "nhiếp ảnh"
+        ],
+        "shared_values": [
+          "gia đình",
+          "phát triển bản thân",
+          "trung thực"
+        ]
+      },
+      {
+        "candidate_id": "U003",
+        "name": "Cường",
+        "goal": 100.0,
+        "values": 50.0,
+        "interests": 50.0,
+        "location": 100.0,
+        "total": 75.0,
+        "shared_interests": [
+          "cà phê",
+          "du lịch"
+        ],
+        "shared_values": [
+          "gia đình",
+          "trung thực"
+        ]
+      },
+      {
+        "candidate_id": "U004",
+        "name": "Dũng",
+        "goal": 100.0,
+        "values": 50.0,
+        "interests": 20.0,
+        "location": 100.0,
+        "total": 69.0,
+        "shared_interests": [
+          "cà phê"
+        ],
+        "shared_values": [
+          "gia đình",
+          "phát triển bản thân"
+        ]
+      }
+    ]
+  },
+  "test_case_4": {
+    "user_id": "U001",
+    "expected_tool_calls": [
+      "find_candidate_matches",
+      "calculate_compatibility",
+      "suggest_first_message"
+    ],
+    "expected_top_candidate": {
+      "candidate_id": "U002",
+      "name": "Bình",
+      "goal": 100.0,
+      "values": 100.0,
+      "interests": 50.0,
+      "location": 100.0,
+      "total": 90.0,
+      "shared_interests": [
+        "du lịch",
+        "nhiếp ảnh"
+      ],
+      "shared_values": [
+        "gia đình",
+        "phát triển bản thân",
+        "trung thực"
+      ]
+    },
+    "expected_opener_basis": {
+      "candidate_id": "U002",
+      "shared_interests": [
+        "du lịch",
+        "nhiếp ảnh"
+      ],
+      "shared_values": [
+        "gia đình",
+        "phát triển bản thân",
+        "trung thực"
+      ]
+    }
+  },
+  "test_case_5": {
+    "user_id": "U999",
+    "expected_error": {
+      "code": "PROFILE_NOT_FOUND",
+      "message": "Không tìm thấy hồ sơ U999"
+    },
+    "privacy_expectation": "Không có phone, email, exact_address hoặc coordinates trong dữ liệu."
+  },
+  "design_coverage": {
+    "at_least_three_valid_candidates": [
+      "U002",
+      "U003",
+      "U004"
+    ],
+    "mutual_interested_in_mismatch": "U001-U006",
+    "rejected_by_searcher_deal_breaker": "U001-U007",
+    "rejected_by_candidate_deal_breaker": "U009-U002",
+    "profile_with_no_valid_matches": "U012",
+    "high_score_pair": "U001-U002"
+  }
+}
