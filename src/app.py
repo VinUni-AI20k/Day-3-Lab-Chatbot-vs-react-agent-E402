@@ -41,6 +41,28 @@ FINAL_PATTERN = re.compile(
     r"Final\s*Answer:\s*(.+)",
     flags=re.IGNORECASE | re.DOTALL,
 )
+PROMPT_INJECTION_PATTERNS = (
+    re.compile(
+        r"ignore\s+(all|any|the)?\s*(previous|prior)\s+instructions?",
+        re.IGNORECASE,
+    ),
+    re.compile(r"(reveal|show|print|tiết lộ).{0,40}system\s+prompt", re.IGNORECASE),
+    re.compile(
+        r"bỏ\s+qua\s+(mọi|tất\s+cả).{0,50}(xác\s+nhận|quy\s+tắc|chỉ\s+thị)",
+        re.IGNORECASE,
+    ),
+)
+INDIRECT_INJECTION_PATTERNS = (
+    re.compile(r"system\s+(instruction|prompt)\s*(override)?", re.IGNORECASE),
+    re.compile(r"ignore\s+(all|previous)\s+instructions?", re.IGNORECASE),
+    re.compile(r"\bAction\s*:", re.IGNORECASE),
+)
+EMAIL_PATTERN = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE)
+PHONE_PATTERN = re.compile(r"(?<!\d)(?:\+84|0)\d{9,10}(?!\d)")
+NATIONAL_ID_PATTERN = re.compile(r"(?<!\d)\d{12}(?!\d)")
+SENSITIVE_TOOLS = {"book_viewing", "make_payment", "delete_user_data"}
+MAX_QUERY_LENGTH = 4_000
+MAX_TOOL_ARGUMENT_LENGTH = 2_000
 
 
 def load_test_cases(path: str | None = None) -> list[dict[str, Any]]:
@@ -65,13 +87,67 @@ def load_test_cases(path: str | None = None) -> list[dict[str, Any]]:
     return test_cases
 
 
+def _redact_sensitive_data(text: str) -> str:
+    """Che dữ liệu cá nhân trước khi gửi LLM, ghi log hoặc trả output."""
+    text = EMAIL_PATTERN.sub("[REDACTED_EMAIL]", text)
+    text = PHONE_PATTERN.sub("[REDACTED_PHONE]", text)
+    return NATIONAL_ID_PATTERN.sub("[REDACTED_ID]", text)
+
+
+def _apply_input_guardrails(user_query: str) -> tuple[str, str | None]:
+    """Trả query đã che PII và lý do chặn nếu phát hiện input nguy hiểm."""
+    if not isinstance(user_query, str) or not user_query.strip():
+        return "", "Yêu cầu không được để trống."
+    if len(user_query) > MAX_QUERY_LENGTH:
+        return "", f"Yêu cầu vượt quá giới hạn {MAX_QUERY_LENGTH} ký tự."
+    if any(pattern.search(user_query) for pattern in PROMPT_INJECTION_PATTERNS):
+        return "", (
+            "Phát hiện chỉ thị có dấu hiệu prompt injection hoặc yêu cầu "
+            "vượt qua bước xác nhận."
+        )
+    return _redact_sensitive_data(user_query.strip()), None
+
+
+def _sanitize_observation(observation: str) -> str:
+    """Vô hiệu hóa chỉ thị ẩn trong dữ liệu trả về từ tool."""
+    cleaned = _redact_sensitive_data(observation)
+    for pattern in INDIRECT_INJECTION_PATTERNS:
+        cleaned = pattern.sub("[BLOCKED_INJECTION]", cleaned)
+    return cleaned
+
+
+def _requires_grounding(user_query: str) -> bool:
+    """Nhận diện yêu cầu cần dữ liệu/tool thay vì kiến thức chung."""
+    normalized = user_query.casefold()
+    indicators = (
+        "tìm giúp",
+        "tìm căn",
+        "tìm phòng",
+        "khung giờ",
+        "lịch xem",
+        "listing_id",
+        "đặt ngay",
+        "đặt lịch",
+        "chuyển tiền",
+        "gọi tool",
+    )
+    return any(indicator in normalized for indicator in indicators)
+
+
 def run_baseline_chatbot(user_query: str, provider) -> str:
     """Chạy đúng một LLM call và không cung cấp tool cho Chatbot Baseline."""
-    print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {user_query}")
+    safe_query, block_reason = _apply_input_guardrails(user_query)
+    if block_reason:
+        response = f"Yêu cầu đã bị Input Guardrail từ chối: {block_reason}"
+        print(f"\n🛡️ [CHATBOT BASELINE] {response}")
+        return response
+
+    print(f"\n💬 [CHATBOT BASELINE] Câu hỏi: {safe_query}")
     response = provider.generate(
-        user_query,
+        safe_query,
         system_prompt=CHATBOT_BASELINE_PROMPT,
     )
+    response = _redact_sensitive_data(response)
     print(f"🤖 Chatbot trả lời:\n{response}")
     return response
 
@@ -107,7 +183,12 @@ def _parse_action(raw_arguments: str) -> tuple[list[Any], dict[str, Any]]:
     return parsed, {}
 
 
-def _execute_tool(tool_name: str, raw_arguments: str) -> str:
+def _execute_tool(
+    tool_name: str,
+    raw_arguments: str,
+    *,
+    side_effect_confirmed: bool = False,
+) -> str:
     """Kiểm tra registry, parse tham số và thực thi một tool an toàn."""
     tool = AVAILABLE_TOOLS.get(tool_name)
     if tool is None:
@@ -115,6 +196,18 @@ def _execute_tool(tool_name: str, raw_arguments: str) -> str:
         return (
             f"LỖI: Tool '{tool_name}' không tồn tại. "
             f"Các tool hợp lệ: {available}."
+        )
+
+    if tool_name in SENSITIVE_TOOLS and not side_effect_confirmed:
+        return (
+            f"LỖI: Tool nhạy cảm '{tool_name}' cần xác nhận rõ ràng "
+            "từ tầng ứng dụng trước khi thực thi."
+        )
+
+    if len(raw_arguments) > MAX_TOOL_ARGUMENT_LENGTH:
+        return (
+            f"LỖI: Tham số tool vượt quá giới hạn "
+            f"{MAX_TOOL_ARGUMENT_LENGTH} ký tự."
         )
 
     try:
@@ -129,8 +222,8 @@ def _execute_tool(tool_name: str, raw_arguments: str) -> str:
     if result is None:
         return f"LỖI: Tool '{tool_name}' không trả về dữ liệu."
     if isinstance(result, str):
-        return result
-    return json.dumps(result, ensure_ascii=False)
+        return _sanitize_observation(result)
+    return _sanitize_observation(json.dumps(result, ensure_ascii=False))
 
 
 def _build_react_input(user_query: str, trace: list[str]) -> str:
@@ -144,22 +237,50 @@ def _build_react_input(user_query: str, trace: list[str]) -> str:
     return "\n\n".join(sections)
 
 
-def run_react_agent(user_query: str, provider) -> dict[str, Any]:
+def run_react_agent(
+    user_query: str,
+    provider,
+    *,
+    side_effect_confirmed: bool = False,
+) -> dict[str, Any]:
     """Chạy vòng lặp Thought → Action → Observation với phanh an toàn."""
-    print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
+    safe_query, block_reason = _apply_input_guardrails(user_query)
+    if block_reason:
+        fallback = f"Yêu cầu đã bị Input Guardrail từ chối: {block_reason}"
+        print(f"\n🛡️ [REACT AGENT] {fallback}")
+        return {
+            "status": "guardrail",
+            "answer": fallback,
+            "steps": 0,
+            "trace": [],
+        }
+
+    print(f"\n🤖 [REACT AGENT] Câu hỏi: {safe_query}")
     trace: list[str] = []
     previous_action: tuple[str, str] | None = None
+    successful_observations = 0
+    grounding_required = _requires_grounding(safe_query)
 
     for step in range(1, MAX_ITERATIONS + 1):
         print(f"\n--- 🔄 Vòng lặp ReAct ({step}/{MAX_ITERATIONS}) ---")
         llm_output = provider.generate(
-            _build_react_input(user_query, trace),
+            _build_react_input(safe_query, trace),
             system_prompt=REACT_SYSTEM_PROMPT,
         ).strip()
+        llm_output = _redact_sensitive_data(llm_output)
         print(llm_output)
 
         final_match = FINAL_PATTERN.search(llm_output)
         if final_match:
+            if grounding_required and successful_observations == 0:
+                observation = (
+                    "LỖI: Yêu cầu này cần dữ liệu thực tế nhưng chưa có "
+                    "Observation hợp lệ. Không được tạo Final Answer có dữ liệu bịa."
+                )
+                trace.extend([llm_output, f"Observation: {observation}"])
+                print(f"👁️ Observation: {observation}")
+                continue
+
             final_answer = final_match.group(1).strip()
             print(f"🏁 Final Answer: {final_answer}")
             return {
@@ -189,7 +310,13 @@ def run_react_agent(user_query: str, provider) -> dict[str, Any]:
                 "Không lặp lại; hãy đổi hướng hoặc trả lời an toàn."
             )
         else:
-            observation = _execute_tool(tool_name, raw_arguments)
+            observation = _execute_tool(
+                tool_name,
+                raw_arguments,
+                side_effect_confirmed=side_effect_confirmed,
+            )
+            if not observation.startswith("LỖI:"):
+                successful_observations += 1
 
         previous_action = current_action
         trace.extend([llm_output, f"Observation: {observation}"])
