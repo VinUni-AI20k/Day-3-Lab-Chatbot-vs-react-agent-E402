@@ -12,11 +12,12 @@ ReAct Agent sử dụng bộ 5 công cụ trong `src/tools.py` để thực hi�
 
 | STT | Tên Tool (`Function Name`) | Tham số chính (`Arguments`) | Mục đích sử dụng |
 | :---: | :--- | :--- | :--- |
-| 1 | `get_order_info` | `order_id: str` | Tra cứu chi tiết thông tin đơn hàng theo mã đơn. |
-| 2 | `check_return_policy` | `category: str, days_since_purchase: int` | Đánh giá điều kiện & quy định đổi trả theo ngành hàng và số ngày. |
-| 3 | `calculate_refund_amount` | `order_id: str, product_price: float, reason: str` | Tính toán số tiền hoàn trả dự kiến sau khi trừ phí vận chuyển (nếu có). |
-| 4 | `create_return_request` | `order_id: str, items_to_return: str, reason: str, bank_account: str` | Khởi tạo đơn đổi trả chính thức và cấp mã RMA / mã thu hồi. |
-| 5 | `track_shipping_status` | `tracking_number: str` | Tra cứu hành trình vận chuyển kiện hàng giao đi hoặc kiện thu hồi. |
+| 1 | `get_order_status` | `order_id: str` | Tra cứu trạng thái giao hàng và thông tin vận chuyển của đơn hàng theo mã đơn. |
+| 2 | `get_order_info` | `order_id: str` | Tra cứu chi tiết thông tin đơn hàng theo mã đơn. |
+| 3 | `check_return_policy` | `category: str, days_since_purchase: int` | Đánh giá điều kiện & quy định đổi trả theo ngành hàng và số ngày. |
+| 4 | `calculate_refund_amount` | `order_id: str, product_price: float, reason: str` | Tính toán số tiền hoàn trả dự kiến sau khi trừ phí vận chuyển (nếu có). |
+| 5 | `create_return_request` | `order_id: str, items_to_return: str, reason: str, bank_account: str` | Khởi tạo đơn đổi trả chính thức và cấp mã RMA / mã thu hồi. |
+| 6 | `track_shipping_status` | `tracking_number: str` | Tra cứu hành trình vận chuyển kiện hàng giao đi hoặc kiện thu hồi. |
 
 ---
 
