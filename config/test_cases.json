@@ -70,5 +70,17 @@
     "category": "🔴 Edge Case (Thiếu thông tin - Ambiguity)",
     "question": "Tìm cho tôi một căn phòng đẹp ở trung tâm.",
     "expected_behavior": "Agent KHÔNG tự ý bịa tham số gọi Tool. Phải suy luận (Thought) rằng đang thiếu thông tin cụ thể về khu vực và ngân sách, sau đó hỏi lại người dùng: bạn muốn tìm ở quận nào và giá tối đa bao nhiêu?"
+  },
+  {
+    "id": 13,
+    "category": "🔴 Edge Case (Mã phòng không tồn tại)",
+    "question": "Đặt lịch cho Minh xem phòng HN-999 vào ngày 30/07/2026 lúc 14:00.",
+    "expected_behavior": "Agent phải gọi get_room_details('HN-999') hoặc book_viewing_appointment với mã phòng cần xác minh. Tool trả về lỗi vì HN-999 không tồn tại. Agent không được bịa thông tin phòng hoặc báo đặt lịch thành công; phải thông báo lỗi và đề nghị người dùng tìm một phòng hợp lệ."
+  },
+  {
+    "id": 14,
+    "category": "🔴 Edge Case (Khung giờ không có trong lịch xem)",
+    "question": "Tìm phòng trọ ở Cầu Giấy dưới 4 triệu và đặt lịch cho Huy xem phòng vào ngày 30/07/2026 lúc 15:00.",
+    "expected_behavior": "Agent gọi search_rooms('Cầu Giấy', 4000000), sau đó dùng get_room_details để kiểm tra viewing_schedule của phòng phù hợp. Vì 15:00 không nằm trong các khung giờ cho phép, Agent không được tự ý đặt lịch hoặc tuyên bố thành công; phải đề xuất các giờ gần nhất như 14:00 hoặc 19:00 và chờ Huy xác nhận."
   }
 ]

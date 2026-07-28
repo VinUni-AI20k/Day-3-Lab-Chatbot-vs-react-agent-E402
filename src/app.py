@@ -179,10 +179,7 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
 
-    # config/test_cases.json vẫn là bộ câu hỏi cũ (thời tiết/chuyến bay) của Role 1.
-    # Câu hỏi demo mẫu dưới đây thay thế cho tests[2]["question"], đúng chủ đề
-    # "Tìm & Đặt lịch xem nhà trọ/căn hộ cho thuê" và đủ để kích hoạt chuỗi tool
-    # search_rooms -> book_viewing_appointment trong giới hạn MAX_ITERATIONS.
+    # Câu hỏi demo mẫu kích hoạt chuỗi tìm và đặt lịch xem nhà.
     sample_query = (
         "Tôi muốn tìm phòng trọ ở Cầu Giấy giá dưới 4 triệu, nếu có phòng phù hợp thì "
         "đặt lịch xem nhà giúp tôi vào ngày 30/07/2026 lúc 15:00, tên tôi là Huy."
@@ -193,3 +190,26 @@ if __name__ == "__main__":
     
     print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
     run_react_agent(sample_query, provider)
+
+    for position, test in enumerate(tests, start=1):
+        test_id = test.get("id", position)
+        category = test.get("category", "Chưa phân loại")
+        question = test.get("question", "")
+        expected_behavior = test.get("expected_behavior", "Không có mô tả")
+
+        print(f"\n{'=' * 88}")
+        print(f"🧪 TEST CASE #{test_id} ({position}/{len(tests)})")
+        print(f"🏷️  Phân loại : {category}")
+        print(f"❓ Câu hỏi    : {question or '[Trống]'}")
+        print(f"🎯 Kỳ vọng    : {expected_behavior}")
+        print(f"{'-' * 88}")
+
+        if not question.strip():
+            print("⚠️  BỎ QUA: Test case không có câu hỏi.")
+            print(f"{'=' * 88}")
+            continue
+
+        run_react_agent(question, provider)
+        print(f"{'-' * 88}")
+        print(f"✅ KẾT THÚC TEST CASE #{test_id}")
+        print(f"{'=' * 88}")
