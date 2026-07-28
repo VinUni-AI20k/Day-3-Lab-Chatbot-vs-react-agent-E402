@@ -1,12 +1,5 @@
 {
   "viewing_days": 14,
-  "viewing_times": [
-    "09:00",
-    "10:30",
-    "14:00",
-    "16:30",
-    "19:00"
-  ],
   "rooms": [
     {
       "id": "HN-001",
@@ -21,7 +14,23 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-002",
@@ -36,7 +45,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-003",
@@ -51,7 +75,23 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-004",
@@ -66,7 +106,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-005",
@@ -81,7 +136,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-006",
@@ -96,7 +166,21 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-007",
@@ -111,7 +195,23 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-008",
@@ -126,7 +226,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-009",
@@ -141,7 +256,23 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-010",
@@ -156,7 +287,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-011",
@@ -171,7 +317,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-012",
@@ -186,7 +347,21 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-013",
@@ -201,7 +376,23 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-014",
@@ -216,7 +407,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-015",
@@ -231,7 +437,23 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-016",
@@ -246,7 +468,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-017",
@@ -261,7 +498,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-018",
@@ -276,7 +528,21 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-019",
@@ -291,7 +557,23 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-020",
@@ -306,7 +588,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-021",
@@ -321,7 +618,23 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-022",
@@ -336,7 +649,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-023",
@@ -351,7 +679,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-024",
@@ -366,7 +709,21 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-025",
@@ -381,7 +738,23 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-026",
@@ -396,7 +769,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-027",
@@ -411,7 +799,23 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-028",
@@ -426,7 +830,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-029",
@@ -441,7 +860,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-030",
@@ -456,7 +890,21 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-031",
@@ -471,7 +919,23 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-032",
@@ -486,7 +950,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-033",
@@ -501,7 +980,23 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-034",
@@ -516,7 +1011,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-035",
@@ -531,7 +1041,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-036",
@@ -546,7 +1071,21 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-037",
@@ -561,7 +1100,23 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-038",
@@ -576,7 +1131,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-039",
@@ -591,7 +1161,23 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-040",
@@ -606,7 +1192,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-041",
@@ -621,7 +1222,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-042",
@@ -636,7 +1252,21 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-043",
@@ -651,7 +1281,23 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-044",
@@ -666,7 +1312,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-045",
@@ -681,7 +1342,23 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-046",
@@ -696,7 +1373,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-047",
@@ -711,7 +1403,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-048",
@@ -726,7 +1433,21 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-049",
@@ -741,7 +1462,23 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-050",
@@ -756,7 +1493,22 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-051",
@@ -771,7 +1523,23 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-052",
@@ -786,7 +1554,22 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-053",
@@ -801,7 +1584,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-054",
@@ -816,7 +1614,21 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     },
     {
       "id": "HN-055",
@@ -831,7 +1643,23 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00",
+          "16:30"
+        ],
+        "days_off": [
+          2
+        ]
+      }
     },
     {
       "id": "HN-056",
@@ -846,7 +1674,22 @@
         "Điều hòa",
         "Nóng lạnh",
         "Máy giặt chung"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "days_off": [
+          0
+        ]
+      }
     },
     {
       "id": "HN-057",
@@ -861,7 +1704,23 @@
         "Full nội thất",
         "Thang máy",
         "Chỗ để xe"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "10:30",
+          "16:30"
+        ],
+        "weekend_times": [
+          "09:00",
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          3
+        ]
+      }
     },
     {
       "id": "HN-058",
@@ -876,7 +1735,22 @@
         "Có gác lửng",
         "Bếp riêng",
         "Giờ giấc tự do"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "14:00",
+          "16:30",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "14:00"
+        ],
+        "days_off": [
+          1
+        ]
+      }
     },
     {
       "id": "HN-059",
@@ -891,7 +1765,22 @@
         "Ban công",
         "Tủ lạnh",
         "Máy giặt riêng"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "09:00",
+          "14:00",
+          "16:30"
+        ],
+        "weekend_times": [
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": [
+          4
+        ]
+      }
     },
     {
       "id": "HN-060",
@@ -906,7 +1795,21 @@
         "Free wifi",
         "Camera an ninh",
         "Khóa vân tay"
-      ]
+      ],
+      "viewing_schedule": {
+        "weekday_times": [
+          "10:30",
+          "14:00",
+          "19:00"
+        ],
+        "weekend_times": [
+          "09:00",
+          "10:30",
+          "16:30",
+          "19:00"
+        ],
+        "days_off": []
+      }
     }
   ]
 }
