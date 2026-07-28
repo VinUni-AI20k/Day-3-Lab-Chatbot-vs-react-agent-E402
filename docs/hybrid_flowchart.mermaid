@@ -1,0 +1,47 @@
+flowchart TD
+    %% Node Definitions
+    Start(["Bắt đầu: User gửi Yêu cầu / Câu hỏi"]) --> Classification{"Phân loại Yêu cầu<br/>(Intent Classifier / Router)"}
+
+    %% Branch 1: Simple Question (Chatbot Path)
+    Classification -- "Câu hỏi đơn giản / Tư vấn chung<br/>(Không cần tra cứu dữ liệu & công cụ)" --> ChatbotPath["Chatbot Path<br/>(Standard LLM Direct Response)"]
+    ChatbotPath --> DirectResponse["Sinh phản hồi trực tiếp dựa trên tri thức có sẵn"]
+    DirectResponse --> End(["Xuất câu trả lời cho Người dùng"])
+
+    %% Branch 2: Complex Question (ReAct Agent Path)
+    Classification -- "Câu hỏi phức tạp / Cần dữ liệu & tác vụ<br/>(Yêu cầu tra cứu JD, CV, chấm điểm, xếp lịch...)" --> ReActPath["ReAct Agent Path<br/>(Reasoning & Acting Loop)"]
+
+    subgraph ReActLoop ["Vòng lặp ReAct Agent (Thought - Action - Observation)"]
+        direction TD
+        Thought["1. Thought: Suy luận bước tiếp theo cần làm"] --> Action["2. Action: Lựa chọn và gọi công cụ tương ứng"]
+        Action --> ToolExec{"Hệ thống gọi Công cụ thực thi"}
+
+        ToolExec -- "Tra cứu hồ sơ ứng viên" --> Tool1["get_candidate_profile"]
+        ToolExec -- "Tra cứu yêu cầu công việc" --> Tool2["get_job_description"]
+        ToolExec -- "Tính điểm tương thích CV & JD" --> Tool3["score_candidate"]
+        ToolExec -- "Kiểm tra lịch rảnh HR / Tech Lead" --> Tool4["check_calendar"]
+        ToolExec -- "Gửi email thông báo / Hẹn phỏng vấn" --> Tool5["send_email"]
+
+        Tool1 --> Observation["3. Observation: Nhận phản hồi/dữ liệu từ công cụ"]
+        Tool2 --> Observation
+        Tool3 --> Observation
+        Tool4 --> Observation
+        Tool5 --> Observation
+
+        Observation --> CheckComplete{"Đã đủ dữ liệu để trả lời?"}
+        CheckComplete -- "Chưa đủ (Cần suy luận/gọi thêm tool)" --> Thought
+    end
+
+    ReActPath --> Thought
+    CheckComplete -- "Đã đủ thông tin" --> FinalAnswer["Tổng hợp câu trả lời hoàn chỉnh (Final Answer)"]
+    FinalAnswer --> End
+
+    %% Styling
+    classDef startEnd fill:#2d3748,stroke:#1a202c,color:#ffffff,font-weight:bold;
+    classDef simplePath fill:#1a365d,stroke:#2b6cb0,color:#ffffff,font-weight:bold;
+    classDef reactPath fill:#44337a,stroke:#6b46c1,color:#ffffff,font-weight:bold;
+    classDef toolStyle fill:#22543d,stroke:#38a169,color:#ffffff;
+
+    class Start,End startEnd;
+    class ChatbotPath,DirectResponse simplePath;
+    class ReActPath,Thought,Action,Observation,FinalAnswer reactPath;
+    class Tool1,Tool2,Tool3,Tool4,Tool5 toolStyle;
