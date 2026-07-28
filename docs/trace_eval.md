@@ -7,11 +7,11 @@
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Yêu cầu suy luận chuỗi logic chặt chẽ: Định danh khách hàng ➔ Kiểm tra trạng thái vận chuyển ➔ Đối chiếu điều kiện thời gian & chính sách ➔ Đưa ra quyết định cuối cùng. |
+| 🛠️ **Tool Interaction** | `5/5` | Phụ thuộc hoàn toàn vào công cụ bên ngoài: Query Database (SQL/API) để lấy thông tin đơn, truy xuất Vector DB (RAG) để đọc chính sách, và gọi API CRM để tạo Ticket. |
+| 🔀 **Dynamic Decision** | `5/5` | Luồng hành động thay đổi linh hoạt theo dữ liệu trả về: Đơn chưa giao ➔ Chuyển luồng Hủy đơn; Đơn đã giao quá 15 ngày ➔ Từ chối; Đơn lỗi ➔ Yêu cầu user cung cấp ảnh bằng chứng ➔ Tạo ticket. |
+| ⏳ **Long Horizon** | `4/5` | Quy trình đổi trả đòi hỏi việc duy trì bộ nhớ (context) qua nhiều lượt hội thoại liên tiếp để thu thập đủ tham số (mã sản phẩm, lý do chi tiết, hình ảnh) trước khi có thể thực thi action cuối cùng. |
+| **TỔNG ĐIỂM FIT** | **19/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
 
 ---
 
