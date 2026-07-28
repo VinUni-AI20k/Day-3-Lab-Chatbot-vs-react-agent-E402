@@ -5,13 +5,15 @@
 
 ## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
 
+**Đề tài 10:** *Trợ lý tìm & đặt lịch xem nhà trọ / căn hộ cho thuê*
+
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Agent phải hiểu các ràng buộc (khu vực, ngân sách, loại phòng, ngày/giờ), lọc và so sánh các tin phù hợp, rồi đề xuất lựa chọn trước khi đặt lịch xem. |
+| 🛠️ **Tool Interaction** | `5/5` | Cần gọi tool tìm kiếm tin cho thuê, xem chi tiết/độ còn trống, tra lịch xem của chủ nhà và tạo lịch hẹn. Dữ liệu phòng và lịch hẹn không nên được LLM tự suy đoán. |
+| 🔀 **Dynamic Decision** | `5/5` | Danh sách phòng tìm được, tình trạng còn trống và khung giờ của từng chủ nhà quyết định phòng nào được giữ lại, có cần nới điều kiện hoặc đề xuất khung giờ khác hay không. |
+| ⏳ **Long Horizon** | `4/5` | Quy trình thường kéo dài qua nhiều lượt: làm rõ nhu cầu → tìm/lọc → chọn phòng → kiểm tra lịch → xác nhận lịch hẹn. Tuy nhiên phạm vi vẫn là một giao dịch ngắn, chưa cần lập kế hoạch dài hạn hay memory phức tạp. |
+| **TỔNG ĐIỂM FIT** | **19/20** | **KẾT LUẬN: RẤT PHÙ HỢP VỚI REACT AGENT** — Agent tạo giá trị rõ rệt nhờ phối hợp nhiều tool và điều chỉnh theo dữ liệu thực tế; Chatbot thuần chỉ phù hợp để giải đáp thông tin chung. |
 
 ---
 
