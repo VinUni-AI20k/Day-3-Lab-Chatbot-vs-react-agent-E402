@@ -60,3 +60,18 @@ start_career_survey
 → build_career_profile
 → Final Answer
 ```
+
+---
+
+## BASELINE CHATBOT
+
+**Môi trường chạy thực tế:** `MockProvider (Offline Mock Mode)`
+
+**Test case dùng để quan sát:** `test_cases[0]`
+
+**Câu hỏi**: *"Nghề Data Analyst cần làm những công việc gì?"*
+
+### 🤖 Chatbot Baseline:
+
+- **Phản hồi**: *"🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."*
+- **Nhận xét**: Baseline chatbot trong lần chạy này chưa tạo được câu trả lời nghề nghiệp thực 
