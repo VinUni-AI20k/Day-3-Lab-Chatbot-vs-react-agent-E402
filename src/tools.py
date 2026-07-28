@@ -1,49 +1,80 @@
 """
-🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
-Nơi khai báo tất cả các "món đồ nghề" mà ReAct Agent có thể gọi.
+🛠️ TOOL REGISTRY (Text-to-SQL Agent — Goodreads Books)
+Theo tinh thần DAY3: tối thiểu 2 tool, đơn giản, an toàn.
+- describe_table: khám phá schema
+- execute_select_query: chạy SELECT an toàn
 """
 
-def get_weather(location: str) -> str:
+import sqlite3
+from db import describe, safe_execute, is_select_only, ensure_limit, get_connection
+
+
+def describe_table(table: str) -> str:
     """
-    Tra cứu thời tiết hiện tại của một thành phố.
-    
+    Trả về schema của 1 bảng: tên cột, type, PK, nullable, row count.
+    Dùng khi cần biết bảng X có cột nào, kiểu dữ liệu ra sao.
     Args:
-        location (str): Tên thành phố (Ví dụ: 'Hà Nội', 'TP.HCM', 'Đà Nẵng')
-        
+        table (str): tên bảng (VD: 'books'). Không phân biệt hoa thường.
     Returns:
-        str: Thông tin thời tiết chi tiết
+        str: mô tả cột + row count, hoặc thông báo lỗi nếu bảng không tồn tại.
     """
-    loc_lower = location.lower()
-    if "hà nội" in loc_lower or "ha noi" in loc_lower:
-        return "Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%."
-    elif "hồ chí minh" in loc_lower or "tp.hcm" in loc_lower or "hcm" in loc_lower:
-        return "Thời tiết TP.HCM: 33°C, Nắng nóng, Có mây."
-    elif "đà nẵng" in loc_lower or "da nang" in loc_lower:
-        return "Thời tiết Đà Nẵng: 30°C, Gió nhẹ, Mát mẻ."
-    else:
-        return f"LỖI: Không tìm thấy dữ liệu thời tiết cho địa điểm '{location}'."
+    info = describe(table.strip())
+    if "error" in info:
+        return info["error"]
+    lines = [f"📋 Bảng {info['table']} (row_count={info['row_count']})"]
+    lines.append("Cột:")
+    for c in info["columns"]:
+        pk = " [PK]" if c["pk"] else ""
+        null = "" if c["nullable"] else " [NOT NULL]"
+        lines.append(f"  - {c['name']} : {c['type']}{pk}{null}")
+    return "\n".join(lines)
 
 
-def search_flights(origin: str, destination: str) -> str:
+def execute_select_query(sql: str, limit: int = 100) -> str:
     """
-    Tra cứu chuyến bay giữa hai địa điểm.
-    
+    Thực thi câu SELECT an toàn trên books.db.
+    - Tự chèn LIMIT nếu thiếu (mặc định 100, tối đa 500)
+    - Reject mọi lệnh DML/DDL (INSERT/UPDATE/DROP/PRAGMA/...)
+    - Bắt exception trả về string thay vì crash
     Args:
-        origin (str): Nơi đi (Ví dụ: 'TP.HCM')
-        destination (str): Nơi đến (Ví dụ: 'Hà Nội')
-        
+        sql (str): câu SELECT đầy đủ
+        limit (int): số dòng tối đa trả về (mặc định 100)
     Returns:
-        str: Danh sách chuyến bay khả dụng và giá vé
+        str: bảng kết quả dạng text. Nếu query lỗi trả về mô tả lỗi để Agent suy luận sửa.
     """
-    return (
-        f"Chuyến bay từ {origin} -> {destination} ngày mai:\n"
-        f"1. VN123 (08:00) - Giá: 1,500,000 VNĐ (Còn vé)\n"
-        f"2. VJ456 (14:30) - Giá: 1,200,000 VNĐ (Còn vé)"
-    )
+    limit = max(1, min(int(limit), 500))
+    res = safe_execute(sql, limit=limit)
+    if "error" in res:
+        return res["error"]
+    cols = res["columns"]
+    rows = res["rows"]
+    if not rows:
+        return f"Query chạy thành công nhưng không có dòng nào trả về.\nExecuted SQL: {res['executed_sql']}"
+    lines = [f"✅ Query OK (row_count={res['row_count']}, executed_sql={res['executed_sql']})"]
+    lines.append(" | ".join(cols))
+    lines.append("-" * 80)
+    for row in rows[:limit]:
+        lines.append(" | ".join(str(v) for v in row))
+    if res["row_count"] > limit:
+        lines.append(f"... ({res['row_count'] - limit} dòng bị cắt do LIMIT)")
+    return "\n".join(lines)
 
 
-# Danh sách các tool được đăng ký để Agent sử dụng
+# Đăng ký tool
 AVAILABLE_TOOLS = {
-    "get_weather": get_weather,
-    "search_flights": search_flights,
+    "describe_table": describe_table,
+    "execute_select_query": execute_select_query,
 }
+
+
+if __name__ == "__main__":
+    print("=== TEST TOOLS ===")
+    print("\n[1] describe_table('books'):")
+    print(describe_table("books"))
+    print("\n[2] execute_select_query top 5 sách rating cao nhất:")
+    sql = "SELECT title, author, avg_rating, num_ratings FROM books WHERE num_ratings >= 1000 ORDER BY avg_rating DESC, num_ratings DESC LIMIT 5"
+    print(execute_select_query(sql))
+    print("\n[3] Guardrail DROP:")
+    print(execute_select_query("DROP TABLE books"))
+    print("\n[4] Syntax error:")
+    print(execute_select_query("SELECT * FORM books"))

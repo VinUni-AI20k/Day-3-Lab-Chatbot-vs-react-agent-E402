@@ -5,3 +5,8 @@ __pycache__/
 .venv/
 env/
 venv/
+
+# Database (Goodreads Books — 1MB+, có thể tải lại bằng src/db.py)
+data/books.db
+data/*.db
+data/*.db-journal
