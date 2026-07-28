@@ -28,7 +28,7 @@ class GeminiProvider(BaseLLMProvider):
     """Google Gemini Provider"""
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
+        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.0-flash"
         
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
@@ -132,12 +132,51 @@ class OpenRouterProvider(BaseLLMProvider):
 
 
 class MockProvider(BaseLLMProvider):
-    """Offline Mock Provider (Cho bài test không cần kết nối API)"""
+    """
+    Offline Mock Provider — Mô phỏng luồng ReAct Agent 3 bước
+    cho chủ đề định hướng nghề nghiệp (không cần API key).
+
+    Step 1: assess_user_profile
+    Step 2: search_careers
+    Step 3: Final Answer
+    """
+
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
-        return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
+        p = prompt.lower()
+
+        # Nếu đã có Observation từ search_careers → Final Answer
+        if "search_careers" in p and "observation" in p:
+            return (
+                "Thought: Tôi đã có kết quả tìm kiếm nghề nghiệp phù hợp. "
+                "Tôi đủ thông tin để đưa ra câu trả lời cuối cùng.\n"
+                "Final Answer: Dựa trên hồ sơ của bạn (tốt nghiệp CNTT, "
+                "biết Python và Excel, thích dữ liệu và logic), các nghề phù hợp nhất là:\n"
+                "1. 📊 Data Analyst — Phân tích dữ liệu, xây dựng báo cáo và dashboard.\n"
+                "2. 💻 Software Developer — Lập trình xây dựng ứng dụng, phù hợp tư duy logic.\n"
+                "3. 🔬 Data Scientist — Xây dựng mô hình ML, cần nền tảng toán tốt hơn.\n\n"
+                "Kỹ năng cần học thêm cho Data Analyst: SQL, Thống kê, Trực quan hóa dữ liệu (Power BI/Tableau).\n"
+                "Bước tiếp theo: Hoàn thiện một dự án portfolio nhỏ bằng Python + SQL, nộp thực tập Data Analyst."
+            )
+
+        # Nếu đã có Observation từ assess_user_profile → gọi search_careers
+        if "assess_user_profile" in p and "observation" in p:
+            return (
+                'Thought: Tôi đã có hồ sơ người dùng chuẩn hóa. '
+                'Bước tiếp theo là tìm kiếm nghề phù hợp theo sở thích và kỹ năng.\n'
+                'Action: search_careers[{"interests": ["dữ liệu", "logic", "công nghệ"], '
+                '"skills": ["Python", "Excel"]}]'
+            )
+
+        # Bước đầu: gọi assess_user_profile
+        return (
+            "Thought: Người dùng cung cấp thông tin về nền tảng học vấn, "
+            "kỹ năng và sở thích. Tôi cần chuẩn hóa hồ sơ trước khi tìm kiếm nghề phù hợp.\n"
+            'Action: assess_user_profile[{"education": "Cử nhân Công nghệ Thông tin", '
+            '"skills": ["Python", "Excel"], '
+            '"interests": ["dữ liệu", "logic", "công nghệ"], '
+            '"personality": "Thích làm việc với dữ liệu và logic", '
+            '"goals": "Tìm nghề phù hợp và lộ trình phát triển kỹ năng"}]'
+        )
 
 
 def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
