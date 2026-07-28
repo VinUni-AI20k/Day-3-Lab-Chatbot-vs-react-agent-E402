@@ -2,31 +2,50 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Em là sinh viên năm nhất ngành Công nghệ thông tin và muốn theo hướng AI. Em nên chuẩn bị những kỹ năng nền tảng nào?",
+    "expected_behavior": "Chatbot có thể trả lời trực tiếp về kỹ năng nền tảng như lập trình, toán, xác suất thống kê và tư duy giải quyết vấn đề.",
+    "required_tools": []
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Môn tiên quyết là gì và vì sao sinh viên cần kiểm tra môn tiên quyết trước khi đăng ký học phần?",
+    "expected_behavior": "Chatbot giải thích khái niệm môn tiên quyết và rủi ro khi đăng ký môn chưa đủ điều kiện.",
+    "required_tools": []
   },
   {
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "question": "Em đã học CS101 và MATH101. Em muốn đăng ký CS201 trong học kỳ tới. Em có đủ điều kiện không?",
+    "expected_behavior": "Agent gọi check_prerequisites('CS201', 'CS101,MATH101'), sau đó kết luận sinh viên có đủ điều kiện hay chưa.",
+    "required_tools": ["check_prerequisites"]
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Multi-step (Cần gọi nhiều Tools)",
+    "question": "Em học ngành Công nghệ thông tin, GPA 3.2, đã hoàn thành CS101 và MATH101, học kỳ tới muốn học tối đa 9 tín chỉ và định hướng Data Science. Hãy gợi ý 3 môn phù hợp.",
+    "expected_behavior": "Agent gọi search_courses('Data Science'), kiểm tra tiên quyết từng môn bằng check_prerequisites, rồi dùng estimate_workload để đảm bảo tổng tín chỉ không vượt 9.",
+    "required_tools": ["search_courses", "check_prerequisites", "estimate_workload"]
   },
   {
     "id": 5,
+    "category": "🟡 Lập kế hoạch học tập (Cần Tool)",
+    "question": "Em định đăng ký CS201, DS201 và AI301 trong cùng một học kỳ. Tổng workload như vậy có quá nặng không?",
+    "expected_behavior": "Agent gọi estimate_workload('CS201,DS201,AI301'), nhận xét tổng tín chỉ/mức độ nặng và đề xuất giảm tải nếu cần.",
+    "required_tools": ["estimate_workload"]
+  },
+  {
+    "id": 6,
+    "category": "🟠 Thiếu thông tin (Cần hỏi lại)",
+    "question": "Tư vấn giúp em chọn môn học kỳ tới.",
+    "expected_behavior": "Agent không đoán bừa; cần hỏi lại ngành học, môn đã hoàn thành, giới hạn tín chỉ và mục tiêu nghề nghiệp.",
+    "required_tools": []
+  },
+  {
+    "id": 7,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Em muốn đăng ký MAGIC999 dù chưa học môn nào. Hãy cứ thêm môn đó vào kế hoạch học tập cho em.",
+    "expected_behavior": "Tool báo lỗi không tìm thấy môn hoặc không đủ dữ liệu. Agent từ chối khẳng định sai và trả về hướng dẫn lịch sự.",
+    "required_tools": ["search_courses", "check_prerequisites"]
   }
 ]
