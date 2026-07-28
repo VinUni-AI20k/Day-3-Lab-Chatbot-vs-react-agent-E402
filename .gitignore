@@ -7,3 +7,4 @@ env/
 venv/
 .guardrails/
 config/hf_data_cache.json
+uv.lock
