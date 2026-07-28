@@ -6,6 +6,7 @@ so the agent can make a safe, explainable next decision.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 
@@ -72,4 +73,64 @@ def rank_gifts(profile: dict[str, Any], gifts: list[dict[str, Any]]) -> list[dic
     return sorted(ranked, key=lambda item: (-item["score"], item["price"]))[:5]
 
 
-AVAILABLE_TOOLS = {"get_profile_completeness": get_profile_completeness, "search_gifts": search_gifts, "rank_gifts": rank_gifts}
+def extract_gift_profile(prompt: str) -> str:
+    """Extract recipient, age, occasion and interests from a Vietnamese request."""
+    text = prompt.lower()
+    recipient_map = {
+        "mẹ": ["mẹ", "má"], "bố": ["bố", "ba", "cha"],
+        "bạn gái": ["bạn gái", "người yêu nữ"], "bạn trai": ["bạn trai", "người yêu nam"],
+        "vợ": ["vợ"], "chồng": ["chồng"], "sếp": ["sếp"],
+        "đồng nghiệp": ["đồng nghiệp"], "con": ["con trai", "con gái"],
+        "bạn thân": ["bạn thân", "bạn bè", "bạn"],
+    }
+    occasion_map = {
+        "sinh nhật": ["sinh nhật"], "Giáng sinh": ["giáng sinh", "noel"],
+        "Valentine": ["valentine", "lễ tình nhân"], "Tết": ["tết", "năm mới"],
+        "kỷ niệm ngày cưới": ["kỷ niệm ngày cưới", "kỷ niệm"], "20/10": ["20/10"],
+        "8/3": ["8/3"], "tốt nghiệp": ["tốt nghiệp", "ra trường"],
+    }
+    interest_map = {
+        "đọc sách": ["đọc sách", "sách"], "nấu ăn": ["nấu ăn", "nấu nướng", "ẩm thực"],
+        "du lịch": ["du lịch", "phượt"], "công nghệ": ["công nghệ", "gadget", "điện tử"],
+        "thể thao": ["thể thao", "gym", "bóng đá", "chạy bộ"], "âm nhạc": ["âm nhạc", "nghe nhạc", "guitar"],
+        "làm đẹp": ["làm đẹp", "skincare", "mỹ phẩm"], "thời trang": ["thời trang", "quần áo"],
+        "chơi game": ["chơi game", "game thủ"],
+    }
+    recipient = next((name for name, words in recipient_map.items() if any(word in text for word in words)), "Không xác định")
+    occasion = next((name for name, words in occasion_map.items() if any(word in text for word in words)), "Không xác định")
+    interests = [name for name, words in interest_map.items() if any(word in text for word in words)]
+    age_match = re.search(r"(\d{1,3})\s*tuổi", text)
+    age = f"{age_match.group(1)} tuổi" if age_match else "Không xác định"
+    return "\n".join((
+        "Hồ sơ tặng quà:", f"- Đối tượng: {recipient}", f"- Độ tuổi: {age}",
+        f"- Dịp lễ: {occasion}", f"- Sở thích: {', '.join(interests) if interests else 'Không xác định'}",
+    ))
+
+
+def search_gift_api(gift_description: str) -> str:
+    """Return a clearly labelled mock store/link for a gift category; no live lookup."""
+    description = gift_description.lower()
+    stores = (
+        (("sách", "sach"), "Tiki - Nhà sách trực tuyến", "https://tiki.vn/nha-sach-tiki"),
+        (("công nghệ", "gadget", "điện tử"), "FPT Shop - Đồ công nghệ", "https://fptshop.com.vn"),
+        (("nấu ăn", "ẩm thực"), "Shopee - Đồ dùng nhà bếp", "https://shopee.vn"),
+        (("làm đẹp", "skincare", "mỹ phẩm"), "Hasaki - Mỹ phẩm & làm đẹp", "https://hasaki.vn"),
+        (("thời trang", "quần áo"), "Lazada - Thời trang", "https://www.lazada.vn"),
+        (("thể thao", "gym"), "Decathlon - Đồ thể thao", "https://www.decathlon.vn"),
+        (("du lịch", "phượt"), "Travelgear - Phụ kiện du lịch", "https://travelgear.vn"),
+        (("chơi game", "game thủ"), "GearVN - Gaming Gear", "https://gearvn.com"),
+        (("âm nhạc", "guitar"), "Việt Thương Music - Nhạc cụ", "https://vietthuong.vn"),
+    )
+    for keywords, store, link in stores:
+        if any(keyword in description for keyword in keywords):
+            return f"Dữ liệu mock — Cửa hàng: {store}. Link: {link}"
+    return f"LỖI: Không tìm thấy cửa hàng phù hợp cho món quà '{gift_description}'."
+
+
+AVAILABLE_TOOLS = {
+    "get_profile_completeness": get_profile_completeness,
+    "search_gifts": search_gifts,
+    "rank_gifts": rank_gifts,
+    "extract_gift_profile": extract_gift_profile,
+    "search_gift_api": search_gift_api,
+}
