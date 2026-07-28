@@ -4,6 +4,7 @@ Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằ
 """
 
 import os
+import re
 import sys
 import json
 import requests
@@ -134,10 +135,34 @@ class OpenRouterProvider(BaseLLMProvider):
 class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
-        return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
+        if "screen_resume" not in system_prompt:
+            return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
+
+        text = prompt
+        if "Observation:" not in text:
+            return "Thought: Cần sàng lọc CV trước.\nAction: screen_resume[]"
+
+        if "Kết luận: KHÔNG ĐẠT" in text or "LỖI: Thiếu nội dung" in text:
+            return "Thought: Ứng viên không đạt hoặc hồ sơ chưa đủ dữ liệu.\nFinal Answer: Không thể đặt lịch vì ứng viên chưa đạt yêu cầu."
+
+        if "Đã đặt lịch" in text:
+            return "Thought: Đã có xác nhận đặt lịch từ tool.\nFinal Answer: Đã đặt lịch phỏng vấn thành công."
+
+        date_match = re.search(r"(\d{1,2}/\d{1,2}/\d{4})", text)
+        if "còn trống các khung giờ" in text and date_match:
+            candidate_match = re.search(r"Question: Ứng viên (.+?) vừa nộp", text)
+            candidate = candidate_match.group(1) if candidate_match else "Ứng viên"
+            return (
+                "Thought: Đã có slot trống, đặt lịch ở khung giờ đầu tiên.\n"
+                f"Action: schedule_interview[\"{candidate}\", \"{date_match.group(1)}\", \"09:00\"]"
+            )
+
+        if "Kết luận: ĐẠT" in text:
+            if date_match:
+                return f"Thought: Ứng viên đạt, cần kiểm tra lịch ngày mong muốn.\nAction: check_calendar_availability[\"{date_match.group(1)}\"]"
+            return "Thought: Đã có evidence sàng lọc.\nFinal Answer: Ứng viên đạt yêu cầu vị trí."
+
+        return "Thought: Chưa đủ evidence để kết luận.\nFinal Answer: Chưa thể hoàn tất yêu cầu với dữ liệu hiện có."
 
 
 def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
