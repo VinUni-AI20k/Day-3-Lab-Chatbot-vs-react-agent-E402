@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Tiêu chuẩn cho một mối quan hệ lành mạnh và bền vững là gì?",
+    "expected_behavior": "Chatbot hoặc Agent trả lời trực tiếp từ kiến thức tâm lý xã hội có sẵn."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟡 Multi-step Search (Cần gọi Tool search_candidates)",
+    "question": "Tôi muốn tìm bạn gái khoảng 22 đến 28 tuổi ở Hà Nội thích nghe nhạc indie, vẽ tranh và đi cà phê.",
+    "expected_behavior": "Agent nhận diện intent SEARCH, kiểm tra đủ thông tin và gọi tool search_candidates để gợi ý ứng viên thích hợp kèm PII Masking."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step Compatibility (Cần gọi Tool calculate_compatibility)",
+    "question": "Đánh giá độ tương thích giữa hồ sơ C001 (Nguyễn Văn Tuấn) và C002 (Trần Thị Ngọc Bích).",
+    "expected_behavior": "Agent nhận diện intent COMPATIBILITY, gọi tool calculate_compatibility tính toán ma trận điểm số 100 và đưa ra lời khuyên."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟠 Interactive Slot Filling (Trigger Information Gathering Loop)",
+    "question": "Tôi muốn tìm bạn gái để tìm hiểu hẹn hò.",
+    "expected_behavior": "Agent phát hiện THIẾU vị trí, độ tuổi và sở thích mong muốn. KHÔNG GỌI TOOL, đưa ra câu hỏi hỏi bổ sung nhẹ nhàng."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "🔴 Edge Case (Trigger Relaxed Search & Guardrails)",
+    "question": "Tìm giúp tôi bạn gái 18 đến 20 tuổi ở thành phố Cà Mau thích đi leo núi tuyết.",
+    "expected_behavior": "Tool search_candidates không tìm thấy kết quả khớp cứng, kích hoạt Relaxed Search nới lỏng bán kính và cảnh báo an toàn."
   }
 ]
