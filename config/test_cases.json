@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
+    "question": "Cung hoàng đạo Bọ Cạp (Scorpio) có những tính cách đặc trưng gì trong tình yêu?",
     "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
+    "question": "Gợi ý 3 chủ đề trò chuyện thú vị cho buổi hẹn đầu tiên để tránh bị ngượng ngùng.",
     "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Cần gọi Tool)",
+    "question": "Phân tích độ tương thích trong tình yêu giữa nam Cự Giải (Cancer) và nữ Bọ Cạp (Scorpio).",
+    "expected_behavior": "Agent gọi tool check_horoscope_compatibility('Cự Giải', 'Bọ Cạp') rồi đưa ra phân tích chi tiết."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "question": "Kiểm tra độ tương thích MBTI giữa INTJ và ENFP, sau đó gợi ý địa điểm hẹn hò lãng mạn tại Hà Nội với ngân sách vừa phải.",
+    "expected_behavior": "Agent gọi tool calculate_mbti_compatibility('INTJ', 'ENFP') và search_date_ideas('Hà Nội', 'lãng mạn', 'vừa phải') để trả lời đầy đủ."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Phân tích độ tương thích giữa cung 'Thần Mã' và 'Phượng Hoàng' ngày 35/13/2026.",
+    "expected_behavior": "Tool báo lỗi cung hoàng đạo không hợp lệ, Guardrail ngắt an toàn sau 3 bước và trả về thông báo lịch sự."
   }
 ]
