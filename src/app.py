@@ -22,6 +22,46 @@ load_dotenv()
 
 st.set_page_config(page_title="AI Assistant - Tìm Nhà Trọ", page_icon="🏠", layout="wide")
 
+st.markdown("""
+<style>
+    /* Premium Glassmorphism UI */
+    .stApp {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #f8fafc;
+        font-family: 'Inter', sans-serif;
+    }
+    .stChatInputContainer {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 1rem !important;
+    }
+    .stChatMessage {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    }
+    [data-testid="chat-message-user"] {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%) !important;
+        border: 1px solid rgba(147, 51, 234, 0.3) !important;
+    }
+    section[data-testid="stSidebar"] {
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .stAlert {
+        border-radius: 0.5rem;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 @st.cache_data
 def load_test_cases():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,25 +77,21 @@ def run_baseline_chatbot(user_query: str, provider):
     return response
 
 def parse_action(text: str):
-    """Trích xuất Action từ response của LLM. Vd: search_properties['Hà Nội', 'Cầu Giấy', '', 5000000]"""
-    pattern = r"Action:\s*(\w+)\[(.*?)\]"
-    match = re.search(pattern, text)
+    """Trích xuất Action từ response của LLM. Vd: search_rentals[{"location":"Cầu Giấy"}]"""
+    pattern = r"Action:\s*(\w+)\[(.*)\]"
+    match = re.search(pattern, text, re.DOTALL)
     if match:
         tool_name = match.group(1)
-        params_str = match.group(2)
-        # Parse params. Rất basic: cắt theo dấu phẩy, bỏ quote
-        params = []
-        if params_str.strip():
-            # Xử lý cắt chuỗi tham số
-            # Dùng regex cẩn thận hoặc ast.literal_eval. Tạm dùng split.
-            import ast
+        params_str = match.group(2).strip()
+        params = {}
+        if params_str:
             try:
-                # Bọc lại bằng ngoặc vuông để parse như một list Python
-                params = ast.literal_eval(f"[{params_str}]")
+                params = json.loads(params_str)
             except:
-                params = [p.strip().strip("'").strip('"') for p in params_str.split(',')]
+                # Fallback nếu JSON có lỗi
+                pass
         return tool_name, params
-    return None, None
+    return None, {}
 
 def run_react_agent(user_query: str, provider):
     """Vòng lặp ReAct Agent"""
@@ -81,13 +117,19 @@ def run_react_agent(user_query: str, provider):
             # Tìm Action
             tool_name, params = parse_action(response)
             if tool_name:
-                st.warning(f"🛠️ **Action**: `{tool_name}({', '.join(map(str, params))})`")
+                params_display = json.dumps(params, ensure_ascii=False) if isinstance(params, dict) else str(params)
+                st.warning(f"🛠️ **Action**: `{tool_name}({params_display})`")
                 
                 # Thực thi Tool
                 if tool_name in AVAILABLE_TOOLS:
                     try:
                         tool_func = AVAILABLE_TOOLS[tool_name]
-                        obs = tool_func(*params)
+                        if isinstance(params, dict):
+                            obs = tool_func(**params)
+                        elif isinstance(params, list):
+                            obs = tool_func(*params)
+                        else:
+                            obs = tool_func()
                     except Exception as e:
                         obs = f"Lỗi khi chạy tool {tool_name}: {str(e)}"
                 else:
