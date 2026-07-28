@@ -16,7 +16,7 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
-load_dotenv()
+load_dotenv(override=True)
 
 class BaseLLMProvider:
     """Interface cơ sở cho tất cả các LLM Provider"""
@@ -31,17 +31,38 @@ class GeminiProvider(BaseLLMProvider):
         self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
         
     def generate(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.api_key or self.api_key == "your_gemini_api_key_here":
+        # Reload env mới nhất mỗi lần generate để đảm bảo key được đọc đúng
+        load_dotenv(override=True)
+        self.api_key = self.api_key or os.getenv("GEMINI_API_KEY")
+        if not self.api_key or self.api_key in ("your_gemini_api_key_here", "", None):
             return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
         try:
             from google import genai
+            from google.genai import types
             client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+            config = types.GenerateContentConfig(system_instruction=system_prompt) if system_prompt else None
             response = client.models.generate_content(
                 model=self.model_name,
-                contents=contents
+                contents=prompt,
+                config=config
             )
-            return response.text
+            res_text = ""
+            try:
+                res_text = response.text or ""
+            except Exception:
+                pass
+
+            if not res_text and hasattr(response, "candidates") and response.candidates:
+                try:
+                    for c in response.candidates:
+                        if hasattr(c, "content") and c.content and hasattr(c.content, "parts") and c.content.parts:
+                            for p in c.content.parts:
+                                if hasattr(p, "text") and p.text:
+                                    res_text += p.text
+                except Exception:
+                    pass
+
+            return res_text
         except Exception as e:
             return f"[Gemini Exception]: {str(e)}"
 
