@@ -1,0 +1,271 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CareerWay - AI Career Mentor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#001a41",
+                    "surface-container-highest": "#dfe3e8",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "primary-fixed-dim": "#adc7ff",
+                    "tertiary-fixed": "#89fa9b",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-container-low": "#f1f4fa",
+                    "on-primary-fixed-variant": "#004493",
+                    "on-error": "#ffffff",
+                    "surface-container-high": "#e5e8ee",
+                    "secondary": "#005ac1",
+                    "inverse-surface": "#2d3135",
+                    "primary": "#1a73e8",
+                    "secondary-container": "#4d8efe",
+                    "on-primary-container": "#ffffff",
+                    "background": "#f7f9ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c1c6d6",
+                    "on-primary-fixed": "#001a41",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#ffffff",
+                    "on-tertiary-fixed": "#002108",
+                    "tertiary": "#006d2c",
+                    "surface": "#f7f9ff",
+                    "surface-tint": "#005bc0",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#6ddd81",
+                    "on-tertiary-fixed-variant": "#005320",
+                    "on-secondary-container": "#00285c",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#414754",
+                    "tertiary-container": "#008939",
+                    "primary-fixed": "#d8e2ff",
+                    "outline": "#727785",
+                    "inverse-on-surface": "#eef1f7",
+                    "surface-container": "#ebeef4",
+                    "inverse-primary": "#adc7ff",
+                    "surface-bright": "#f7f9ff",
+                    "on-surface": "#181c20",
+                    "surface-variant": "#dfe3e8",
+                    "surface-dim": "#d7dae0",
+                    "on-secondary-fixed-variant": "#004494",
+                    "on-background": "#181c20",
+                    "primary-container": "#1a73e8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "48px",
+                    "md": "24px",
+                    "container-max": "1280px",
+                    "xs": "8px",
+                    "base": "4px",
+                    "gutter": "24px",
+                    "lg": "32px",
+                    "sm": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "400"}],
+                    "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "0px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "letterSpacing": "0px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #dfe3e8;
+            border-radius: 10px;
+        }
+        .message-in {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-on-surface">
+<!-- Sidebar Navigation -->
+
+<!-- Main Chat Area -->
+<main class="flex-1 flex flex-col relative bg-background">
+<!-- Chat Header -->
+<header class="h-16 flex items-center justify-between px-lg bg-surface border-b border-outline-variant z-10">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div>
+<h2 class="font-title-md text-title-md text-on-surface flex items-center gap-xs">
+                        CareerWay - Trợ lý CareerWay
+                        <span class="w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+</h2>
+<p class="text-label-md text-on-surface-variant">Online</p>
+</div>
+</div>
+
+</header>
+<!-- Messages Canvas -->
+<section class="flex-1 overflow-y-auto chat-scroll p-lg flex flex-col gap-lg items-center">
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="px-md py-1 bg-surface-container-high rounded-full text-label-md text-on-surface-variant font-medium">Hôm nay</span>
+</div>
+<!-- AI Message 1 -->
+<div class="flex gap-sm max-w-[80%] message-in">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-2xl rounded-tl-none shadow-sm">
+<p class="text-body-lg text-on-surface">Chào mừng bạn đến với CareerWay! Tôi là cố vấn sự nghiệp ảo của bạn. 🌟</p>
+</div>
+<span class="text-label-md text-on-surface-variant ml-1">10:00 AM</span>
+</div>
+</div>
+<!-- AI Message 2 -->
+<div class="flex gap-sm max-w-[80%] message-in" style="animation-delay: 0.2s;">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-2xl rounded-tl-none shadow-sm">
+<p class="text-body-lg text-on-surface">Hôm nay tôi có thể giúp gì cho định hướng nghề nghiệp của bạn? Bạn đang quan tâm đến lĩnh vực nào hay cần cải thiện kỹ năng gì không?</p>
+</div>
+<span class="text-label-md text-on-surface-variant ml-1">10:00 AM</span>
+</div>
+</div>
+<!-- Example User Reply (Mockup for context) -->
+<!-- <div class="flex gap-sm max-w-[80%] self-end flex-row-reverse message-in" style="animation-delay: 0.4s;">
+                <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-2 text-on-primary font-bold">S</div>
+                <div class="flex flex-col gap-1 items-end">
+                    <div class="bg-primary text-on-primary p-md rounded-2xl rounded-tr-none shadow-sm">
+                        <p class="text-body-lg">Tôi muốn tìm hiểu về ngành IT.</p>
+                    </div>
+                    <span class="text-label-md text-on-surface-variant mr-1">10:05 AM</span>
+                </div>
+            </div> -->
+</section>
+<!-- Input Area -->
+<footer class="p-lg pt-0 flex flex-col items-center">
+<!-- Quick Reply Chips -->
+<div class="flex gap-sm mb-md overflow-x-auto no-scrollbar pb-1 w-full max-w-3xl">
+<button class="px-md py-2 bg-surface-container-highest border border-outline-variant rounded-full text-label-lg text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95">
+                    Tìm hiểu ngành IT
+                </button>
+<button class="px-md py-2 bg-surface-container-highest border border-outline-variant rounded-full text-label-lg text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95">
+                    Kỹ năng mềm cần thiết
+                </button>
+<button class="px-md py-2 bg-surface-container-highest border border-outline-variant rounded-full text-label-lg text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95">
+                    Tư vấn viết CV
+                </button>
+<button class="px-md py-2 bg-surface-container-highest border border-outline-variant rounded-full text-label-lg text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95">
+                    Lộ trình Frontend
+                </button>
+</div>
+<!-- Message Box -->
+<div class="relative bg-surface border border-outline-variant rounded-3xl p-xs flex items-center gap-xs shadow-md focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all w-full max-w-3xl">
+<button class="p-3 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-body-lg py-3 px-2 placeholder:text-outline" placeholder="Nhập câu hỏi của bạn..." type="text">
+<button class="p-3 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="mood">mood</span>
+</button>
+<button class="w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-lg hover:brightness-110 active:scale-90 transition-all ml-1">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+<p class="text-center text-label-md text-outline mt-sm">CareerWay AI có thể cung cấp thông tin không chính xác. Hãy kiểm tra các nguồn tin cậy.</p>
+</footer>
+</main>
+<script>
+        // Micro-interaction for input field
+        const input = document.querySelector('input');
+        const sendBtn = document.querySelector('.bg-primary');
+        
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length > 0) {
+                sendBtn.classList.remove('bg-primary-fixed-dim');
+                sendBtn.classList.add('bg-primary');
+            }
+        });
+
+        // Simple send animation mockup
+        sendBtn.addEventListener('click', () => {
+            if (input.value.trim() === '') return;
+            
+            const message = input.value;
+            const container = document.querySelector('section');
+            
+            // Append User Message
+            const userMsg = `
+                <div class="flex gap-sm max-w-[80%] self-end flex-row-reverse message-in">
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 mt-2 text-on-primary font-bold">S</div>
+                    <div class="flex flex-col gap-1 items-end">
+                        <div class="bg-primary text-on-primary p-md rounded-2xl rounded-tr-none shadow-sm">
+                            <p class="text-body-lg">${message}</p>
+                        </div>
+                        <span class="text-label-md text-on-surface-variant mr-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', userMsg);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+        });
+
+        // Allow enter key
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+    </script>
+
+
+</body></html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>CareerWay - AI Career Mentor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001a41",
+                        "surface-container-highest": "#dfe3e8",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-fixed-dim": "#adc7ff",
+                        "tertiary-fixed": "#89fa9b",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container-low": "#f1f4fa",
+                        "on-primary-fixed-variant": "#004493",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e5e8ee",
+                        "secondary": "#005ac1",
+                        "inverse-surface": "#2d3135",
+                        "primary": "#1a73e8",
+                        "secondary-container": "#4d8efe",
+                        "on-primary-container": "#ffffff",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c1c6d6",
+                        "on-primary-fixed": "#001a41",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffffff",
+                        "on-tertiary-fixed": "#002108",
+                        "tertiary": "#006d2c",
+                        "surface": "#f7f9ff",
+                        "surface-tint": "#005bc0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#6ddd81",
+                        "on-tertiary-fixed-variant": "#005320",
+                        "on-secondary-container": "#00285c",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#414754",
+                        "tertiary-container": "#008939",
+                        "primary-fixed": "#d8e2ff",
+                        "outline": "#727785",
+                        "inverse-on-surface": "#eef1f7",
+                        "surface-container": "#ebeef4",
+                        "inverse-primary": "#adc7ff",
+                        "surface-bright": "#f7f9ff",
+                        "on-surface": "#181c20",
+                        "surface-variant": "#dfe3e8",
+                        "surface-dim": "#d7dae0",
+                        "on-secondary-fixed-variant": "#004494",
+                        "on-background": "#181c20",
+                        "primary-container": "#1a73e8"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "sm": "0.25rem",
+                        "md": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "base": "4px",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "32px",
+                        "xl": "48px",
+                        "container-max": "1280px"
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "label-lg": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "title-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "title-lg": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #dfe3e8;
+            border-radius: 10px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb:hover {
+            background: #c1c6d6;
+        }
+        /* Hide scrollbar for chips */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .message-in {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+            height: 6px;
+            width: 6px;
+            background: #727785;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 1px;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.4s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.6s; }
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            20% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-on-surface bg-background">
+    
+    <!-- Sidebar Navigation for Desktop -->
+    <aside class="w-[320px] bg-surface-container-low h-full flex-col border-r border-outline-variant transition-all hidden md:flex shrink-0">
+        <!-- Header: Logo & New Chat -->
+        <div class="p-md flex flex-col gap-md">
+            <div class="flex items-center gap-sm px-xs pt-xs">
+                <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-on-primary shadow-sm">
+                    <span class="material-symbols-outlined fill text-[22px]" data-icon="explore">explore</span>
+                </div>
+                <h1 class="text-[20px] font-semibold tracking-tight text-on-surface">CareerWay</h1>
+            </div>
+            <button class="mt-xs flex items-center justify-center gap-xs w-full bg-primary text-on-primary py-2.5 px-md rounded-lg hover:brightness-110 transition-all font-medium active:scale-95 shadow-sm text-[15px]">
+                <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                Đoạn chat mới
+            </button>
+        </div>
+
+        <!-- Chat History -->
+        <div class="flex-1 overflow-y-auto chat-scroll px-sm py-xs flex flex-col gap-1">
+            <h3 class="text-[13px] font-medium text-on-surface-variant px-sm mb-2 mt-2">Hôm nay</h3>
+            <!-- History Item (Active) -->
+            <button class="w-full flex items-center gap-sm px-sm py-2.5 bg-secondary-container text-on-secondary-container rounded-lg transition-colors text-left group">
+                <span class="material-symbols-outlined text-[20px] fill" data-icon="chat_bubble">chat_bubble</span>
+                <span class="text-[14px] truncate flex-1 font-medium">Lộ trình Frontend Developer</span>
+            </button>
+            <!-- History Item -->
+            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
+                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Kỹ năng mềm cần thiết</span>
+            </button>
+            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
+                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Tư vấn viết CV ngành IT</span>
+            </button>
+            
+            <h3 class="text-[13px] font-medium text-on-surface-variant px-sm mb-2 mt-4">Hôm qua</h3>
+            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
+                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Khám phá ngành Data Science</span>
+            </button>
+            <button class="w-full flex items-center gap-sm px-sm py-2.5 hover:bg-surface-container rounded-lg text-on-surface transition-colors text-left group">
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant group-hover:text-on-surface" data-icon="chat_bubble">chat_bubble</span>
+                <span class="text-[14px] text-on-surface-variant group-hover:text-on-surface truncate flex-1">Nên học Java hay C++?</span>
+            </button>
+        </div>
+
+        <!-- User Profile / Footer -->
+        <div class="p-sm border-t border-outline-variant">
+            <button class="w-full flex items-center gap-sm p-sm hover:bg-surface-container rounded-xl transition-colors text-left">
+                <div class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-[15px]">NA</div>
+                <div class="flex-1 truncate">
+                    <p class="text-[14px] font-semibold text-on-surface">Nhật Anh</p>
+                    <p class="text-[12px] text-on-surface-variant">Sinh viên IT</p>
+                </div>
+                <span class="material-symbols-outlined text-[20px] text-on-surface-variant" data-icon="settings">settings</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 flex flex-col relative bg-surface">
+        
+        <!-- Mobile Header (Visible only on small screens) -->
+        <header class="h-16 flex md:hidden items-center justify-between px-md bg-surface-container-lowest border-b border-outline-variant z-10">
+            <div class="flex items-center gap-sm">
+                <button class="p-2 -ml-2 text-on-surface-variant rounded-full hover:bg-surface-container">
+                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
+                </button>
+                <div class="w-8 h-8 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+                    <span class="material-symbols-outlined fill text-[18px]" data-icon="smart_toy">smart_toy</span>
+                </div>
+                <h2 class="text-[16px] font-semibold text-on-surface">CareerWay AI</h2>
+            </div>
+            <button class="p-2 -mr-2 text-on-surface-variant rounded-full hover:bg-surface-container">
+                <span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+            </button>
+        </header>
+
+        <!-- Messages Canvas -->
+        <section class="flex-1 overflow-y-auto chat-scroll p-md md:p-lg flex flex-col w-full" id="chat-wrapper">
+            <div class="w-full max-w-4xl mx-auto flex flex-col gap-lg pb-xl" id="chat-container">
+                
+                <!-- Date Separator -->
+                <div class="flex justify-center w-full mt-sm">
+                    <span class="px-md py-1 bg-surface-container-high rounded-full text-[12px] text-on-surface-variant font-medium">Hôm nay</span>
+                </div>
+                
+                <!-- AI Message 1 -->
+                <div class="flex gap-sm max-w-[90%] md:max-w-[85%] message-in self-start">
+                    <div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-1 text-on-secondary-container shadow-sm border border-secondary-fixed-dim/30">
+                        <span class="material-symbols-outlined fill text-[20px]" data-icon="smart_toy">smart_toy</span>
+                    </div>
+                    <div class="flex flex-col gap-1 items-start">
+                        <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm">
+                            <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Chào mừng bạn đến với <strong>CareerWay</strong>! Tôi là cố vấn sự nghiệp ảo của bạn. 🌟</p>
+                        </div>
+                        <span class="text-[12px] text-on-surface-variant ml-1 font-medium">10:00 AM</span>
+                    </div>
+                </div>
+                
+                <!-- AI Message 2 -->
+                <div class="flex gap-sm max-w-[90%] md:max-w-[85%] message-in self-start" style="animation-delay: 0.15s;">
+                    <div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-1 text-on-secondary-container shadow-sm border border-secondary-fixed-dim/30">
+                        <span class="material-symbols-outlined fill text-[20px]" data-icon="smart_toy">smart_toy</span>
+                    </div>
+                    <div class="flex flex-col gap-1 items-start">
+                        <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm">
+                            <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Hôm nay tôi có thể giúp gì cho định hướng nghề nghiệp của bạn? Bạn đang quan tâm đến lĩnh vực nào hay cần cải thiện kỹ năng gì không?</p>
+                        </div>
+                        <span class="text-[12px] text-on-surface-variant ml-1 font-medium">10:00 AM</span>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- Input Area -->
+        <footer class="px-md md:px-lg pb-md md:pb-lg pt-2 flex flex-col items-center w-full bg-gradient-to-t from-surface via-surface to-transparent">
+            <div class="w-full max-w-4xl flex flex-col items-center">
+                
+                <!-- Quick Reply Chips -->
+                <div class="flex gap-sm mb-md overflow-x-auto no-scrollbar w-full pb-2 snap-x">
+                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                        Tìm hiểu ngành IT
+                    </button>
+                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                        Kỹ năng mềm cần thiết
+                    </button>
+                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                        Tư vấn viết CV
+                    </button>
+                    <button class="snap-start px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-[14px] text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-transparent transition-all whitespace-nowrap active:scale-95 shadow-sm">
+                        Lộ trình Frontend
+                    </button>
+                </div>
+                
+                <!-- Message Box -->
+                <div class="relative bg-surface-container-lowest border border-outline-variant rounded-[24px] p-1.5 flex items-end gap-1 shadow-sm focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all w-full">
+                    <button class="p-2.5 mb-1 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-full transition-colors shrink-0">
+                        <span class="material-symbols-outlined text-[22px]" data-icon="add">add</span>
+                    </button>
+                    
+                    <textarea 
+                        id="chat-input"
+                        rows="1"
+                        class="flex-1 bg-transparent border-none focus:ring-0 text-[15px] md:text-[16px] py-3.5 px-2 placeholder:text-outline resize-none max-h-32 chat-scroll" 
+                        placeholder="Nhập tin nhắn đến CareerWay..." 
+                        style="min-height: 52px;"
+                    ></textarea>
+                    
+                    <button class="p-2.5 mb-1 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded-full transition-colors shrink-0">
+                        <span class="material-symbols-outlined text-[22px]" data-icon="mic">mic</span>
+                    </button>
+                    <button id="send-btn" class="w-11 h-11 mb-1 bg-surface-container-high text-on-surface-variant rounded-[16px] flex items-center justify-center transition-all shrink-0 mr-0.5">
+                        <span class="material-symbols-outlined text-[20px] fill" data-icon="send">send</span>
+                    </button>
+                </div>
+                
+                <p class="text-center text-[11px] md:text-[12px] text-outline mt-3">CareerWay AI có thể cung cấp thông tin không chính xác. Hãy kiểm tra các nguồn tin cậy.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const container = document.getElementById('chat-container');
+        const wrapper = document.getElementById('chat-wrapper');
+        
+        // Auto-resize textarea
+        input.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            
+            if (this.value.trim().length > 0) {
+                sendBtn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+                sendBtn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'hover:brightness-110', 'active:scale-95');
+            } else {
+                sendBtn.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+                sendBtn.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'hover:brightness-110', 'active:scale-95');
+            }
+        });
+
+        // Send message function
+        function sendMessage() {
+            const message = input.value.trim();
+            if (message === '') return;
+            
+            // Append User Message
+            const userMsg = `
+                <div class="flex gap-sm max-w-[90%] md:max-w-[85%] self-end flex-row-reverse message-in">
+                    <div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center shrink-0 mt-1 text-on-primary-fixed font-bold text-[14px] shadow-sm">NA</div>
+                    <div class="flex flex-col gap-1 items-end">
+                        <div class="bg-primary text-on-primary p-4 rounded-[20px] rounded-tr-[4px] shadow-sm">
+                            <p class="text-[15px] md:text-[16px] leading-relaxed whitespace-pre-wrap">${message}</p>
+                        </div>
+                        <span class="text-[12px] text-on-surface-variant mr-1 font-medium">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', userMsg);
+            
+            // Reset input
+            input.value = '';
+            input.style.height = 'auto';
+            sendBtn.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+            sendBtn.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'hover:brightness-110', 'active:scale-95');
+            
+            // Scroll to bottom
+            wrapper.scrollTop = wrapper.scrollHeight;
+            
+            // Simulate AI typing
+            simulateAIResponse();
+        }
+
+        function simulateAIResponse() {
+            // Add typing indicator
+            const typingId = 'typing-' + Date.now();
+            const typingMsg = `
+                <div id="${typingId}" class="flex gap-sm max-w-[90%] md:max-w-[85%] message-in self-start">
+                    <div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-1 text-on-secondary-container shadow-sm border border-secondary-fixed-dim/30">
+                        <span class="material-symbols-outlined fill text-[20px]" data-icon="smart_toy">smart_toy</span>
+                    </div>
+                    <div class="flex flex-col gap-1 items-start">
+                        <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm flex items-center h-[56px]">
+                            <div class="typing-indicator flex items-center justify-center">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', typingMsg);
+            wrapper.scrollTop = wrapper.scrollHeight;
+
+            // Remove typing indicator and add response after delay
+            setTimeout(() => {
+                document.getElementById(typingId).remove();
+                
+                const aiMsg = `
+                    <div class="flex gap-sm max-w-[90%] md:max-w-[85%] message-in self-start">
+                        <div class="w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center shrink-0 mt-1 text-on-secondary-container shadow-sm border border-secondary-fixed-dim/30">
+                            <span class="material-symbols-outlined fill text-[20px]" data-icon="smart_toy">smart_toy</span>
+                        </div>
+                        <div class="flex flex-col gap-1 items-start">
+                            <div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-[20px] rounded-tl-[4px] shadow-sm">
+                                <p class="text-[15px] md:text-[16px] text-on-surface leading-relaxed">Đây là phản hồi mẫu từ CareerWay AI. Hệ thống đang trong quá trình phát triển.</p>
+                            </div>
+                            <span class="text-[12px] text-on-surface-variant ml-1 font-medium">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', aiMsg);
+                wrapper.scrollTop = wrapper.scrollHeight;
+            }, 1500);
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Allow Enter to send (Shift+Enter for new line)
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
