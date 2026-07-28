@@ -70,6 +70,7 @@ SHADOW_PROFILES = {
 HIGH_RISK_SIGNALS = [
     "tự tử", "muốn chết", "không muốn sống", "kết thúc cuộc sống", "tự hại",
     "tự làm đau", "biến mất khỏi thế giới", "không còn lý do gì",
+    "muốn kết thúc tất cả", "kết thúc tất cả", "kết thúc mọi thứ",
     "làm hại người khác", "bị đánh đập", "bị bạo hành", "bị xâm hại",
     "bị lạm dụng", "bị hành hạ",
 ]
