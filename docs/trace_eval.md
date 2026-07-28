@@ -1,17 +1,18 @@
 # 📊 BÁO CÁO GIÁM SÁT & ĐÁNH GIÁ (OBSERVABILITY TRACE LOGS)
 *Dành cho Role 5: Observability & Reviewer*
+*Chủ đề chọn: Đề tài 5 - Trợ Lý Tra Cứu Đơn Hàng & Xử Lý Đổi Trả*
 
 ---
 
-## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
+## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX) - MỐC 1
 
 | Tiêu chí | Điểm (1-5) | Lý do đánh giá |
 | :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| 🧠 **Multi-step Reasoning** | `5/5` | Cần suy luận đa bước: Tiếp nhận mã đơn ➔ Tra cứu trạng thái ➔ Đánh giá chính sách đổi trả (thời hạn, tình trạng hàng, lý do) ➔ Đưa ra quyết định/hướng dẫn. |
+| 🛠️ **Tool Interaction** | `5/5` | Bắt buộc dùng công cụ tra cứu dữ liệu thời gian thực: Database đơn hàng (`lookup_order`), chính sách đổi trả (`check_return_policy`), hệ thống tạo yêu cầu (`create_return_request`). Chatbot thường không thể truy cập DB này. |
+| 🔀 **Dynamic Decision** | `4/5` | Ra quyết định động theo nhánh: Nếu đơn đủ điều kiện ➔ Tạo mã đổi trả; Nếu quá hạn/lỗi khách hàng ➔ Từ chối & giải thích chính sách; Nếu thiếu thông tin ➔ Hỏi bổ sung. |
+| ⏳ **Long Horizon** | `4/5` | Quy trình gồm 3–5 bước tương tác khép kín từ lúc khách hỏi đơn đến khi chốt phương án đổi trả/hoàn tiền. |
+| **TỔNG ĐIỂM FIT** | **18/20** | **KẾT LUẬN: BÀI TOÁN RẤT HOÀN HẢO ĐỂ ÁP DỤNG REACT AGENT!** |
 
 ---
 
