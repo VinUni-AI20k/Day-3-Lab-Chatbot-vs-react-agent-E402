@@ -5,3 +5,7 @@ python-dotenv
 requests
 fastapi
 uvicorn[standard]
+langgraph
+langchain-openai
+python-dotenv
+langchain_core

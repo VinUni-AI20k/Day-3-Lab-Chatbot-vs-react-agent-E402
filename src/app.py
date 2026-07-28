@@ -22,7 +22,15 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS
+from tools import (
+    AVAILABLE_TOOLS,
+    search_theater,
+    search_movie,
+    search_showtime,
+    get_available_seats,
+    book_seats,
+    generate_ticket,
+)
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 

@@ -220,6 +220,23 @@ def get_film_details(film_name: str) -> str:
     lines.append(f"Nội dung: {film.get('synopsis', 'Chưa có mô tả.')}")
     return "\n".join(lines)
 
+@tool
+def search_movie(movie_name: str):
+    """
+    Tìm thông tin phim.
+    """
+    movies = load_movies()
+    for movie in movies:
+        if movie_name.lower() in movie["film_name"].lower():
+            return {
+                "film_name": movie["film_name"],
+                "genre": movie["genre"],
+                "duration": movie["duration_min"],
+                "rating": movie["rating"],
+                "poster": movie["poster_path"],
+                "synopsis": movie["synopsis"]
+            }
+    return "Không tìm thấy phim."
 
 def get_showtimes(film_name: str, cinema: str = None, date: str = None) -> str:
     """
@@ -380,6 +397,90 @@ def book_ticket(film_name: str, cinema: str, time: str, zone: str, quantity: int
         f"Tổng tiền: {total_price:,}đ. Mã đặt vé: {booking_id}."
     )
 
+                        if seat not in booked:
+                            available.append(seat)
+                return available
+    return []
+
+@tool
+def book_seats(
+    movie_name: str,
+    cinema: str,
+    date: str,
+    time: str,
+    seats: list[str],
+    customer_name: str
+):
+    """
+    Đặt ghế.
+    """
+    movies = load_movies()
+    for movie in movies:
+        if movie_name.lower() not in movie["film_name"].lower():
+            continue
+        for show in movie["showtimes"]:
+            if (
+                show["cinema"] == cinema
+                and show["date"] == date
+                and show["time"] == time
+            ):
+                seat_map = show["seat_map"]
+                if seat_map is None:
+                    return {
+                        "status": "FAILED",
+                        "message": "Không có sơ đồ ghế."
+                    }
+                booked = seat_map["booked_seats"]
+                for seat in seats:
+                    if seat in booked:
+                        return {
+                            "status": "FAILED",
+                            "message": f"Ghế {seat} đã được đặt."
+                        }
+                booked.extend(seats)
+                show["seats_available"] -= len(seats)
+                save_movies(movies)
+                booking_id = str(uuid.uuid4())
+                return {
+                    "status": "SUCCESS",
+                    "booking_id": booking_id,
+                    "customer": customer_name,
+                    "movie": movie["film_name"],
+                    "cinema": cinema,
+                    "date": date,
+                    "time": time,
+                    "seats": seats
+                }
+    return {
+        "status": "FAILED",
+        "message": "Không tìm thấy suất chiếu."
+    }
+    
+@tool
+def generate_ticket(
+    booking_id: str,
+    customer_name: str,
+    movie_name: str,
+    cinema: str,
+    date: str,
+    time: str,
+    seats: list[str]
+):
+    """
+    Sinh vé điện tử.
+    """
+    ticket_id = f"CGV-{uuid.uuid4().hex[:8].upper()}"
+    return {
+        "ticket_id": ticket_id,
+        "booking_id": booking_id,
+        "customer": customer_name,
+        "movie": movie_name,
+        "cinema": cinema,
+        "date": date,
+        "time": time,
+        "seats": seats,
+        "status": "CONFIRMED"
+    }
 
 # Danh sách các tool được đăng ký để Agent sử dụng
 AVAILABLE_TOOLS = {
