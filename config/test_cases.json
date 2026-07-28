@@ -1,32 +1,362 @@
 [
   {
-    "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "id": 6,
+    "type": "Simple - Theory",
+    "query": "Ý nghĩa của việc tặng đồng hồ cho người yêu là gì?",
+    "expectation": "Agent tự trả lời dựa trên kiến thức LLM (thể hiện sự trân trọng thời gian, gắn bó dài lâu) mà không cần gọi tool."
   },
   {
-    "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "id": 7,
+    "type": "Simple - Theory",
+    "query": "Tặng hoa hồng vàng có ý nghĩa gì trong tình bạn?",
+    "expectation": "Agent giải thích được ý nghĩa của hoa hồng vàng (tình bạn chân thành, sự ấm áp) mà không gọi tool."
   },
   {
-    "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "id": 8,
+    "type": "Simple - Theory",
+    "query": "Có kiêng kỵ gì khi tặng giày cho người yêu không?",
+    "expectation": "Agent nhắc đến quan niệm dân gian (tặng giày là đẩy người yêu đi) và cách hóa giải (đưa lại 1-2 nghìn đồng)."
   },
   {
-    "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "id": 9,
+    "type": "Simple - Theory",
+    "query": "Kỷ niệm 10 năm ngày cưới (đám cưới thiếc) theo truyền thống phương Tây nên tặng quà chất liệu gì?",
+    "expectation": "Agent đưa ra thông tin chính xác về đám cưới thiếc/nhôm theo kiến thức sẵn có."
   },
   {
-    "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "id": 10,
+    "type": "Simple - Theory",
+    "query": "Người mang cung hoàng đạo Kim Ngưu thường thích nhận kiểu quà tặng như thế nào?",
+    "expectation": "Agent mô tả được tính cách Kim Ngưu (thực tế, thích sự ổn định, đồ ăn ngon, quà tặng có giá trị sử dụng cao)."
+  },
+  {
+    "id": 11,
+    "type": "Simple - Theory",
+    "query": "Tặng quà sinh nhật cho trẻ em 5 tuổi cần chú ý vấn đề an toàn như thế nào?",
+    "expectation": "Agent tư vấn về việc tránh các chi tiết nhỏ dễ nuốt, chất liệu không độc hại, không góc cạnh sắc nhọn."
+  },
+  {
+    "id": 12,
+    "type": "Simple - Theory",
+    "query": "Quà tân gia nên tránh tặng những món đồ nào để không mang lại xui xẻo?",
+    "expectation": "Agent liệt kê các món nên tránh như vật sắc nhọn (dao kéo), đồng hồ, hoặc đồ mang tính âm/màu đen."
+  },
+  {
+    "id": 13,
+    "type": "Simple - Theory",
+    "query": "Tại sao trong văn hóa Nhật Bản người ta thường tránh tặng khăn tay?",
+    "expectation": "Agent giải thích được khăn tay trong tiếng Nhật gợi liên tưởng đến sự chia ly, cắt đứt mối quan hệ."
+  },
+  {
+    "id": 14,
+    "type": "Simple - Theory",
+    "query": "Người thích màu đen và phong cách tối giản thường có tính cách như thế nào?",
+    "expectation": "Agent phân tích đặc điểm tâm lý độc lập, bí ẩn, thích sự thanh lịch và tinh tế."
+  },
+  {
+    "id": 15,
+    "type": "Simple - Theory",
+    "query": "Quà tặng cho sếp nam mới thăng chức nên lưu ý những nguyên tắc gì?",
+    "expectation": "Agent đưa ra lời khuyên về sự tinh tế, không quá phô trương, phù hợp với sở thích cá nhân của sếp."
+  },
+  {
+    "id": 16,
+    "type": "Simple - Policy",
+    "query": "Shop có nhận viết thiệp tay kèm theo hộp quà không?",
+    "expectation": "Agent dựa vào System Prompt để trả lời chính sách dịch vụ của shop (có viết thiệp tay miễn phí)."
+  },
+  {
+    "id": 17,
+    "type": "Simple - Policy",
+    "query": "Phí ship hỏa tốc nội thành Hà Nội là bao nhiêu tiền?",
+    "expectation": "Agent trả lời thông tin phí ship (được cài đặt sẵn trong prompt) mà không tìm kiếm hàng hóa."
+  },
+  {
+    "id": 18,
+    "type": "Simple - Policy",
+    "query": "Nếu người nhận mở quà ra mà bị lỗi do nhà sản xuất thì có được đổi trả không?",
+    "expectation": "Agent cung cấp chính sách đổi trả (ví dụ: đổi trả 1-1 trong 7 ngày) một cách trôi chảy."
+  },
+  {
+    "id": 19,
+    "type": "Simple - Policy",
+    "query": "Cửa hàng có chấp nhận thanh toán bằng ví Momo hoặc thẻ tín dụng không?",
+    "expectation": "Agent trả lời về các phương thức thanh toán được hỗ trợ."
+  },
+  {
+    "id": 20,
+    "type": "Simple - Policy",
+    "query": "Tôi muốn gửi quà ẩn danh, không để lộ tên người gửi cho người nhận biết có được không?",
+    "expectation": "Agent xác nhận dịch vụ gửi ẩn danh của shop."
+  },
+  {
+    "id": 21,
+    "type": "Simple - Policy",
+    "query": "Giao hàng hỏa tốc trong 2 giờ có áp dụng sau 10h đêm không?",
+    "expectation": "Agent thông báo thời gian làm việc và giới hạn của dịch vụ hỏa tốc."
+  },
+  {
+    "id": 22,
+    "type": "Simple - Policy",
+    "query": "Tôi muốn đặt 50 phần quà cho sự kiện công ty, shop có hỗ trợ xuất hóa đơn VAT không?",
+    "expectation": "Agent trả lời chính sách dành cho khách hàng doanh nghiệp, hóa đơn đỏ."
+  },
+  {
+    "id": 23,
+    "type": "Simple - Policy",
+    "query": "Hộp quà mặc định của shop làm bằng chất liệu gì, có thân thiện với môi trường không?",
+    "expectation": "Agent mô tả quy cách đóng gói hộp quà (giấy kraft, ruy băng vải, v.v.)."
+  },
+  {
+    "id": 24,
+    "type": "Simple - Policy",
+    "query": "Nếu người nhận đi vắng không nhận được hàng thì bưu tá có giao lại vào hôm sau không?",
+    "expectation": "Agent giải thích chính sách lưu kho và số lần phát lại của đơn vị vận chuyển."
+  },
+  {
+    "id": 25,
+    "type": "Simple - Policy",
+    "query": "Shop có bọc quà bằng giấy gói phong cách vintage không?",
+    "expectation": "Agent xác nhận các tùy chọn phong cách gói quà hiện có."
+  },
+  {
+    "id": 26,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tìm cho tôi món quà thuộc mục 'Nghệ thuật' với giá tầm 300000 VNĐ.",
+    "expectation": "Agent trích xuất category='Nghệ thuật', max_price=300000 -> Gọi search_gifts -> Trả về kết quả."
+  },
+  {
+    "id": 27,
+    "type": "Multi-step - 1 Tool",
+    "query": "Có món nào thuộc danh mục 'Dã ngoại' dưới 500000 VNĐ không?",
+    "expectation": "Agent gọi search_gifts('Dã ngoại', 500000) và liệt kê danh sách quà."
+  },
+  {
+    "id": 28,
+    "type": "Multi-step - 1 Tool",
+    "query": "Ngân sách của tôi là 1000000 VNĐ, hãy tìm các sản phẩm 'Công nghệ'.",
+    "expectation": "Agent gọi search_gifts('Công nghệ', 1000000) và đưa ra gợi ý."
+  },
+  {
+    "id": 29,
+    "type": "Multi-step - 1 Tool",
+    "query": "Xem giúp trong mục 'Sách' có món quà nào giá dưới 200000 VNĐ không.",
+    "expectation": "Agent gọi tool search_gifts tương ứng và xử lý kết quả trả về."
+  },
+  {
+    "id": 30,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tôi muốn mua đồ 'Thể thao' với giới hạn giá 800000 VNĐ.",
+    "expectation": "Agent gọi search_gifts('Thể thao', 800000)."
+  },
+  {
+    "id": 31,
+    "type": "Multi-step - 1 Tool",
+    "query": "Liệt kê các món quà 'Đời sống' giá dưới 150000 VNĐ.",
+    "expectation": "Agent gọi tool và nếu không có sẽ phản hồi khéo léo dựa trên kết quả rỗng."
+  },
+  {
+    "id": 32,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tìm quà tặng thuộc nhóm 'Sức khỏe', tôi có thể chi tối đa 2000000 VNĐ.",
+    "expectation": "Agent sử dụng search_gifts('Sức khỏe', 2000000)."
+  },
+  {
+    "id": 33,
+    "type": "Multi-step - 1 Tool",
+    "query": "Check mục 'Nghệ thuật' xem có món nào cao cấp giá 1500000 VNĐ không.",
+    "expectation": "Agent gọi đúng tham số và tổng hợp kết quả (ví dụ: Bảng vẽ điện tử)."
+  },
+  {
+    "id": 34,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tìm cho tôi các món 'Dã ngoại' giá thật rẻ, dưới 100000 VNĐ.",
+    "expectation": "Agent gọi tool. Nếu database mock không có món nào <100k, Agent phải thông báo lịch sự."
+  },
+  {
+    "id": 35,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tôi cần mua gấp đồ 'Công nghệ' giá dưới 400000 VNĐ.",
+    "expectation": "Agent gọi search_gifts('Công nghệ', 400000) và trả lời."
+  },
+  {
+    "id": 36,
+    "type": "Multi-step - 1 Tool",
+    "query": "Gợi ý quà mục 'Thể thao' giá tầm 300000 VNĐ.",
+    "expectation": "Agent gọi tool và chắt lọc kết quả để trả lời người dùng."
+  },
+  {
+    "id": 37,
+    "type": "Multi-step - 1 Tool",
+    "query": "Có gì trong danh mục 'Sức khỏe' dưới 500000 VNĐ không?",
+    "expectation": "Agent thực thi tool và parse JSON kết quả thành câu trả lời tự nhiên."
+  },
+  {
+    "id": 38,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tìm đồ mục 'Nghệ thuật' dưới 50000 VNĐ.",
+    "expectation": "Agent gọi tool, xử lý trường hợp mảng rỗng (không tìm thấy)."
+  },
+  {
+    "id": 39,
+    "type": "Multi-step - 1 Tool",
+    "query": "Mục 'Đời sống' có gì dưới 1000000 VNĐ?",
+    "expectation": "Agent truyền tham số chính xác và liệt kê quà."
+  },
+  {
+    "id": 40,
+    "type": "Multi-step - 1 Tool",
+    "query": "Tìm quà mục 'Công nghệ' đắt tiền, giới hạn 5000000 VNĐ.",
+    "expectation": "Agent lấy toàn bộ sản phẩm công nghệ thỏa mãn điều kiện và báo cáo."
+  },
+  {
+    "id": 41,
+    "type": "Multi-step - 2 Tools",
+    "query": "Bạn tôi làm IT, ngồi máy tính cả ngày, hay mỏi lưng. Tôi có 1000000 VNĐ thì mua gì?",
+    "expectation": "Bước 1: Gọi analyze_personality. Bước 2: Dựa vào category trả về (Sức khỏe/Công nghệ), gọi search_gifts với giá 1000000. Bước 3: Tổng hợp."
+  },
+  {
+    "id": 42,
+    "type": "Multi-step - 2 Tools",
+    "query": "Sếp tôi hay đi trekking cuối tuần, rất năng động. Ngân sách 600000 VNĐ.",
+    "expectation": "Gọi analyze_personality('trekking, năng động') -> Category: Dã ngoại -> search_gifts('Dã ngoại', 600000)."
+  },
+  {
+    "id": 43,
+    "type": "Multi-step - 2 Tools",
+    "query": "Người yêu tôi thích vẽ tranh tĩnh vật, tính cách nhẹ nhàng. Ngân sách 400000 VNĐ.",
+    "expectation": "Gọi analyze_personality -> category Nghệ thuật -> search_gifts('Nghệ thuật', 400000) -> Gợi ý hộp màu nước."
+  },
+  {
+    "id": 44,
+    "type": "Multi-step - 2 Tools",
+    "query": "Mẹ tôi hay tập yoga sáng sớm và rất chú trọng sức khỏe. Tôi có ngân sách 1500000 VNĐ.",
+    "expectation": "Phân tích tính cách -> Thể thao/Sức khỏe -> Tìm quà và trả lời."
+  },
+  {
+    "id": 45,
+    "type": "Multi-step - 2 Tools",
+    "query": "Chị gái tôi đam mê decor phòng ngủ và sống rất thực tế. Ngân sách 300000 VNĐ.",
+    "expectation": "Agent phân tích tính cách -> Đời sống -> Tìm quà dưới 300k."
+  },
+  {
+    "id": 46,
+    "type": "Multi-step - 2 Tools",
+    "query": "Bạn trai tôi là game thủ, chuyên cày rank ban đêm. Ngân sách 900000 VNĐ.",
+    "expectation": "Phân tích tính cách game thủ -> Công nghệ -> search_gifts và tìm ra Bàn phím cơ hoặc Chuột."
+  },
+  {
+    "id": 47,
+    "type": "Multi-step - 2 Tools",
+    "query": "Đồng nghiệp nam của tôi rất thích các món đồ thông minh mới lạ. Ngân sách 3000000 VNĐ.",
+    "expectation": "Agent nhận diện đam mê đồ thông minh -> Category: Công nghệ -> Tìm kiếm theo giá."
+  },
+  {
+    "id": 48,
+    "type": "Multi-step - 2 Tools",
+    "query": "Bạn thân tôi có tâm hồn mộng mơ, hay chụp ảnh film phong cảnh. Ngân sách 600000 VNĐ.",
+    "expectation": "Phân tích tính cách nghệ sĩ mộng mơ -> Category: Nghệ thuật/Dã ngoại -> Gọi tool search -> Tổng hợp."
+  },
+  {
+    "id": 49,
+    "type": "Multi-step - 2 Tools",
+    "query": "Giáo viên chủ nhiệm của tôi là người cực kỳ kỷ luật, đúng giờ. Ngân sách 450000 VNĐ.",
+    "expectation": "Agent phân tích tính cách (thực tế, nguyên tắc) -> Category phù hợp -> Tìm quà."
+  },
+  {
+    "id": 50,
+    "type": "Multi-step - 2 Tools",
+    "query": "Cháu trai 10 tuổi siêu hiếu động, không chịu ngồi yên một chỗ. Ngân sách 400000 VNĐ.",
+    "expectation": "Nhận diện tính cách năng động -> Category Thể thao/Dã ngoại -> Tìm quà dưới 400k."
+  },
+  {
+    "id": 51,
+    "type": "Multi-step - 2 Tools",
+    "query": "Bạn tôi vừa chia tay người yêu, thích ở nhà một mình chill với âm nhạc. Ngân sách 500000 VNĐ.",
+    "expectation": "Phân tích trạng thái tâm lý hướng nội/cần an ủi -> Category Đời sống/Nghệ thuật -> Tìm quà."
+  },
+  {
+    "id": 52,
+    "type": "Multi-step - 2 Tools",
+    "query": "Bố chồng tôi thích chăm sóc cây cảnh và uống trà. Ngân sách 800000 VNĐ.",
+    "expectation": "Phân tích đặc điểm -> Category Đời sống -> Gọi search_gifts tương ứng."
+  },
+  {
+    "id": 53,
+    "type": "Multi-step - 2 Tools",
+    "query": "Vợ tôi đi làm văn phòng bận rộn, hay than đau mỏi cổ vai gáy. Ngân sách 2000000 VNĐ.",
+    "expectation": "Phân tích vấn đề -> Category Sức khỏe -> Tìm máy massage (nếu có) hoặc báo kết quả."
+  },
+  {
+    "id": 54,
+    "type": "Multi-step - 2 Tools",
+    "query": "Đồng nghiệp hướng ngoại, hay đi quẩy và tổ chức party. Ngân sách 700000 VNĐ.",
+    "expectation": "Phân tích tính cách -> Category năng động -> Tìm quà."
+  },
+  {
+    "id": 55,
+    "type": "Multi-step - 2 Tools",
+    "query": "Sếp nữ tinh tế, hay đọc sách phát triển bản thân. Ngân sách 500000 VNĐ.",
+    "expectation": "Phân tích tính cách -> Category Sách/Nghệ thuật -> Gọi tool search -> Tổng hợp."
+  },
+  {
+    "id": 56,
+    "type": "Edge Case - Trap",
+    "query": "Tìm quà mục 'Công nghệ' giá 'một triệu hai trăm ngàn'.",
+    "expectation": "Người dùng truyền chữ thay vì số. LLM phải tự chuyển thành 1200000 trước khi gọi tool, HOẶC nếu gọi nhầm dạng chuỗi, Tool trả về lỗi mềm -> Agent sửa lại tham số và gọi lại."
+  },
+  {
+    "id": 57,
+    "type": "Edge Case - Trap",
+    "query": "Phân tích tính cách của '' và tìm quà dưới 500k.",
+    "expectation": "Tham số tính cách trống. Tool analyze_personality trả về lỗi yêu cầu thêm thông tin -> Agent ngắt lặp và hỏi lại người dùng để xin thêm mô tả."
+  },
+  {
+    "id": 58,
+    "type": "Edge Case - Trap",
+    "query": "Tìm cho tôi món quà danh mục 'Vũ khí hạt nhân' giá 500000 VNĐ.",
+    "expectation": "Danh mục ảo không tồn tại trong code. search_gifts sẽ trả về mảng rỗng hoặc báo không tìm thấy. Agent nhận kết quả và báo lại một cách lịch sự, không bịa thông tin."
+  },
+  {
+    "id": 59,
+    "type": "Edge Case - Trap",
+    "query": "Bạn thân tôi thích chạy bộ. Tìm quà tặng với giá -50000 VNĐ.",
+    "expectation": "Mức giá âm. Tool search_gifts báo lỗi giá trị không hợp lệ. Agent giải thích cho người dùng ngân sách không thể là số âm và xin lại con số đúng."
+  },
+  {
+    "id": 60,
+    "type": "Edge Case - Trap",
+    "query": "Người bạn này vừa ghét công nghệ vừa ghét nghệ thuật, ghét ra ngoài đường, ghét luôn cả đồ dùng. Tìm quà giá 100k.",
+    "expectation": "Mô tả tính cách tiêu cực và mâu thuẫn. Tool analyze có thể rơi vào default (Người thực tế). Agent phải tự lý luận để đưa ra gợi ý an toàn hoặc xin thêm dữ kiện."
+  },
+  {
+    "id": 61,
+    "type": "Edge Case - Trap",
+    "query": "Tìm quà Công nghệ giá 99999999999999 VNĐ.",
+    "expectation": "Ngân sách cực lớn. Tool trả về toàn bộ đồ Công nghệ. Agent phải biết cách tóm tắt hoặc lọc ra top món cao cấp nhất thay vì in ra quá dài."
+  },
+  {
+    "id": 62,
+    "type": "Edge Case - Trap",
+    "query": "Tính cách: asdfghjkl zxcvbnm. Ngân sách 100k.",
+    "expectation": "Chuỗi tính cách vô nghĩa. Tool có thể trả về lỗi hoặc default. Agent nên nhận ra sự bất thường và khuyên người dùng nhập đàng hoàng hơn."
+  },
+  {
+    "id": 63,
+    "type": "Edge Case - Trap",
+    "query": "Tìm quà tặng cho chú cún cưng nhà tôi, nó rất thích gặm xương, ngân sách 50k.",
+    "expectation": "Agent nhận diện đây là động vật, không phải con người. Nếu gọi analyze_personality không ra, Agent sử dụng LLM knowledge hoặc báo kho quà chỉ dành cho người."
+  },
+  {
+    "id": 64,
+    "type": "Edge Case - Trap",
+    "query": "Bạn tôi thích vẽ. Hãy liệt kê tất cả món quà có trong hệ thống, không cần quan tâm giá tiền.",
+    "expectation": "Người dùng không truyền max_price. Trong khi tool search_gifts BẮT BUỘC có max_price. Agent phải tự quyết định truyền một số cực lớn (vd: 100000000) hoặc hỏi lại người dùng."
+  },
+  {
+    "id": 65,
+    "type": "Edge Case - Trap",
+    "query": "Phân tích tính cách người thích vẽ tranh tĩnh vật, nhưng phải tìm món quà trong danh mục 'Công nghệ' (tôi thích mua đồ công nghệ ép họ dùng). Giá 500k.",
+    "expectation": "Xung đột giữa tính cách (Nghệ thuật) và yêu cầu danh mục (Công nghệ). Agent ưu tiên gọi search_gifts('Công nghệ', 500000) theo chỉ định cứng của người dùng."
   }
 ]
