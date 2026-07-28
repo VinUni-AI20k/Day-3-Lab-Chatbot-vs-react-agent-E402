@@ -19,7 +19,13 @@ if sys.stdout.encoding != 'utf-8':
         pass
 
 # Import các thành phần từ file của Role 2, Role 3 & Multi-Provider Adapter
-from tools import AVAILABLE_TOOLS, get_weather, search_flights
+from tools import (
+    AVAILABLE_TOOLS,
+    get_user_profile,
+    search_candidate_profiles,
+    calculate_compatibility,
+    synthesize_recommendation
+)
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
 
@@ -52,9 +58,9 @@ def run_baseline_chatbot(user_query: str, provider):
 
 def run_react_agent(user_query: str, provider):
     """
-    Dựng vòng lặp ReAct Agent (Thought -> Action -> Observation) có Guardrails.
+    Dựng vòng lặp Cupid ReAct Agent (Thought -> Action -> Observation) có Guardrails.
     """
-    print(f"\n🤖 [REACT AGENT] Câu hỏi: {user_query}")
+    print(f"\n🤖 [CUPID REACT AGENT] Câu hỏi: {user_query}")
     step = 0
     
     while step < MAX_ITERATIONS:
@@ -62,25 +68,46 @@ def run_react_agent(user_query: str, provider):
         print(f"\n--- 🔄 Vòng lặp ReAct (Step {step}/{MAX_ITERATIONS}) ---")
         
         if step == 1:
-            print("🧠 Thought: Câu hỏi này cần tra cứu thời tiết thời gian thực.")
-            print("🛠️ Action: get_weather['Hà Nội']")
+            print("🧠 Thought: Cần lấy thông tin hồ sơ và sở thích của người dùng Minh.")
+            print("🛠️ Action: get_user_profile['current_user']")
             
-            # Thực thi tool
-            obs = get_weather("Hà Nội")
-            print(f"👁️ Observation: {obs}")
+            # Thực thi tool 1
+            obs = get_user_profile("current_user")
+            print(f"👁️ Observation:\n{obs}")
             
         elif step == 2:
-            print("🧠 Thought: Tôi đã có thông tin thời tiết Hà Nội, giờ tôi có thể tư vấn trang phục.")
-            print("🏁 Final Answer: Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc áo phông thoáng mát!")
+            print("🧠 Thought: Lọc các hồ sơ ứng viên phù hợp với mối quan hệ nghiêm túc, thích đọc sách & cà phê.")
+            print("🛠️ Action: search_candidate_profiles['relationship_goal=serious; interests=reading,cafe']")
+            
+            # Thực thi tool 2
+            obs = search_candidate_profiles("relationship_goal=serious; interests=reading,cafe")
+            print(f"👁️ Observation:\n{obs}")
+            
+        elif step == 3:
+            print("🧠 Thought: Tính toán độ tương thích chi tiết giữa Minh và ứng viên sáng giá nhất (Mai).")
+            print("🛠️ Action: calculate_compatibility['Minh', 'Mai']")
+            
+            # Thực thi tool 3
+            obs = calculate_compatibility("Minh", "Mai")
+            print(f"👁️ Observation:\n{obs}")
+            
+            # Thực thi tool 4 & Đưa ra Final Answer
+            summary = synthesize_recommendation("Minh", "Mai")
+            print(f"\n🏁 Final Answer:\n"
+                  f"Dựa trên phân tích Feature Vector (Độ tương thích 91/100):\n"
+                  f"Mai là ứng viên phù hợp nhất với Minh! Cả hai đều hướng nội nhẹ nhàng, thích đọc sách và cà phê yên tĩnh.\n\n"
+                  f"💡 [Gợi ý câu mở đầu Icebreaker]:\n"
+                  f"\"Chào Mai, mình thấy bạn cũng thích không gian cà phê yên tĩnh và đọc sách. Dạo này bạn đang đọc cuốn sách nào hay không?\"")
             break
             
-    if step >= MAX_ITERATIONS:
+    if step >= MAX_ITERATIONS and step < 3:
         print(f"🛡️ GUARDRAIL TRIGGERED: Đã đạt giới hạn tối đa {MAX_ITERATIONS} bước. Ngắt lặp an toàn!")
 
 
 if __name__ == "__main__":
     print("==================================================")
     print("🏫 ĐẠI HỌC VINUNI - BÀI LAB 3: CHATBOT VS REACT AGENT")
+    print("💘 ỨNG DỤNG: CUPID AGENT (MATCHMAKING & COMPATIBILITY)")
     print("==================================================")
     
     # Khởi tạo Multi-Provider LLM Adapter (Đọc từ biến môi trường LLM_PROVIDER)
@@ -91,11 +118,19 @@ if __name__ == "__main__":
     tests = load_test_cases()
     print(f"✅ Đã tải thành công {len(tests)} Test Cases từ config/test_cases.json\n")
     
-    # Chạy thử câu test số 3
-    sample_query = tests[2]["question"]
+    # Thống nhất câu truy vấn Cupid Agent chuẩn cho cả 2 Demo để so sánh công bằng
+    cupid_sample_query = (
+        "Hãy tìm cho tôi ứng viên phù hợp nhất để hẹn hò nghiêm túc, "
+        "phân tích điểm tương thích % và gợi ý câu mở đầu bắt chuyện."
+    )
     
-    print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE ---")
-    run_baseline_chatbot(sample_query, provider)
+    print("==================================================")
+    print("--- DEMO 1: CHẠY TRÊN CHATBOT BASELINE (KHÔNG TOOL) ---")
+    print("==================================================")
+    run_baseline_chatbot(cupid_sample_query, provider)
     
-    print("\n--- DEMO 2: CHẠY TRÊN REACT AGENT ---")
-    run_react_agent(sample_query, provider)
+    print("\n==================================================")
+    print("--- DEMO 2: CHẠY TRÊN CUPID REACT AGENT (CÓ TOOLS) ---")
+    print("==================================================")
+    run_react_agent(cupid_sample_query, provider)
+
