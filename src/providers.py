@@ -1,5 +1,5 @@
 """
-🔌 MULTI-PROVIDER LLM ADAPTER (OpenAI, Gemini, Anthropic, OpenRouter & Offline Mock)
+🔌 MULTI-PROVIDER LLM ADAPTER (OpenAI, Gemini, Anthropic, Mistral, OpenRouter & Offline Mock)
 Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằng cách đổi biến môi trường LLM_PROVIDER.
 """
 
@@ -131,6 +131,43 @@ class OpenRouterProvider(BaseLLMProvider):
             return f"[OpenRouter Exception]: {str(e)}"
 
 
+class MistralProvider(BaseLLMProvider):
+    """Mistral AI Provider (Mistral Small, Mistral Large, etc.)"""
+    def __init__(self, api_key: str = None, model: str = None):
+        self.api_key = api_key or os.getenv("MISTRAL_API_KEY")
+        self.model_name = model or os.getenv("LLM_MODEL") or "mistral-small-latest"
+
+    def generate(self, prompt: str, system_prompt: str = "") -> str:
+        if not self.api_key or self.api_key == "your_mistral_api_key_here":
+            return "[Mistral Error]: Chưa cấu hình MISTRAL_API_KEY trong file .env!"
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            messages = []
+            if system_prompt:
+                messages.append({"role": "system", "content": system_prompt})
+            messages.append({"role": "user", "content": prompt})
+
+            payload = {
+                "model": self.model_name,
+                "messages": messages
+            }
+            res = requests.post(
+                "https://api.mistral.ai/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            if res.status_code == 200:
+                data = res.json()
+                return data["choices"][0]["message"]["content"]
+            return f"[Mistral API Error {res.status_code}]: {res.text}"
+        except Exception as e:
+            return f"[Mistral Exception]: {str(e)}"
+
+
 class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
@@ -152,6 +189,8 @@ def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
         return AnthropicProvider()
     elif name == "openrouter":
         return OpenRouterProvider()
+    elif name == "mistral":
+        return MistralProvider()
     else:
         return MockProvider()
 
