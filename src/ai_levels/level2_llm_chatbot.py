@@ -1,6 +1,6 @@
 """
 🤖 CẤP ĐỘ 2: LLM CHATBOT (Baseline Chatbot không có Tool)
-Dùng LLM (Groq) sinh câu trả lời tự nhiên mượt mà, nhưng không thể truy cập dữ liệu thực tế thời gian thực.
+Dùng LLM (Gemini) sinh câu trả lời tự nhiên mượt mà, nhưng không thể truy cập dữ liệu thực tế thời gian thực.
 """
 
 import sys

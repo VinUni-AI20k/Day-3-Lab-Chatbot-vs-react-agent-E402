@@ -55,7 +55,7 @@ class ResetRequest(BaseModel):
 
 def get_or_create_agent(session_id: str) -> MatchmakingAgent:
     if session_id not in SESSION_AGENTS:
-        SESSION_AGENTS[session_id] = MatchmakingAgent(provider_name="groq")
+        SESSION_AGENTS[session_id] = MatchmakingAgent(provider_name="gemini")
     return SESSION_AGENTS[session_id]
 
 
@@ -77,11 +77,13 @@ async def api_chat(req: ChatRequest):
             auto_agent = AutonomousMatchmakerAgent(goal=message, provider=provider)
             auto_agent.execute()
             memory_logs = [f"• **Step {m['step']}** [{m['task']}]: {m['result']}" for m in auto_agent.memory]
+            final_ans = getattr(auto_agent, 'final_answer', '') or "✨ **Đề xuất hoàn tất!**"
             response_text = (
                 f"🚀 **[CẤP 4 - AUTONOMOUS AGENT GOAL COMPLETION]**\n\n"
                 f"🎯 **Mục tiêu**: {message}\n\n"
                 f"📋 **Nhật ký Bộ nhớ Execution Memory**:\n" + "\n".join(memory_logs) + "\n\n"
-                f"✨ **Đề xuất hoàn tất!**"
+                f"---\n\n"
+                f"{final_ans}"
             )
         elif level == "level2" or "cấp 2" in level or "chatbot" in level:
             response_text = llm_chatbot(message, provider)
@@ -106,7 +108,7 @@ async def api_reset(req: ResetRequest):
         del SESSION_AGENTS[session_id]
     
     # Re-create brand new clean agent
-    SESSION_AGENTS[session_id] = MatchmakingAgent(provider_name="groq")
+    SESSION_AGENTS[session_id] = MatchmakingAgent(provider_name="gemini")
     return {
         "status": "success",
         "message": f"Đã xóa sạch 100% lịch sử và reset phiên {session_id}"

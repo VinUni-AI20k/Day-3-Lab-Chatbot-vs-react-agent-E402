@@ -75,14 +75,103 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        // Generate persistent Session ID
-        function getSessionId() {
-            let sid = localStorage.getItem('bm_session_id');
+        const getSessionId = () => {
+            let sid = localStorage.getItem('matchmaker_session_id');
             if (!sid) {
                 sid = 'session_' + Math.random().toString(36).substring(2, 11);
-                localStorage.setItem('bm_session_id', sid);
+                localStorage.setItem('matchmaker_session_id', sid);
             }
             return sid;
+        };
+
+        function ReActMessageRenderer({ content }) {
+            if (!content || (
+                !content.includes('Thought:') && 
+                !content.includes('Action:') && 
+                !content.includes('Observation') && 
+                !content.includes('Final Answer:')
+            )) {
+                return <div class="markdown-body text-xs md:text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: marked.parse(content || '') }} />;
+            }
+
+            const blocks = [];
+            const lines = content.split('\n');
+            let currentBlock = { type: 'text', lines: [] };
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+
+                if (trimmed.startsWith('Thought:')) {
+                    if (currentBlock.lines.length > 0) blocks.push(currentBlock);
+                    currentBlock = { type: 'thought', lines: [line.replace('Thought:', '').trim()] };
+                } else if (trimmed.startsWith('Action:')) {
+                    if (currentBlock.lines.length > 0) blocks.push(currentBlock);
+                    currentBlock = { type: 'action', lines: [line.replace('Action:', '').trim()] };
+                } else if (trimmed.startsWith('Observation')) {
+                    if (currentBlock.lines.length > 0) blocks.push(currentBlock);
+                    currentBlock = { type: 'observation', lines: [line.replace(/^Observation[^:]*:/, '').trim()] };
+                } else if (trimmed.startsWith('Final Answer:')) {
+                    if (currentBlock.lines.length > 0) blocks.push(currentBlock);
+                    currentBlock = { type: 'final_answer', lines: [line.replace('Final Answer:', '').trim()] };
+                } else {
+                    currentBlock.lines.push(line);
+                }
+            }
+            if (currentBlock.lines.length > 0) blocks.push(currentBlock);
+
+            return (
+                <div class="space-y-3">
+                    {blocks.map((block, idx) => {
+                        const text = block.lines.join('\n').trim();
+                        if (!text) return null;
+
+                        if (block.type === 'thought') {
+                            return (
+                                <div key={idx} class="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/30 text-indigo-200 text-xs">
+                                    <div class="font-bold text-indigo-400 mb-1 flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-brain text-indigo-400"></i>
+                                        <span>🧠 BƯỚC 1: QUÁ TRÌNH SUY LUẬN (THOUGHT)</span>
+                                    </div>
+                                    <div class="markdown-body opacity-90 leading-relaxed" dangerouslySetInnerHTML={{ __html: marked.parse(text) }} />
+                                </div>
+                            );
+                        } else if (block.type === 'action') {
+                            return (
+                                <div key={idx} class="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-xs">
+                                    <div class="font-bold text-amber-400 mb-1 flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-terminal text-amber-400"></i>
+                                        <span>⚡ BƯỚC 2: GỌI CÔNG CỤ (ACTION & TOOL CALL)</span>
+                                    </div>
+                                    <pre class="bg-black/50 p-2.5 rounded-lg border border-amber-500/20 text-amber-300 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">{text}</pre>
+                                </div>
+                            );
+                        } else if (block.type === 'observation') {
+                            return (
+                                <div key={idx} class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs">
+                                    <div class="font-bold text-emerald-400 mb-1 flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-code text-emerald-400"></i>
+                                        <span>📊 BƯỚC 3: KẾT QUẢ TỪ TOOL (OBSERVATION)</span>
+                                    </div>
+                                    <pre class="bg-black/60 p-2.5 rounded-lg border border-emerald-500/20 text-emerald-300 font-mono text-[11px] overflow-x-auto custom-scrollbar max-h-56 whitespace-pre-wrap">{text}</pre>
+                                </div>
+                            );
+                        } else if (block.type === 'final_answer') {
+                            return (
+                                <div key={idx} class="p-4 rounded-xl bg-gradient-to-r from-brand-900/50 via-rose-900/40 to-pink-900/50 border border-brand-500/60 text-slate-100 shadow-xl">
+                                    <div class="font-bold text-brand-300 mb-2 flex items-center space-x-1.5 text-sm">
+                                        <i class="fa-solid fa-heart text-brand-400"></i>
+                                        <span>💖 KẾT QUẢ CUỐI CÙNG (BÀ MỐI AI)</span>
+                                    </div>
+                                    <div class="markdown-body text-xs md:text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: marked.parse(text) }} />
+                                </div>
+                            );
+                        }
+
+                        return <div key={idx} class="markdown-body text-xs md:text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: marked.parse(text) }} />;
+                    })}
+                </div>
+            );
         }
 
         function App() {
@@ -228,7 +317,7 @@
                                         Production React UI
                                     </span>
                                 </h1>
-                                <p class="text-xs text-slate-400">AI Matchmaking Agent System • Powered by Groq Llama 3.3 70B</p>
+                                <p class="text-xs text-slate-400">AI Matchmaking Agent System • Powered by Google Gemini 3.5 Flash Lite</p>
                             </div>
                         </div>
 
@@ -266,7 +355,7 @@
                                         {[
                                             { id: 'level3', name: '🧠 Cấp 3: ReAct Agent', badge: 'Mặc định', desc: 'Suy luận Thought-Action, gọi Tool & hỏi thông tin thiếu' },
                                             { id: 'level4', name: '🚀 Cấp 4: Autonomous Agent', badge: 'Bonus +10%', desc: 'Planning 3 bước, Memory & Tự đánh giá mục tiêu' },
-                                            { id: 'level2', name: '🤖 Cấp 2: LLM Chatbot', badge: 'Groq LLM', desc: 'Tư vấn văn bản mượt mà, không có công cụ' },
+                                            { id: 'level2', name: '🤖 Cấp 2: LLM Chatbot', badge: 'Gemini LLM', desc: 'Tư vấn văn bản mượt mà, không có công cụ' },
                                             { id: 'level1', name: '🤖 Cấp 1: Rule-Based Bot', badge: 'Keyword', desc: 'Khớp từ khóa if/else cố định' }
                                         ].map((lvl) => (
                                             <div 
@@ -311,7 +400,7 @@
 
                             <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px] text-slate-400 space-y-1">
                                 <div><strong>Session ID</strong>: <code class="text-pink-300">{sessionId}</code></div>
-                                <div><strong>Groq Model</strong>: <span class="text-slate-300">llama-3.3-70b-versatile</span></div>
+                                <div><strong>Gemini Model</strong>: <span class="text-slate-300">gemini-3.5-flash-lite</span></div>
                             </div>
                         </aside>
 
@@ -366,10 +455,7 @@
                                                     <span>{msg.time}</span>
                                                 </div>
                                                 
-                                                <div 
-                                                    class="markdown-body text-xs md:text-sm leading-relaxed"
-                                                    dangerouslySetInnerHTML={{ __html: marked.parse(msg.content) }}
-                                                />
+                                                <ReActMessageRenderer content={msg.content} />
                                             </div>
 
                                             {msg.role === 'user' && (

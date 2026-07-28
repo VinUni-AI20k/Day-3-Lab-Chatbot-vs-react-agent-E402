@@ -62,25 +62,73 @@ class GroqProvider(BaseLLMProvider):
 
 
 class GeminiProvider(BaseLLMProvider):
-    """Google Gemini Provider"""
+    """Google Gemini Provider với đa tầng Fallback (Google GenAI SDK, Legacy SDK, và REST API Direct)"""
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
+        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-3.5-flash-lite"
         
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
             return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
+        
+        contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+
+        # 1. Thử gọi qua Google GenAI SDK mới (google-genai)
         try:
             from google import genai
             client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
             response = client.models.generate_content(
                 model=self.model_name,
                 contents=contents
             )
-            return response.text
-        except Exception as e:
-            return f"[Gemini Exception]: {str(e)}"
+            if response and hasattr(response, 'text') and response.text:
+                return response.text
+        except Exception:
+            pass
+
+        # 2. Thử gọi qua Legacy Google GenerativeAI SDK (google-generativeai)
+        try:
+            import google.generativeai as genai_legacy
+            genai_legacy.configure(api_key=self.api_key)
+            model_obj = genai_legacy.GenerativeModel(self.model_name)
+            response = model_obj.generate_content(contents)
+            if response and hasattr(response, 'text') and response.text:
+                return response.text
+        except Exception:
+            pass
+
+        # 3. Fallback trực tiếp qua REST API (requests) tới Google Gemini API
+        models_to_try = [self.model_name, "gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+        for m in models_to_try:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={self.api_key}"
+                headers = {"Content-Type": "application/json"}
+                payload = {
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": contents}
+                            ]
+                        }
+                    ]
+                }
+                res = requests.post(url, headers=headers, json=payload, timeout=30)
+                if res.status_code == 200:
+                    data = res.json()
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts:
+                            return parts[0].get("text", "")
+                elif res.status_code == 404:
+                    continue  # Thử tên model tiếp theo nếu model 404
+                else:
+                    err_msg = res.text
+                    return f"[Gemini REST API Error {res.status_code}]: {err_msg}"
+            except Exception as e:
+                continue
+
+        return "[Gemini Exception]: Không thể kết nối tới Google Gemini API qua tất cả các phương thức."
 
 
 class OpenAIProvider(BaseLLMProvider):

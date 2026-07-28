@@ -77,7 +77,7 @@ def parse_and_execute_tool(tool_name: str, args_raw: str) -> Any:
                     kwargs["max_age"] = val
             elif token.lower() in ["nam", "nữ", "male", "female"]:
                 kwargs["target_gender"] = "Nam" if token.lower() in ["nam", "male"] else "Nữ"
-            elif any(loc in token.lower() for loc in ["hà nội", "hcm", "hồ chí minh", "đà nẵng", "hải phòng", "cà mau", "cần thơ"]):
+            elif any(loc in token.lower() for loc in ["hà nội", "hcm", "hồ chí minh", "đà nẵng", "hải phòng", "bắc ninh", "cần thơ"]):
                 kwargs["location"] = token
             else:
                 if "query_interests" in kwargs:
@@ -85,27 +85,91 @@ def parse_and_execute_tool(tool_name: str, args_raw: str) -> Any:
                 else:
                     kwargs["query_interests"] = token
         
-        # Thiết lập mặc định an toàn cho các tham số chưa phát hiện được
-        kwargs.setdefault("target_gender", "Nữ")
-        kwargs.setdefault("min_age", 18)
-        kwargs.setdefault("max_age", 60)
-        kwargs.setdefault("location", "")
-        kwargs.setdefault("query_interests", "")
+        # KHÔNG tự điền giá trị mặc định / fallback khi thiếu thông tin
+        missing_kwargs = []
+        if not kwargs.get("target_gender"):
+            missing_kwargs.append("Giới tính đối tượng (Nam/Nữ)")
+        if not kwargs.get("location"):
+            missing_kwargs.append("Vị trí địa lý (Tỉnh/Thành phố)")
+        if not kwargs.get("query_interests"):
+            missing_kwargs.append("Mô tả sở thích/gu mong muốn")
+        if "min_age" not in kwargs or "max_age" not in kwargs:
+            missing_kwargs.append("Khoảng độ tuổi (min_age, max_age)")
+        
+        if missing_kwargs:
+            return {"error": f"THIẾU DỮ LIỆU BẮT BUỘC: Chưa có đủ các tham số [{', '.join(missing_kwargs)}]. Vui lòng hỏi lại người dùng để bổ sung thông tin, KHÔNG ĐƯỢC tự đoán hay fallback."}
+            
         return tool_fn(**kwargs)
 
     elif tool_name == "calculate_compatibility":
+        # 1. Thử giải mã JSON / Python Dict trong args_raw
+        dict_matches = re.findall(r'\{[^{}]*\}', args_raw)
+        if len(dict_matches) >= 2:
+            try:
+                import ast
+                def parse_dict(s):
+                    try:
+                        return json.loads(s)
+                    except Exception:
+                        return ast.literal_eval(s)
+
+                p1 = parse_dict(dict_matches[0])
+                p2 = parse_dict(dict_matches[1])
+
+                if isinstance(p1.get("interests"), list):
+                    p1["interests"] = ", ".join(p1["interests"])
+                if isinstance(p2.get("interests"), list):
+                    p2["interests"] = ", ".join(p2["interests"])
+
+                # Kiểm tra thông tin bắt buộc của từng người
+                missing_p1 = [f for f in ["gender", "age", "location", "interests"] if not p1.get(f)]
+                missing_p2 = [f for f in ["gender", "age", "location", "interests"] if not p2.get(f)]
+
+                if missing_p1 or missing_p2:
+                    err_msg = f"THIẾU DỮ LIỆU THÔNG TIN HỒ SƠ: "
+                    if missing_p1:
+                        err_msg += f"Người 1 thiếu {missing_p1}; "
+                    if missing_p2:
+                        err_msg += f"Người 2 thiếu {missing_p2}. "
+                    err_msg += "Vui lòng hỏi lại người dùng để bổ sung đầy đủ thông tin, KHÔNG ĐƯỢC tự đoán hoặc fallback."
+                    return {"error": err_msg}
+
+                p1.setdefault("id", "CUSTOM_A")
+                p1.setdefault("name", p1.get("name", "Bạn Nam" if p1.get("gender") == "Nam" else "Bạn Nữ"))
+                p1.setdefault("phone", "0900000001")
+                p1.setdefault("height_cm", int(p1.get("height_cm", 175 if p1.get("gender") == "Nam" else 165)))
+                p1.setdefault("education", p1.get("education", "Đại học"))
+                p1.setdefault("occupation", p1.get("occupation", "Tự do"))
+
+                p2.setdefault("id", "CUSTOM_B")
+                p2.setdefault("name", p2.get("name", "Bạn Nữ" if p2.get("gender") == "Nữ" else "Bạn Nam"))
+                p2.setdefault("phone", "0900000002")
+                p2.setdefault("height_cm", int(p2.get("height_cm", 165 if p2.get("gender") == "Nữ" else 175)))
+                p2.setdefault("education", p2.get("education", "Đại học"))
+                p2.setdefault("occupation", p2.get("occupation", "Tự do"))
+
+                return tool_fn(p1, p2)
+            except Exception:
+                pass
+
+        # 2. Chỉ tìm theo ID chính xác hoặc tên cụ thể trong MOCK_CANDIDATE_DB
         found_persons = []
         for token in raw_tokens:
-            token_lower = token.lower()
+            token_clean = token.strip().lower()
+            if not token_clean:
+                continue
             for cand in MOCK_CANDIDATE_DB:
-                if cand["id"].lower() == token_lower or cand["name"].lower() in token_lower or token_lower in cand["name"].lower():
+                if cand["id"].lower() == token_clean or token_clean in cand["name"].lower():
                     if cand not in found_persons:
                         found_persons.append(cand)
                         break
         if len(found_persons) >= 2:
             return tool_fn(found_persons[0], found_persons[1])
-        elif len(MOCK_CANDIDATE_DB) >= 2:
-            return tool_fn(MOCK_CANDIDATE_DB[0], MOCK_CANDIDATE_DB[1])
+
+        # KHÔNG tự đoán thông số động hay fallback khi không tìm thấy 2 hồ sơ hợp lệ
+        return {
+            "error": "THIẾU DỮ LIỆU: Không tìm thấy đủ thông tin chi tiết (Giới tính, Tuổi, Vị trí, Sở thích) của cả 2 đối tượng trong yêu cầu. Hãy hỏi lại người dùng để cung cấp đầy đủ thông tin của từng người trước khi tính độ tương thích."
+        }
 
     elif tool_name == "get_weather":
         loc = raw_tokens[0] if raw_tokens else "Hà Nội"
@@ -295,11 +359,15 @@ class MatchmakingAgent:
                 action_match = re.search(r'Action:\s*`?([a-zA-Z0-9_]+)`?\s*\((.*?)\)', llm_out, re.DOTALL)
                 
             if action_match:
-                tool_name = action_match.group(1).strip("` ")
-                args_raw = action_match.group(2).strip("` ")
+                tool_name = action_match.group(1).strip()
+                args_raw = action_match.group(2).strip()
                 
-                # Lưu bước suy luận và ra lệnh gọi tool của LLM
-                execution_trace.append(llm_out.strip())
+                # Cắt bỏ triệt để mọi văn bản ảo giác (Observation/Thought/Final Answer) do LLM tự sinh sau lệnh Action
+                action_end_idx = action_match.end()
+                clean_llm_out = llm_out[:action_end_idx].strip()
+                
+                # Lưu bước suy luận và ra lệnh gọi tool chuẩn của LLM
+                execution_trace.append(clean_llm_out)
                 
                 if tool_name in AVAILABLE_TOOLS:
                     obs = parse_and_execute_tool(tool_name, args_raw)
@@ -309,7 +377,7 @@ class MatchmakingAgent:
                     obs_step = f"Observation (Kết quả Tool {tool_name}):\n{obs_str}"
                     execution_trace.append(obs_step)
                     
-                    current_context += f"\n\n{llm_out}\n{obs_step}\nHãy tiếp tục suy luận (Thought) và đưa ra Final Answer cho người dùng dựa trên Observation này."
+                    current_context += f"\n\n{clean_llm_out}\n{obs_step}\nHãy tiếp tục suy luận (Thought) và đưa ra Final Answer cho người dùng dựa trên Observation này."
                     continue
                 elif tool_name.lower() in ["none", "không", "n/a"]:
                     # LLM chọn không gọi tool mà chỉ hỏi thêm thông tin

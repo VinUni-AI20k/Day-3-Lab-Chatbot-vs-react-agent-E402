@@ -39,7 +39,7 @@ def chat_fn(message: str, history, agent_state, level_choice: str):
     if history is None:
         history = []
     if agent_state is None:
-        agent_state = MatchmakingAgent(provider_name="groq")
+        agent_state = MatchmakingAgent(provider_name="gemini")
 
     user_text = str(message).strip()
 
@@ -49,7 +49,8 @@ def chat_fn(message: str, history, agent_state, level_choice: str):
         auto_agent = AutonomousMatchmakerAgent(goal=user_text, provider=provider)
         auto_agent.execute()
         memory_str = "\n".join([f"• Step {m['step']} [{m['task']}]: {m['result']}" for m in auto_agent.memory])
-        bot_response = f"🚀 **[CẤP 4 - AUTONOMOUS AGENT GOAL COMPLETION]**\n\n🎯 **Mục tiêu**: {user_text}\n\n📋 **Nhật ký Bộ nhớ Execution Memory**:\n{memory_str}\n\n✨ **Đề xuất hoàn tất!**"
+        final_ans = getattr(auto_agent, 'final_answer', '') or "✨ **Đề xuất hoàn tất!**"
+        bot_response = f"🚀 **[CẤP 4 - AUTONOMOUS AGENT GOAL COMPLETION]**\n\n🎯 **Mục tiêu**: {user_text}\n\n📋 **Nhật ký Bộ nhớ Execution Memory**:\n{memory_str}\n\n---\n\n{final_ans}"
     elif "Cấp 2" in level_choice:
         bot_response = llm_chatbot(user_text, provider)
     else:
@@ -62,7 +63,7 @@ def chat_fn(message: str, history, agent_state, level_choice: str):
 
 def reset_chat_fn():
     """Tạo lại phiên Agent mới 100% sạch sẽ khi bấm Xóa lịch sử"""
-    fresh_agent = MatchmakingAgent(provider_name="groq")
+    fresh_agent = MatchmakingAgent(provider_name="gemini")
     return [], fresh_agent
 
 
@@ -86,7 +87,7 @@ custom_css = """
 with gr.Blocks(title="Bà Mối AI - AI Matchmaking Agent") as demo:
     
     # Session State cho từng người dùng
-    agent_state = gr.State(lambda: MatchmakingAgent(provider_name="groq"))
+    agent_state = gr.State(lambda: MatchmakingAgent(provider_name="gemini"))
 
     gr.HTML("""
     <div class="header-box">
@@ -121,7 +122,7 @@ with gr.Blocks(title="Bà Mối AI - AI Matchmaking Agent") as demo:
                         choices=[
                             "🧠 Cấp 3: ReAct Agent (Bà Mối AI)",
                             "🚀 Cấp 4: Autonomous Agent (Goal & Planning)",
-                            "🤖 Cấp 2: LLM Chatbot (Groq Baseline)",
+                            "🤖 Cấp 2: LLM Chatbot (Gemini Baseline)",
                             "🤖 Cấp 1: Rule-Based Bot (Keyword)"
                         ],
                         value="🧠 Cấp 3: ReAct Agent (Bà Mối AI)",
@@ -134,7 +135,7 @@ with gr.Blocks(title="Bà Mối AI - AI Matchmaking Agent") as demo:
                     ex3 = gr.Button("3. 💬 Tìm bạn gái (Test Slot Filling)")
                     ex4 = gr.Button("4. 🎯 Goal Cấp 4: Tìm bạn & lập lịch hẹn")
 
-                    gr.Markdown(f"**🔌 Provider**: `Groq Cloud`\n**🤖 Model**: `llama-3.3-70b-versatile`")
+                    gr.Markdown(f"**🔌 Provider**: `Google Gemini`\n**🤖 Model**: `gemini-3.5-flash-lite`")
 
         with gr.TabItem("📋 Danh Sách Hồ Sơ Ứng Viên Mẫu (Mock DB)"):
             gr.Markdown("### 🏢 Cơ Sở Dữ Liệu Hồ Sơ Ứng Viên (Mock Candidate Database)")

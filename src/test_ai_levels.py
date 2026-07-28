@@ -1,5 +1,5 @@
 """
-🧪 TEST SUITE 4 CẤP ĐỘ AI SYSTEM (LEVEL 1 -> LEVEL 4) WITH GROQ PROVIDER
+🧪 TEST SUITE 4 CẤP ĐỘ AI SYSTEM (LEVEL 1 -> LEVEL 4) WITH GEMINI PROVIDER
 Chạy và kiểm thử bộ 5 Test Cases từ config/test_cases.json qua 4 cấp độ hệ thống AI.
 """
 
@@ -67,9 +67,9 @@ def run_full_ai_levels_evaluation():
         print(ans_l1)
 
         # -------------------------------------------------------------
-        # CẤP 2: LLM CHATBOT BASELINE (Groq)
+        # CẤP 2: LLM CHATBOT BASELINE (Gemini)
         # -------------------------------------------------------------
-        print("\n--- 🤖 CẤP 2: LLM CHATBOT (Groq Llama 3.3) ---")
+        print("\n--- 🤖 CẤP 2: LLM CHATBOT (Google Gemini) ---")
         ans_l2 = llm_chatbot(question, provider)
         print(ans_l2)
 

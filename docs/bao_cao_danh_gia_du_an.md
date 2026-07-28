@@ -1,6 +1,6 @@
 # 📋 BÁO CÁO TỔNG KẾT DỰ ÁN AI MATCHMAKING AGENT ("BÀ MỐI AI")
 > **Tác giả**: AI Assistant  
-> **Target LLM Provider**: Groq Cloud (Model: `llama-3.3-70b-versatile`)  
+> **Target LLM Provider**: Google Gemini (Model: `gemini-3.5-flash-lite`)  
 > **Kiến trúc**: 4 Cấp độ Hệ thống AI (Rule-Based -> LLM Chatbot -> ReAct Agent -> Autonomous Agent)  
 
 ---
@@ -8,7 +8,7 @@
 ## 🎯 1. TỔNG QUAN DỰ ÁN & MỤC TIÊU
 
 Dự án **AI Matchmaking Agent** được xây dựng nhằm giải quyết bài toán ghép đôi & đánh giá độ tương thích giữa các cá nhân một cách tự động, thông minh và an toàn theo chuẩn Production-grade:
-1. **Groq Cloud LLM Integration**: Tích hợp trực tiếp Groq API Key (`gsk_***`) để gọi mô hình ngôn ngữ lớn **Llama 3.3 70B Versatile** đạt tốc độ xử lý vượt trội.
+1. **Google Gemini LLM Integration**: Tích hợp trực tiếp Gemini API Key (`AIzaSy***`) để gọi mô hình ngôn ngữ lớn **Gemini 3.5 Flash Lite** đạt tốc độ xử lý vượt trội.
 2. **ReAct Agent Loop & Guardrails**: Xây dựng Agent suy luận đa bước, kiểm soát phanh an toàn chống lặp, bảo mật thông tin cá nhân (PII Redaction) và cơ chế hỏi làm rõ thông tin thiếu (Information Gathering Loop).
 3. **Thực nghiệm 4 Cấp độ AI**: So sánh đối chiếu trực tiếp sự tiến hóa qua 4 cấp độ hệ thống AI theo chuẩn Bài Lab 3 VinUni.
 
@@ -17,8 +17,8 @@ Dự án **AI Matchmaking Agent** được xây dựng nhằm giải quyết bà
 ## 🛠️ 2. DANH SÁCH CÁC CÔNG VIỆC ĐÃ THỰC HIỆN
 
 ### 🔑 2.1. Cấu hình Môi trường & Adapter LLM Multi-Provider
-- **Cấu hình `.env`**: Đã chuyển `GROQ_API_KEY` và `LLM_MODEL=llama-3.3-70b-versatile` từ `.env.example` sang `.env`.
-- **Nâng cấp `src/providers.py`**: Bổ sung class `GroqProvider` kết nối tới endpoint OpenAI-compatible của Groq API (`https://api.groq.com/openai/v1/chat/completions`).
+- **Cấu hình `.env`**: Đã chuyển `GEMINI_API_KEY` và `LLM_MODEL=gemini-3.5-flash-lite` vào `.env`.
+- **Nâng cấp `src/providers.py`**: Bổ sung class `GeminiProvider` hỗ trợ đa tầng (Google GenAI SDK, Legacy SDK, và REST API Direct via `requests.post`).
 
 ### ⚙️ 2.2. Xây dựng Data Schemas & Core Tools (`tools/` & `src/tools.py`)
 1. **Tool 1: `calculate_compatibility` ([tools/compatibility.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/tools/compatibility.py))**:
@@ -49,7 +49,7 @@ Dự án **AI Matchmaking Agent** được xây dựng nhằm giải quyết bà
 
 ### 🚀 2.4. Triển khai 4 Cấp Độ Hệ Thống AI ([src/ai_levels/](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/))
 - **Level 1 ([level1_rule_based.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/level1_rule_based.py))**: Rule-Based Bot khớp từ khóa `if/else`.
-- **Level 2 ([level2_llm_chatbot.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/level2_llm_chatbot.py))**: Baseline LLM Chatbot sử dụng Groq Llama 3.3 70B (không có Tool).
+- **Level 2 ([level2_llm_chatbot.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/level2_llm_chatbot.py))**: Baseline LLM Chatbot sử dụng Google Gemini 2.5 Flash (không có Tool).
 - **Level 3 ([level3_reactive_agent.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/level3_reactive_agent.py))**: ReAct Agent với chuỗi suy luận `Thought -> Action -> Observation`.
 - **Level 4 ([level4_autonomous_agent.py](file:///e:/Documents/GitHub/K4-D03-2A202601140-NguyenThanhTung/src/ai_levels/level4_autonomous_agent.py))**: Autonomous Agent tự lên kế hoạch (Planning 3 bước), duy trì bộ nhớ (Memory) và tự đánh giá (Evaluation).
 
@@ -61,9 +61,9 @@ Bộ test cases gồm 5 câu hỏi thử thách được định nghĩa tại **
 
 ### 📋 Bảng Tổng Hợp Kết Quả Thử Nghiệm Qua 4 Cấp Độ System:
 
-| Test Case | Loại Câu Hỏi & Nội Dung | Kết quả Cấp 1 (Rule-Based) | Kết quả Cấp 2 (LLM Chatbot - Groq) | Kết quả Cấp 3 (ReAct Agent) | Kết quả Cấp 4 (Autonomous Agent) |
+| Test Case | Loại Câu Hỏi & Nội Dung | Kết quả Cấp 1 (Rule-Based) | Kết quả Cấp 2 (LLM Chatbot - Gemini) | Kết quả Cấp 3 (ReAct Agent) | Kết quả Cấp 4 (Autonomous Agent) |
 | :---: | :--- | :--- | :--- | :--- | :--- |
-| **#1** | 🟢 **Đơn giản (Chỉ cần LLM)**<br>*"Tiêu chuẩn mối quan hệ lành mạnh là gì?"* | Khớp từ khóa chào hỏi/từ chối do không có từ khóa mối quan hệ. | Groq Llama 3.3 sinh 5 lời khuyên sâu sắc về tôn trọng, giao tiếp, tin tưởng. | Trả lời trực tiếp bằng văn phong Bà Mối AI ấm áp, không cần gọi tool. | Lên kế hoạch tự chủ tổng quát. |
+| **#1** | 🟢 **Đơn giản (Chỉ cần LLM)**<br>*"Tiêu chuẩn mối quan hệ lành mạnh là gì?"* | Khớp từ khóa chào hỏi/từ chối do không có từ khóa mối quan hệ. | Gemini 2.5 Flash sinh 5 lời khuyên sâu sắc về tôn trọng, giao tiếp, tin tưởng. | Trả lời trực tiếp bằng văn phong Bà Mối AI ấm áp, không cần gọi tool. | Lên kế hoạch tự chủ tổng quát. |
 | **#2** | 🟡 **Multi-step Search (Cần Tool)**<br>*"Tìm bạn gái 22-28 tuổi ở Hà Nội thích nghe nhạc indie, vẽ tranh..."* | Báo lỗi: Yêu cầu nhập đúng từ khóa `tim_kiem_ho_so`. | Đưa ra lời khuyên chung (dùng app hẹn hò, tham gia CLB), **từ chối tra cứu DB vì không có tool**. | **Gọi Tool `search_candidates`**. Trả về danh sách ứng viên (Ngọc Bích, Khánh Linh) kèm PII Masking (SĐT `0987***321`). | **Bước 1 của Plan**: Tự tìm ứng viên thích hợp nhất (Ngọc Bích 25t). |
 | **#3** | 🟡 **Multi-step Compatibility**<br>*"Đánh giá tương thích giữa C001 (Tuấn) và C002 (Bích)."* | Báo lỗi: Không có thuật toán tính toán ma trận điểm số. | Thông báo không thể tra cứu cơ sở dữ liệu hay tính điểm tương thích. | **Gọi Tool `calculate_compatibility`**. Trả về điểm tương thích **69.2/100**, phân tích ưu/nhược điểm (Cùng ở Hà Nội, ngành IT & UX bổ trợ). | **Bước 2 của Plan**: Tự động lấy hồ sơ Tuấn & Bích để tính toán ma trận tương thích. |
 | **#4** | 🟠 **Slot Filling (Thiếu Info)**<br>*"Tôi muốn tìm bạn gái để tìm hiểu hẹn hò."* | Trả lời lời chào cơ bản Cấp 1. | Đưa ra 5 bước tư vấn chung về hẹn hò. | **Guardrail kích hoạt**: Phát hiện THIẾU Vị trí/Độ tuổi/Sở thích ➔ **KHÔNG GỌI TOOL**, hỏi làm rõ vị trí. | Nhận diện thông tin thiếu và đưa vào luồng quy hoạch. |
@@ -96,7 +96,7 @@ Bộ test cases gồm 5 câu hỏi thử thách được định nghĩa tại **
 
 ### 🔹 4.2. Demo Autonomous Agent Cấp 4 (Planning + Memory + Self-Evaluation):
 ```text
-🚀 === KÍCH HOẠT AUTONOMOUS AGENT (CẤP 4) ===
+🚀 === KÍCH HOẠT AUTONOMOUS AGENT (CẤP 4 - GEMINI POWERED) ===
 🎯 Mục tiêu tổng thể: Tìm bạn gái tương thích tại Hà Nội và lên lịch hẹn hò
 
 --- 📌 Vòng lặp Planning & Action (Step 1/3) ---
@@ -113,7 +113,7 @@ Bộ test cases gồm 5 câu hỏi thử thách được định nghĩa tại **
 
 --- 📌 Vòng lặp Planning & Action (Step 3/3) ---
 📋 [Planning]: Lập kịch bản cuộc hẹn đầu tiên (First Date Plan) cá nhân hóa dựa trên sở thích chung
-🛠️ [Execution]: LLM Strategic Generation (GroqProvider - Llama 3.3 70B)
+🛠️ [Execution]: LLM Strategic Generation (GeminiProvider - Gemini 2.5 Flash)
 👁️ [Observation]: Kịch bản hẹn hò:
 Nam và Ngọc Bích hẹn hò tại một quán cà phê 🏙️ ở Hà Nội. Họ cùng nhau tận hưởng không khí lãng mạn và thưởng thức cà phê ☕️. Buổi hẹn hò kết thúc với một buổi nghe nhạc indie 🎶.
 💾 [Memory Saved]: Đã ghi nhớ kết quả bước 3 vào bộ nhớ dài hạn.
@@ -126,6 +126,6 @@ Nam và Ngọc Bích hẹn hò tại một quán cà phê 🏙️ ở Hà Nội.
 ## 🏆 5. ĐÁNH GIÁ TỔNG KẾT & KẾT LUẬN
 
 1. **Hoàn thành 100% Yêu cầu**: Dự án đáp ứng trọn vẹn toàn bộ kiến trúc Master System Prompt trong `project.md` và 5 tiêu chí chấm điểm Bài Lab 3 VinUni.
-2. **Groq Cloud Integration**: Mô hình `llama-3.3-70b-versatile` hoạt động mượt mà, phản hồi phản ứng nhanh, suy luận ReAct chuẩn xác.
+2. **Google Gemini Integration**: Mô hình `gemini-2.5-flash` hoạt động mượt mà, phản hồi phản ứng nhanh, suy luận ReAct chuẩn xác.
 3. **Agentic Fit Score**: Đạt **19/20 điểm** trên ma trận đánh giá Agentic Fit (Multi-step Reasoning, Tool Interaction, Dynamic Decision, Long Horizon).
 4. **An toàn & Bảo mật**: Phanh an toàn Guardrails hoạt động hiệu quả (Slot Filling khi thiếu tham số, PII Redaction ẩn SĐT/Họ tên, Relaxed Search fallback).
