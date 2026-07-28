@@ -1,0 +1,52 @@
+flowchart TD
+    %% -------------------------------------------------------------------------
+    %% HYBRID AI RECRUITMENT ROUTING FLOWCHART
+    %% Phân luồng:
+    %%   - Câu hỏi đơn giản ➔ Chatbot Baseline Path (Direct LLM)
+    %%   - Câu hỏi phức tạp ➔ ReAct Agent Loop Path (Thought -> Action -> Observation)
+    %% -------------------------------------------------------------------------
+
+    subgraph Layer1 ["1. Input Routing & Safety Classifier"]
+        A["👤 User Query / Yêu cầu người dùng"] --> B{"🛡️ Input Guardrail & Intent Router"}
+        B -- "Prompt Injection / Vi phạm an toàn" --> C["❌ Block & Trả lời phanh an toàn"]
+        B -- "Câu hỏi đơn giản (Lý thuyết / Kiến thức HR)" --> D["💬 Chatbot Baseline Path"]
+        B -- "Câu hỏi phức tạp (CV, JD, Scoring, Calendar, Booking)" --> E["🤖 ReAct Agent Loop Path"]
+    end
+
+    subgraph Layer2 ["2. Chatbot Baseline Path (Đơn giản)"]
+        D --> F["Khởi tạo LLM với CHATBOT_BASELINE_PROMPT"]
+        F --> G["Sinh câu trả lời trực tiếp từ tri thức LLM (Không dùng Tool)"]
+    end
+
+    subgraph Layer3 ["3. ReAct Agent Path (Phức tạp & Đa bước)"]
+        E --> H["Khởi tạo Ngữ cảnh Hội thoại & Bộ đếm Vòng lặp"]
+        H --> I{"Step <= Max Iterations (8)?"}
+        I -- "Vượt quá giới hạn (Timeout)" --> J["🛡️ Guardrail Timeout Warning"]
+        I -- "Còn vòng lặp" --> K["🧠 LLM Suy luận: Thought + Action / Final Answer"]
+        K --> L{"Có Final Answer chưa?"}
+        L -- "Có Final Answer" --> M["🏁 Xuất kết quả Final Answer"]
+        L -- "Cần gọi Action (Tool Call)" --> N["🛠️ Kiểm tra & Thực thi Tool (parse_cv, get_jd, score_candidate, check_calendar, book_interview_slot)"]
+        N --> O["👁️ Nhận Observation từ Tool & Cập nhật Conversation Context"]
+        O --> I
+    end
+
+    subgraph Layer4 ["4. Output Guardrail & Delivery"]
+        G --> P["🛡️ Output Guardrail Sanitization"]
+        M --> P
+        C --> Q["📤 Phản hồi cuối cùng tới Người dùng"]
+        J --> Q
+        P --> Q
+    end
+
+    %% Styles
+    classDef startEnd fill:#2563eb,stroke:#1d4ed8,color:#ffffff,font-weight:bold;
+    classDef router fill:#7c3aed,stroke:#6d28d9,color:#ffffff,font-weight:bold;
+    classDef chatbot fill:#059669,stroke:#047857,color:#ffffff,font-weight:bold;
+    classDef react fill:#ea580c,stroke:#c2410c,color:#ffffff,font-weight:bold;
+    classDef guardrail fill:#dc2626,stroke:#b91c1c,color:#ffffff,font-weight:bold;
+
+    class A,Q startEnd;
+    class B router;
+    class D,F,G chatbot;
+    class E,H,I,K,L,M,N,O react;
+    class C,J,P guardrail;
