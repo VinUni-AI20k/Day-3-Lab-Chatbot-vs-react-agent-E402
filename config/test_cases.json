@@ -2,31 +2,31 @@
   {
     "id": 1,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Quà tặng sinh nhật phổ biến nhất cho bạn gái là gì?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn, không cần gọi tool."
   },
   {
     "id": 2,
     "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "question": "Khi tặng quà nên chú ý điều gì để người nhận cảm thấy vui?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức chung về tâm lý tặng quà."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟡 Multi-step (Cần 1-2 Tools)",
+    "question": "Tôi muốn tặng quà sinh nhật cho Minh Anh, ngân sách 400 ngàn. Bạn gợi ý gì?",
+    "expected_behavior": "Agent gọi get_personality_profile('minh_anh') để biết tính cách Sáng Tạo, rồi gọi search_gift_catalog hoặc suggest_gift_by_personality để tìm quà phù hợp ngân sách 400,000 VNĐ."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟡 Multi-step (Cần gọi 3+ Tools)",
+    "question": "Nhóm 4 người chúng tôi muốn góp tiền tặng quà Tết cho sếp người Nhật, tên Anh Tú. Tổng ngân sách 1 triệu 5. Gợi ý quà phù hợp và kiểm tra xem còn hàng không?",
+    "expected_behavior": "Agent gọi get_personality_profile('anh_tu') → tra_cuu_quy_tac_dip('Tết', 'Nhật Bản') → search_gift_catalog với loại trừ kiêng kỵ → check_gift_availability cho sản phẩm chọn → tinh_ngan_sach_gop(giá, 4). Chuỗi multi-step phức tạp 4-5 bước."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "question": "Tìm quà tặng cho người tên 'Người Vô Hình' nhân dịp Halloween, ngân sách -500 đồng. Kiểm tra tồn kho mã GIFT_999.",
+    "expected_behavior": "get_personality_profile báo lỗi không tìm thấy, tra_cuu_quy_tac_dip báo lỗi không có dữ liệu Halloween, search_gift_catalog báo lỗi ngân sách âm, check_gift_availability báo lỗi mã không tồn tại. Guardrail ngắt sau MAX_ITERATIONS và trả thông báo lịch sự."
   }
 ]
