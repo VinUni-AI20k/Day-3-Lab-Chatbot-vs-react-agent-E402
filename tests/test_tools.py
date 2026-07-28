@@ -6,6 +6,7 @@ from src.tools import (
     TOOL_SCHEMAS,
     book_interview_slot,
     check_calendar,
+    execute_tool,
     get_jd,
     parse_cv,
     score_candidate,
@@ -55,6 +56,16 @@ class ToolContractTests(unittest.TestCase):
                 "candidate_001", "interviewer_001", "2026-01-01", "09:00"
             ).startswith("L")
         )
+
+    def test_execute_tool_handles_agent_failures_without_crashing(self):
+        self.assertIn(
+            "CV candidate_001",
+            execute_tool("parse_cv", {"candidate_id": "candidate_001"}),
+        )
+        self.assertTrue(execute_tool("unknown_tool", {}).startswith("L"))
+        self.assertTrue(execute_tool("parse_cv", {}).startswith("L"))
+        self.assertTrue(execute_tool("parse_cv", []).startswith("L"))
+        self.assertTrue(execute_tool(None, {}).startswith("L"))
 
 
 if __name__ == "__main__":

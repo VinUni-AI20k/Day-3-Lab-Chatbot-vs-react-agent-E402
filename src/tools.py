@@ -280,6 +280,45 @@ AVAILABLE_TOOLS = {
 }
 
 
+def execute_tool(tool_name: object, arguments: object) -> str:
+    """Thực thi tool an toàn cho ReAct Agent.
+
+    Args:
+        tool_name: Tên tool cần gọi.
+        arguments: Dictionary tham số truyền vào tool.
+
+    Returns:
+        Kết quả dạng chuỗi từ tool. Với tool không tồn tại, arguments sai
+        schema hoặc exception trong lúc gọi, trả về chuỗi ``LỖI:`` thay vì
+        để exception làm dừng vòng lặp Agent.
+    """
+    if not isinstance(tool_name, str) or not tool_name.strip():
+        return _error("Tên tool phải là chuỗi không rỗng.")
+
+    tool = AVAILABLE_TOOLS.get(tool_name.strip())
+    if tool is None:
+        valid_tools = ", ".join(sorted(AVAILABLE_TOOLS))
+        return _error(
+            f"Tool '{tool_name}' không tồn tại. Tool hợp lệ: {valid_tools}."
+        )
+
+    if not isinstance(arguments, dict):
+        return _error("Arguments phải là dictionary theo schema của tool.")
+
+    try:
+        result = tool(**arguments)
+        return result if isinstance(result, str) else str(result)
+    except TypeError:
+        return _error(
+            f"Tham số không hợp lệ cho tool '{tool_name}'. "
+            "Hãy kiểm tra input schema."
+        )
+    except Exception:
+        # Không để lỗi bất ngờ làm crash Agent; chi tiết exception không được
+        # trả ra ngoài vì có thể làm lộ thông tin nội bộ.
+        return _error(f"Tool '{tool_name}' gặp lỗi nội bộ khi thực thi.")
+
+
 # Tool Specification: contract input/output để Role 3 và Role 4 dùng khi
 # viết prompt, parser và vòng lặp ReAct.
 TOOL_SCHEMAS = {
