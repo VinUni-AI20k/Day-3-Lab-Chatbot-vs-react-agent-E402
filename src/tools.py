@@ -122,6 +122,7 @@ def search_rentals(
     max_price: int | None = None,
     bedrooms: int | None = None,
     pet_allowed: bool | None = None,
+    furnished: bool | None = None,
 ) -> list[dict[str, Any]]:
     """Tìm listing theo bộ lọc; chỉ trả dữ liệu trong kho demo deterministic."""
     normalized_location = location.casefold().strip()
@@ -134,6 +135,8 @@ def search_rentals(
         if bedrooms is not None and listing["bedrooms"] != int(bedrooms):
             continue
         if pet_allowed is True and not listing["pet_allowed"]:
+            continue
+        if furnished is True and not listing["furnished"]:
             continue
         results.append(listing.copy())
     return results

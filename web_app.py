@@ -92,6 +92,7 @@ filters = {
     "max_price": max_price,
     "bedrooms": bedrooms,
     "pet_allowed": True if pet_allowed else None,
+    "furnished": True if furnished else None,
 }
 
 st.markdown(
