@@ -26,7 +26,7 @@ if sys.stdout.encoding != 'utf-8':
 from tools import AVAILABLE_TOOLS
 from prompts import CHATBOT_BASELINE_PROMPT, REACT_SYSTEM_PROMPT, MAX_ITERATIONS
 from providers import get_llm_provider
-from parser import parse_response
+from response_parser import parse_response
 
 load_dotenv()
 
@@ -69,6 +69,34 @@ def run_baseline_chatbot(user_query: str, provider) -> dict:
     return log
 
 
+def run_hybrid_agent(user_query: str, provider, verbose: bool = True) -> dict:
+    """
+    Chạy bộ định tuyến (Router) để quyết định giữa Chatbot và ReAct Agent.
+    Đây là logic cho Hybrid Flowchart (Mốc 4).
+    """
+    print(f"\n🚦 [HYBRID AGENT] Q: {user_query}")
+
+    # Bước 1: Dùng một LLM call làm Router
+    router_prompt = f"""Bạn là một bộ định tuyến (router) thông minh.
+    Nhiệm vụ của bạn là phân loại câu hỏi của người dùng thành một trong hai loại:
+    1. 'chatbot': Nếu câu hỏi mang tính lý thuyết, hỏi đáp chung, chào hỏi, hoặc không yêu cầu dữ liệu chính xác từ database.
+    2. 'agent': Nếu câu hỏi yêu cầu truy vấn dữ liệu (tìm top, lọc, đếm), tra cứu thông tin cụ thể, hoặc cần thực hiện nhiều bước suy luận.
+
+    Câu hỏi người dùng: "{user_query}"
+
+    Chỉ trả lời 'chatbot' hoặc 'agent'.
+    """
+    decision = provider.generate(router_prompt).strip().lower()
+    print(f"🚦 Router decision: '{decision}'")
+
+    # Bước 2: Dựa vào quyết định để chạy hệ thống tương ứng
+    if "chatbot" in decision:
+        return run_baseline_chatbot(user_query, provider)
+    else:
+        # Mặc định các trường hợp còn lại (agent, hoặc LLM trả linh tinh) sẽ đi vào ReAct Agent cho an toàn
+        return run_react_agent(user_query, provider, verbose=verbose)
+
+
 def run_react_agent(user_query: str, provider, verbose: bool = True) -> dict:
     """ReAct loop động: LLM suy nghĩ → parse Action → execute → append Observation → lặp."""
     log = {
@@ -102,6 +130,14 @@ def run_react_agent(user_query: str, provider, verbose: bool = True) -> dict:
             response = provider.generate(user_msg.strip(), system_prompt=REACT_SYSTEM_PROMPT)
         except Exception as e:
             response = f"Thought: LLM exception: {e}\nFinal Answer: Không thể xử lý ngay, thử lại sau."
+
+        # Guardrail: Nếu LLM trả về lỗi API, thoát sớm
+        if "exception]:" in response.lower() or "error]:" in response.lower():
+            log["final_answer"] = f"Lỗi API từ nhà cung cấp: {response}"
+            log["terminated_by"] = "api_error"
+            print(f"\n⛔ API Error: {response}")
+            log["steps"].append({"step": step, "thought": "API Error", "observation": response})
+            break
 
         if not response or not response.strip():
             response = "Thought: LLM trả rỗng.\nFinal Answer: Chưa sinh được Action, vui lòng thử lại."
@@ -216,6 +252,8 @@ def run_test_cases(test_ids: list = None, mode: str = "agent", verbose: bool = T
         print(f"{'='*68}")
         if mode == "baseline":
             res = run_baseline_chatbot(test["question"], provider)
+        elif mode == "hybrid":
+            res = run_hybrid_agent(test["question"], provider, verbose=verbose)
         else:
             res = run_react_agent(test["question"], provider, verbose=verbose)
         results.append({"test_id": test["id"], "category": test["category"], "result": res})
@@ -241,12 +279,14 @@ if __name__ == "__main__":
             run_test_cases(mode="baseline")
         elif sys.argv[1] == "--ids":
             ids = [int(x) for x in sys.argv[2].split(",")]
-            run_test_cases(test_ids=ids)
+            mode = "agent" if len(sys.argv) <= 3 else sys.argv[3].replace("--", "")
+            run_test_cases(test_ids=ids, mode=mode)
         elif sys.argv[1] == "--query":
             q = sys.argv[2] if len(sys.argv) > 2 else "Top 5 sách fantasy hay"
-            run_single_query(q, mode="agent")
+            mode = "agent" if len(sys.argv) <= 3 else sys.argv[3].replace("--", "")
+            run_single_query(q, mode=mode)
         else:
-            print(f"Usage: python app.py [--all | --baseline | --ids 1,2,3 | --query 'QUESTION']")
+            print(f"Usage: python app.py [--all | --baseline | --hybrid | --ids 1,2,3 [--hybrid|--baseline] | --query 'QUESTION' [--hybrid|--baseline]]")
             sys.exit(1)
     else:
         run_test_cases()
