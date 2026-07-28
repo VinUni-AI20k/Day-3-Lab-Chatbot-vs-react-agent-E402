@@ -15,18 +15,18 @@
     "id": 3,
     "category": "🟡 Multi-step (Cần Tool 1 bước)",
     "question": "Tôi muốn tìm một căn hộ mini ở quận Cầu Giấy, Hà Nội, giá dưới 8 triệu.",
-    "expected_behavior": "Agent gọi tool search_properties để tra cứu danh sách phòng hợp lệ."
+    "expected_behavior": "Agent gọi tool search_rentals để tra cứu danh sách phòng hợp lệ."
   },
   {
     "id": 4,
     "category": "🟡 Multi-step (Cần gọi nhiều Tools liên tiếp)",
     "question": "Tìm cho tôi phòng trọ ở Đống Đa giá khoảng 3 triệu. Nếu có, hãy xem chi tiết tiện ích của phòng đầu tiên rồi đặt lịch xem giúp tôi vào sáng thứ 7 tuần này.",
-    "expected_behavior": "Agent gọi search_properties, sau đó gọi check_property_details, rồi gọi book_viewing."
+    "expected_behavior": "Agent gọi search_rentals, sau đó gọi get_rental_details / check_viewing_availability, rồi gọi book_viewing."
   },
   {
     "id": 5,
     "category": "🔴 Edge Case (Bẫy Guardrail / Trượt lịch)",
     "question": "Tôi muốn tìm biệt thự nghỉ dưỡng ở Quận 1, giá dưới 1 triệu, có chỗ đậu trực thăng.",
-    "expected_behavior": "Tool search_properties không tìm thấy, Agent xin lỗi người dùng hoặc báo không có kết quả."
+    "expected_behavior": "Tool search_rentals không tìm thấy, Agent xin lỗi người dùng hoặc báo không có kết quả."
   }
 ]
