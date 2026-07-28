@@ -1,0 +1,34 @@
+graph TD
+    A[👤 Người dùng nhập câu hỏi / Yêu cầu] --> B{🧠 Intent Analysis & Slot Extraction}
+    
+    %% Route 1: General Knowledge Questions -> Chatbot Path
+    B -->|Ý định: Hỏi đáp kiến thức chung| C[🤖 Chatbot Baseline Path]
+    C --> C1[Sinh câu trả lời trực tiếp từ kiến thức LLM]
+    C1 --> Z[🏁 Trả về câu trả lời cho Người dùng]
+
+    %% Route 2: Matchmaking / Compatibility Requests -> ReAct Agent Path
+    B -->|Ý định: SEARCH hoặc COMPATIBILITY| D[🧠 ReAct Agent Path]
+    
+    %% Information Gathering Check
+    D --> E{🔍 Kiểm tra tham số bắt buộc?}
+    E -->|THIẾU tham số| F{⏳ Turn Count > 5?}
+    F -->|Chưa vượt quá| G[💬 Trả về câu hỏi Slot-Filling làm rõ]
+    G --> A
+    F -->|Turn Count > 5| H[🛡️ Guardrail Trigger: Dùng thông tin sẵn có / Reset]
+    H --> Z
+
+    E -->|ĐỦ tham số| I[🛠️ Đăng ký & Thực thi Tool Call]
+    I --> J{⚙️ Intent type?}
+    
+    J -->|SEARCH| K[Tool: search_candidates]
+    K --> K1{Lọc Hard Filter?}
+    K1 -->|0 ứng viên| K2[🛡️ Guardrail: Relaxed Search - Nới lỏng tuổi/vị trí]
+    K1 -->|Có ứng viên| K3[Hybrid Ranking: Cosine Sim + PII Masking]
+    K2 --> K3
+
+    J -->|COMPATIBILITY| L[Tool: calculate_compatibility]
+    L --> L1[Ma trận 100đ: Hard Filter + Geolocation + Age/Height + Vector Interest + Edu/Occ]
+
+    K3 --> M[🎭 Persona "Bà Mối AI" Formatting]
+    L1 --> M
+    M --> Z
