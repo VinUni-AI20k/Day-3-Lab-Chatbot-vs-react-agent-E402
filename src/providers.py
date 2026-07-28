@@ -4,6 +4,7 @@ Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằ
 """
 
 import os
+import re
 import sys
 
 try:
@@ -139,7 +140,140 @@ class OpenRouterProvider(BaseLLMProvider):
 
 class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
+
+    @staticmethod
+    def _extract_react_parts(prompt: str):
+        match = re.search(
+            r"USER QUESTION:\s*(.*?)\s*TRACE SO FAR:\s*(.*)",
+            prompt,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if not match:
+            return prompt.lower(), ""
+        return match.group(1).strip().lower(), match.group(2).lower()
+
+    def _generate_react(self, prompt: str) -> str:
+        question, trace = self._extract_react_parts(prompt)
+
+        if "3 cách" in question and "bắt đầu cuộc trò chuyện" in question:
+            return (
+                "Thought: Đây là câu hỏi tư vấn chung, không cần dữ liệu hệ thống.\n"
+                "Final Answer: Bạn có thể chào hỏi tự nhiên, hỏi một câu mở dựa "
+                "trên hoàn cảnh chung và lắng nghe chân thành. Hãy tôn trọng ranh "
+                "giới của người đối diện."
+            )
+
+        if "mối quan hệ nghiêm túc" in question and "yếu tố" in question:
+            return (
+                "Thought: Đây là câu hỏi kiến thức chung, không cần gọi tool.\n"
+                "Final Answer: Một mối quan hệ nghiêm túc cần sự tôn trọng, giao "
+                "tiếp trung thực, tin cậy, đồng thuận về kỳ vọng và khả năng cùng "
+                "giải quyết bất đồng."
+            )
+
+        if "quick sort" in question:
+            return (
+                "Thought: Yêu cầu lập trình nằm ngoài phạm vi Cupid Agent.\n"
+                "Final Answer: Yêu cầu này ngoài phạm vi Cupid Agent. Bạn nên sử "
+                "dụng một trợ lý lập trình để được hỗ trợ phù hợp hơn."
+            )
+
+        if "thời tiết" in question:
+            return (
+                "Thought: Yêu cầu thời tiết nằm ngoài phạm vi và không có tool phù hợp.\n"
+                "Final Answer: Cupid Agent không hỗ trợ tra cứu thời tiết. Bạn vui "
+                "lòng sử dụng một dịch vụ dự báo thời tiết."
+            )
+
+        if "một ứng viên phù hợp" in question:
+            return (
+                "Thought: Yêu cầu chưa có tên hoặc MSSV để xác định hồ sơ.\n"
+                "Final Answer: Bạn cần cung cấp tên hoặc MSSV của ứng viên cần xem "
+                "để tôi truy xuất đúng hồ sơ."
+            )
+
+        if "piano" in question and "đan len" in question:
+            if "action: search_candidate_profiles" not in trace:
+                return (
+                    "Thought: Cần tìm ứng viên theo đầy đủ các tiêu chí đã nêu.\n"
+                    'Action: search_candidate_profiles["bạn nam chơi piano, '
+                    'biết nấu ăn và đan len"]'
+                )
+            return (
+                "Thought: Observation cho biết không có ứng viên phù hợp, nên phải "
+                "dừng an toàn và không bịa hồ sơ.\n"
+                "Final Answer: Hiện không tìm thấy ứng viên nào đáp ứng đầy đủ các "
+                "tiêu chí. Bạn có thể mở rộng hoặc ưu tiên lại một vài tiêu chí."
+            )
+
+        if "so sánh phương" in question:
+            if "action: get_user_profile" not in trace:
+                return (
+                    "Thought: Cần lấy hồ sơ hiện tại làm cơ sở so sánh.\n"
+                    'Action: get_user_profile["current_user"]'
+                )
+            if "action: calculate_compatibility" not in trace:
+                return (
+                    "Thought: Đã có hồ sơ người dùng, cần tính điểm cho Phương và Lan.\n"
+                    'Action: calculate_compatibility["current_user", '
+                    '["Phương", "Lan"]]'
+                )
+            if "action: synthesize_recommendation" not in trace:
+                return (
+                    "Thought: Observation xếp Phương cao hơn Lan, cần tổng hợp cặp "
+                    "đứng đầu.\n"
+                    'Action: synthesize_recommendation["current_user", "Phương"]'
+                )
+            return (
+                "Thought: Đã có điểm và gói tổng hợp làm bằng chứng.\n"
+                "Final Answer: Phương phù hợp hơn với Minh: Phương đạt 94/100, "
+                "còn Lan đạt 88/100. Phương cùng mục tiêu nghiêm túc và cùng thích "
+                "đọc sách. Điểm số chỉ mang tính tham khảo; hai bạn vẫn nên trò "
+                "chuyện để kiểm chứng sự phù hợp."
+            )
+
+        if "3 người phù hợp nhất" in question or "phù hợp nhất" in question:
+            if "action: get_user_profile" not in trace:
+                return (
+                    "Thought: Cần lấy hồ sơ hiện tại trước khi tìm người phù hợp.\n"
+                    'Action: get_user_profile["current_user"]'
+                )
+            if "action: search_candidate_profiles" not in trace:
+                return (
+                    "Thought: Hồ sơ cho biết mục tiêu nghiêm túc, cần lọc ứng viên "
+                    "cùng mục tiêu.\n"
+                    'Action: search_candidate_profiles["mối quan hệ nghiêm túc"]'
+                )
+            if "action: calculate_compatibility" not in trace:
+                return (
+                    "Thought: Đã tìm thấy Mai, Lan và Phương; cần tính và xếp hạng.\n"
+                    'Action: calculate_compatibility["current_user", '
+                    '["Mai", "Lan", "Phương"]]'
+                )
+            if "action: synthesize_recommendation" not in trace:
+                return (
+                    "Thought: Mai có điểm cao nhất trong Observation, cần tổng hợp "
+                    "khuyến nghị cuối.\n"
+                    'Action: synthesize_recommendation["current_user", "Mai"]'
+                )
+            return (
+                "Thought: Đã có đủ Observation để trả lời có căn cứ.\n"
+                "Final Answer: Ba ứng viên phù hợp nhất là Mai 98/100, Phương "
+                "94/100 và Lan 88/100. Mai đứng đầu vì cùng mục tiêu nghiêm túc "
+                "và cùng thích đọc sách với Minh. Điểm cần lưu ý là dữ liệu chỉ "
+                "hỗ trợ tham khảo. Gợi ý mở đầu: \"Chào Mai, gần đây bạn đọc cuốn "
+                "sách nào khiến bạn ấn tượng nhất?\""
+            )
+
+        return (
+            "Thought: Yêu cầu chưa đủ rõ để chọn tool an toàn.\n"
+            "Final Answer: Bạn vui lòng cung cấp thêm tên, MSSV hoặc tiêu chí cụ thể."
+        )
+
     def generate(self, prompt: str, system_prompt: str = "") -> str:
+        if "QUY TẮC REACT" in system_prompt and "AVAILABLE TOOLS" in system_prompt:
+            return self._generate_react(prompt)
+
         text = prompt.lower()
         if "3 cách" in text and "bắt đầu cuộc trò chuyện" in text:
             return (

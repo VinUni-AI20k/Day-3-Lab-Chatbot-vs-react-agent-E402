@@ -129,16 +129,26 @@ def get_user_profile(user_id: str = "current_user") -> str:
     if not isinstance(user_id, str) or not user_id.strip():
         return "LỖI: user_id phải là chuỗi không rỗng."
 
-    user = _find_user(user_id)
-    if user is None:
-        return f"LỖI: Không tìm thấy hồ sơ người dùng '{user_id}'."
+    profile = _find_user(user_id)
+    profile_type = "người dùng"
+    if profile is None:
+        profile = _find_candidate(user_id)
+        profile_type = "ứng viên"
+    if profile is None:
+        return f"LỖI: Không tìm thấy hồ sơ '{user_id}'."
 
+    preference = (
+        f"; ưu tiên: {profile['preference']}"
+        if profile.get("preference")
+        else ""
+    )
     return (
-        f"Profile người dùng: {user['name']} (MSSV: {user['student_id']}), "
-        f"{user['age']} tuổi, {user['gender']}, {user['personality']}; "
-        f"sở thích: {', '.join(user['interests'])}; "
-        f"mục tiêu: {user['goal']}; ưu tiên: {user['preference']}.\n"
-        f"Vector đặc trưng: {user['vector']}"
+        f"Profile {profile_type}: {profile['name']} "
+        f"(MSSV: {profile['student_id']}), {profile['age']} tuổi, "
+        f"{profile['gender']}, {profile['personality']}; "
+        f"sở thích: {', '.join(profile['interests'])}; "
+        f"mục tiêu: {profile['goal']}{preference}.\n"
+        f"Vector đặc trưng: {profile['vector']}"
     )
 
 

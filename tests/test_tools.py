@@ -32,6 +32,10 @@ class CupidToolsTests(unittest.TestCase):
             with self.subTest(identifier=identifier):
                 self.assertIn("Profile người dùng: Minh", get_user_profile(identifier))
 
+    def test_get_user_profile_can_read_candidate_by_student_id(self):
+        result = get_user_profile("2A202601315")
+        self.assertIn("Profile ứng viên: Phương", result)
+
     def test_get_user_profile_returns_safe_errors(self):
         self.assertTrue(get_user_profile("missing").startswith("LỖI:"))
         self.assertTrue(get_user_profile(None).startswith("LỖI:"))
