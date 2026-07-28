@@ -1,0 +1,29 @@
+flowchart TD
+    A[User Input: Người dùng gửi câu hỏi/tâm sự] --> B{Guardrail Check: Kiểm tra từ khóa Khủng hoảng/Tự hại?}
+    
+    %% Đường Khẩn cấp
+    B -- Có nguy cơ --> C[Kích hoạt Hotline Tâm lý Khẩn cấp & Ngừng Khai quật]
+    
+    %% Đường xử lý phân luồng
+    B -- An toàn --> D{Đánh giá độ phức tạp Yêu cầu}
+    
+    %% Luồng Chatbot Đơn giản
+    D -- Trò chuyện/Hỏi đáp đơn giản --> E[Baseline Chatbot Path]
+    E --> F[Trả lời an ủi/Trò chuyện thông thường]
+    
+    %% Luồng ReAct Agent Phức tạp
+    D -- Đánh giá/Khai quật/Phân tích tâm lý --> G[ReAct Agent Path]
+    G --> H[Thought: Suy luận bước tiếp theo]
+    H --> I{Action: Chọn Tool cần dùng}
+    
+    I -- Tra cứu lý thuyết Jung --> J[Tool: search_psychology_db]
+    I -- Chấm điểm tâm lý --> K[Tool: calculate_shadow_score]
+    I -- Gợi ý bài tập giải tỏa --> L[Tool: get_therapy_exercises]
+    
+    J --> M[Observation: Nhận kết quả từ Tool]
+    K --> M
+    L --> M
+    
+    M --> N{Đã đủ thông tin chưa?}
+    N -- Chưa đủ --> H
+    N -- Đã đủ --> O[Final Answer: Phác họa Chân dung & Tư vấn Hòa giải]
