@@ -1,0 +1,147 @@
+{
+  "jobs": {
+    "JD001": {
+      "title": "Backend Engineer (Python)",
+      "department": "Engineering",
+      "must_have_skills": [
+        "python",
+        "fastapi",
+        "sql"
+      ],
+      "nice_to_have_skills": [
+        "docker",
+        "aws"
+      ],
+      "min_years_exp": 2,
+      "min_gpa": 3.0,
+      "headcount": 2
+    },
+    "JD002": {
+      "title": "Data Analyst",
+      "department": "Data",
+      "must_have_skills": [
+        "sql",
+        "python",
+        "power bi"
+      ],
+      "nice_to_have_skills": [
+        "statistics",
+        "excel"
+      ],
+      "min_years_exp": 1,
+      "min_gpa": 3.2,
+      "headcount": 1
+    },
+    "JD003": {
+      "title": "HR Intern",
+      "department": "People Ops",
+      "must_have_skills": [
+        "communication",
+        "excel"
+      ],
+      "nice_to_have_skills": [
+        "english"
+      ],
+      "min_years_exp": 0,
+      "min_gpa": 2.8,
+      "headcount": 3
+    }
+  },
+  "candidates": {
+    "CV101": {
+      "name": "Nguyễn Văn An",
+      "email": "an.nguyen@email.com",
+      "phone": "0901234567",
+      "applied_job": "JD001",
+      "years_exp": 3,
+      "gpa": 3.5,
+      "skills": [
+        "python",
+        "fastapi",
+        "sql",
+        "docker"
+      ],
+      "education": "Đại học Bách Khoa Hà Nội - Khoa học Máy tính",
+      "status": "NEW"
+    },
+    "CV102": {
+      "name": "Trần Thị Bình",
+      "email": "binh.tran@email.com",
+      "phone": "0912345678",
+      "applied_job": "JD001",
+      "years_exp": 1,
+      "gpa": 3.8,
+      "skills": [
+        "python",
+        "django",
+        "sql"
+      ],
+      "education": "Đại học VinUni - Khoa học Máy tính",
+      "status": "NEW"
+    },
+    "CV103": {
+      "name": "Lê Hoàng Cường",
+      "email": "cuong.le@email.com",
+      "phone": "0923456789",
+      "applied_job": "JD002",
+      "years_exp": 2,
+      "gpa": 3.4,
+      "skills": [
+        "sql",
+        "python",
+        "power bi",
+        "statistics"
+      ],
+      "education": "Đại học Kinh tế Quốc dân - Toán Kinh tế",
+      "status": "NEW"
+    },
+    "CV104": {
+      "name": "Phạm Thùy Dung",
+      "email": "dung.pham@email.com",
+      "phone": "0934567890",
+      "applied_job": "JD002",
+      "years_exp": 0,
+      "gpa": 2.9,
+      "skills": [
+        "excel",
+        "communication"
+      ],
+      "education": "Đại học Thương Mại - Marketing",
+      "status": "NEW"
+    },
+    "CV105": {
+      "name": "Đỗ Minh Khoa",
+      "email": "khoa.do@email.com",
+      "phone": "0945678901",
+      "applied_job": "JD003",
+      "years_exp": 0,
+      "gpa": 3.1,
+      "skills": [
+        "communication",
+        "excel",
+        "english"
+      ],
+      "education": "Đại học Ngoại Thương - Quản trị Kinh doanh",
+      "status": "NEW"
+    }
+  },
+  "interviewers": {
+    "Mr. Hùng (Tech Lead)": [
+      "09:00",
+      "10:00",
+      "14:00"
+    ],
+    "Ms. Lan (HR Manager)": [
+      "10:00",
+      "11:00",
+      "15:00",
+      "16:00"
+    ]
+  },
+  "pass_score_threshold": 70,
+  "email_templates": {
+    "invite": "Thư mời phỏng vấn",
+    "reject": "Thư cảm ơn & từ chối",
+    "reminder": "Thư nhắc lịch phỏng vấn"
+  }
+}
