@@ -1,96 +1,156 @@
 """
-🗂️ WEB DEMO (Streamlit) — Trợ Lý Sàng Lọc Hồ Sơ Tuyển Dụng & Hẹn Phỏng Vấn
-Thư mục web/ nằm NGOÀI src/ theo yêu cầu — chỉ import lại các thành phần đã có trong
-src/ (tools, prompts, app, providers), không định nghĩa lại logic ở đây.
-Chạy: streamlit run web/streamlit_app.py
+Basic Streamlit demo chatbot for the HR ReAct Agent.
+
+Run:
+    streamlit run web/streamlit_app.py
 """
 
 import os
 import sys
 
-_SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src")
-sys.path.insert(0, _SRC_DIR)
-
 import streamlit as st
 from dotenv import load_dotenv
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(ROOT_DIR, "src")
+sys.path.insert(0, SRC_DIR)
 
 from app import build_react_graph, make_initial_state
 from prompts import MAX_ITERATIONS
 from providers import get_llm_provider
+from tools import reset_calendar
 
 load_dotenv()
 
-st.set_page_config(page_title="Sàng Lọc Hồ Sơ & Hẹn Phỏng Vấn", page_icon="🗂️", layout="wide")
+SAMPLE_RESUME = """Nguyen Van A - Email: nguyenvana@gmail.com - SDT: 0901234567
+Backend Developer, 3 nam kinh nghiem.
+Ky nang: Python, Django, PostgreSQL, Docker, REST API, Git, Linux."""
 
-_TRACE_ICON = {"thought": "🧠", "action": "🛠️", "observation": "👁️", "final": "🏁", "blocked": "🛡️", "system": "ℹ️"}
-_TRACE_LABEL = {
-    "thought": "Thought", "action": "Action", "observation": "Observation",
-    "final": "Final Answer", "blocked": "GUARDRAIL", "system": "System",
+SAMPLE_JD = """Cong ty ABC tuyen Backend Developer - Lien he HR: hr@abc.com
+Yeu cau: Python, Django, PostgreSQL, Docker, REST API, Git."""
+
+TRACE_LABELS = {
+    "thought": "Thought",
+    "action": "Action",
+    "observation": "Observation",
+    "final": "Final Answer",
+    "blocked": "Guardrail",
+    "system": "System",
 }
 
-st.title("🗂️ Trợ Lý Sàng Lọc Hồ Sơ & Hẹn Phỏng Vấn")
-st.caption("ReAct Agent (LangGraph) — dán CV & JD, xem trực tiếp từng bước Thought → Action → Observation.")
+
+def run_agent_turn(provider, candidate_name, resume_text, jd_text, preferred_date):
+    graph = build_react_graph(provider)
+    state = make_initial_state(candidate_name, resume_text, jd_text, preferred_date)
+    final_state = state
+
+    for snapshot in graph.stream(state, stream_mode="values"):
+        final_state = snapshot
+
+    return final_state
+
+
+def render_trace(trace):
+    for entry in trace:
+        label = TRACE_LABELS.get(entry["type"], entry["type"])
+        if entry["type"] == "final":
+            st.success(f"{label}: {entry['text']}")
+        elif entry["type"] == "blocked":
+            st.warning(f"{label}: {entry['text']}")
+        elif entry["type"] == "observation":
+            st.info(f"{label}: {entry['text']}")
+        else:
+            st.markdown(f"**{label}:** {entry['text']}")
+
+
+st.set_page_config(
+    page_title="HR ReAct Agent Chatbot",
+    page_icon="HR",
+    layout="wide",
+)
+
+provider = get_llm_provider()
+model_name = getattr(provider, "model_name", "Offline Mock Mode")
+
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "Paste a candidate resume and job description in the sidebar, "
+                "then ask me to screen and schedule an interview."
+            ),
+            "trace": [],
+        }
+    ]
+
+st.title("HR ReAct Agent Chatbot")
+st.caption("Basic Streamlit demo for resume screening and interview scheduling.")
 
 with st.sidebar:
-    st.subheader("⚙️ Cấu hình")
-    provider = get_llm_provider()
-    model_name = getattr(provider, "model_name", "Offline Mock Mode")
-    st.markdown(f"**Provider:** `{provider.__class__.__name__}`")
-    st.markdown(f"**Model:** `{model_name}`")
-    st.markdown(f"**MAX_ITERATIONS:** `{MAX_ITERATIONS}`")
-    st.caption("Đổi provider/model qua biến môi trường LLM_PROVIDER trong file .env ở thư mục gốc.")
+    st.subheader("Agent setup")
+    st.write(f"Provider: `{provider.__class__.__name__}`")
+    st.write(f"Model: `{model_name}`")
+    st.write(f"Max iterations: `{MAX_ITERATIONS}`")
 
-with st.form("screening_form"):
-    candidate_name = st.text_input("Tên ứng viên", placeholder="Nguyễn Văn A")
+    candidate_name = st.text_input("Candidate name", value="Nguyen Van A")
+    preferred_date = st.text_input("Preferred interview date", value="05/08/2026")
+    resume_text = st.text_area("Resume", value=SAMPLE_RESUME, height=220)
+    jd_text = st.text_area("Job description", value=SAMPLE_JD, height=220)
 
     col1, col2 = st.columns(2)
     with col1:
-        resume_text = st.text_area("📄 CV (resume_text)", height=280, placeholder="Dán toàn bộ nội dung CV vào đây...")
+        if st.button("Clear chat", use_container_width=True):
+            st.session_state.messages = []
+            st.rerun()
     with col2:
-        job_description_text = st.text_area(
-            "📋 JD (job_description_text)", height=280, placeholder="Dán toàn bộ nội dung JD vào đây..."
-        )
+        if st.button("Reset calendar", use_container_width=True):
+            reset_calendar()
+            st.toast("Calendar reset")
 
-    preferred_date = st.text_input("Ngày phỏng vấn mong muốn (dd/mm/yyyy)", value="05/08/2026")
-    submitted = st.form_submit_button("🚀 Chạy ReAct Agent", use_container_width=True)
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+        if message.get("trace"):
+            with st.expander("View ReAct trace"):
+                render_trace(message["trace"])
 
-if submitted:
-    if not candidate_name.strip() or not resume_text.strip() or not job_description_text.strip():
-        st.error("Vui lòng nhập đủ Tên ứng viên, CV và JD trước khi chạy.")
-    else:
-        st.divider()
-        st.subheader("🔎 Chuỗi ReAct Trace")
+user_prompt = st.chat_input("Ask the agent to screen this candidate and schedule if qualified")
 
-        graph = build_react_graph(provider)
-        state = make_initial_state(candidate_name, resume_text, job_description_text, preferred_date)
+if user_prompt:
+    st.session_state.messages.append({"role": "user", "content": user_prompt, "trace": []})
 
-        log = st.container()
-        seen = 0
-        final_state = state
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
 
-        with st.spinner("Agent đang suy luận..."):
-            for snapshot in graph.stream(state, stream_mode="values"):
-                new_entries = snapshot["trace"][seen:]
-                for entry in new_entries:
-                    icon = _TRACE_ICON.get(entry["type"], "•")
-                    label = _TRACE_LABEL.get(entry["type"], entry["type"])
-                    with log:
-                        if entry["type"] == "final":
-                            st.success(f"{icon} **{label}**\n\n{entry['text']}")
-                        elif entry["type"] == "blocked":
-                            st.warning(f"{icon} **{label}**\n\n{entry['text']}")
-                        elif entry["type"] == "observation":
-                            st.info(f"{icon} **{label}**\n\n{entry['text']}")
-                        else:
-                            st.markdown(f"{icon} **{label}:** {entry['text']}")
-                seen = len(snapshot["trace"])
-                final_state = snapshot
+    with st.chat_message("assistant"):
+        missing_fields = [
+            label
+            for label, value in (
+                ("candidate name", candidate_name),
+                ("resume", resume_text),
+                ("job description", jd_text),
+            )
+            if not value.strip()
+        ]
 
-        st.divider()
-        stop_reason = final_state.get("stop_reason")
-        if stop_reason == "max_iterations":
-            st.error(f"🛡️ Agent dừng do đạt giới hạn {MAX_ITERATIONS} vòng lặp (Guardrail MAX_ITERATIONS).")
-        elif stop_reason == "injection":
-            st.error("🛡️ Yêu cầu bị chặn bởi Guardrails AI (nghi ngờ prompt injection trong CV/JD/đầu vào).")
+        if missing_fields:
+            answer = "Please fill in: " + ", ".join(missing_fields) + "."
+            trace = []
+            st.warning(answer)
         else:
-            st.caption(f"Hoàn tất sau {final_state.get('step')} bước Thought-Action.")
+            with st.spinner("Running ReAct agent..."):
+                final_state = run_agent_turn(provider, candidate_name, resume_text, jd_text, preferred_date)
+
+            answer = final_state.get("final_answer") or "The agent stopped without a final answer."
+            trace = final_state.get("trace", [])
+            st.markdown(answer)
+            st.caption(
+                "stop_reason="
+                f"{final_state.get('stop_reason')} | steps={final_state.get('step')} | "
+                f"tool_calls={final_state.get('tool_calls')}"
+            )
+            with st.expander("View ReAct trace", expanded=True):
+                render_trace(trace)
+
+    st.session_state.messages.append({"role": "assistant", "content": answer, "trace": trace})
