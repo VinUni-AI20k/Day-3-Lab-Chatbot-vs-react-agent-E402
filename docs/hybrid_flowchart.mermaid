@@ -1,0 +1,41 @@
+%% ============================================================
+%% Hybrid Decision Flowchart — Trợ lý đặt vé xem phim CGV
+%% Chatbot Baseline vs ReAct Agent (xem docs/PROJECT_PLAN.md §9)
+%% ============================================================
+
+flowchart TD
+    A([Người dùng nhập câu hỏi]) --> B{"Câu hỏi có cần dữ liệu\nthời gian thực hoặc hành động\nđặt vé không?"}
+
+    %% ---------------- Chatbot path ----------------
+    B -- "Không: câu hỏi chung chung\n(VD: loại ghế, quy định rạp)" --> C[Chatbot Baseline]
+    C --> C1["Trả lời trực tiếp từ\nkiến thức sẵn có của LLM\n(CHATBOT_BASELINE_PROMPT)"]
+    C1 --> Z([Trả lời người dùng])
+
+    %% ---------------- ReAct Agent path ----------------
+    B -- "Có: cần tra cứu suất chiếu/ghế\nhoặc thực hiện đặt vé" --> D[ReAct Agent khởi động]
+    D --> E["Thought: suy luận bước tiếp theo\n(REACT_SYSTEM_PROMPT)"]
+    E --> F{"Đã đủ thông tin\nđể trả lời chưa?"}
+
+    F -- "Chưa" --> G["Action: gọi 1 Tool"]
+    G --> G1{{"search_now_showing_films\nget_film_details\nget_showtimes\nget_seat_map\nbook_ticket"}}
+    G1 --> H["Observation: kết quả Tool\n(luôn trả chuỗi, không raise exception)"]
+    H --> I{"Số vòng lặp\n> MAX_ITERATIONS (3)?"}
+
+    I -- "Có" --> J["🛡️ Guardrail: ngắt vòng lặp an toàn\nTrả lời lịch sự / đề nghị liên hệ tổng đài"]
+    J --> Z
+
+    I -- "Chưa" --> E
+
+    F -- "Rồi" --> K["Final Answer"]
+    K --> Z
+
+    %% ---------------- Styling ----------------
+    classDef chatbot fill:#dbeafe,stroke:#2563eb,color:#1e3a8a;
+    classDef agent fill:#dcfce7,stroke:#16a34a,color:#14532d;
+    classDef guard fill:#fee2e2,stroke:#dc2626,color:#7f1d1d;
+    classDef terminal fill:#f1f5f9,stroke:#475569,color:#0f172a;
+
+    class C,C1 chatbot;
+    class D,E,F,G,G1,H,K agent;
+    class J guard;
+    class A,Z terminal;

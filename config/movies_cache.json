@@ -1,11 +1,981 @@
 [
   {
-    "film_name": "Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
-    "poster_path": "/assets/conan.webp",
-    "genre": "Hoạt hình, Trinh thám, Hành động",
-    "duration_min": 110,
-    "rating": "C13",
-    "synopsis": "Phần phim thứ 29 của thương hiệu Conan đưa người xem đến bối cảnh Yokohama đầy kịch tính, xoay quanh chiếc xe phân khối lớn bí ẩn mang bí danh 'Black Angel'. Conan Edogawa sẽ phối hợp cùng nữ cảnh sát giao thông Chihaya Hagiwara và thám tử học sinh Sera Masumi để lật tẩy vụ án mạng liên hoàn trên đường cao tốc.",
+    "film_name": "The Odyssey",
+    "poster_path": "/assets/posters/the-odyssey.jpg",
+    "genre": "Hành Động, Thần thoại",
+    "duration_min": 173,
+    "rating": "T16",
+    "rating_description": "T16 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 16 TUỔI TRỞ LÊN (16+)",
+    "director": "Christopher Nolan",
+    "cast": "Benny Safdie, Anne Hathaway, Matt Damon, Robert Pattinson, Tom Holland, Zendaya, Charlize Theron…",
+    "synopsis": "Bộ phim tiếp theo của Christopher Nolan, The Odyssey, là một sử thi hành động mang màu sắc thần thoại, được quay tại nhiều địa điểm trên khắp thế giới bằng công nghệ phim IMAX® hoàn toàn mới. Bộ phim lần đầu tiên đưa thiên sử thi kinh điển của Homer lên màn ảnh IMAX®, và sẽ khởi chiếu tại các rạp trên toàn thế giới vào ngày 17 tháng 7 năm 2026.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "22:00",
+        "seats_available": 81,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "C3"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "18:00",
+        "seats_available": 80,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "D12",
+            "E11"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Phim Điện Ảnh Thám Tử Lừng Danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ",
+    "poster_path": "/assets/posters/phim-dien-anh-tham-tu-lung-danh-conan-thien-than-sa-nga-tren-xa-lo.jpg",
+    "genre": "Bí ẩn, Hành Động, Hoạt Hình",
+    "duration_min": 109,
+    "rating": "T13",
+    "rating_description": "T13 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 13 TUỔI TRỞ LÊN (13+)",
+    "director": "Hasui Takahiro",
+    "cast": "Minami Takayama, Wakana Yamazaki, Rikiya Koyama, Miyuki Sawashiro, Shin-ichiro Miki,..",
+    "synopsis": "Thám tử nhí Conan, gia đình Ran, Sonoko, đội thám tử nhí cùng Sera Masumi đến khu vực Minatomirai, Yokohama để tham dự “Lễ hội Moto Kanagawa”. Thế nhưng, sự kiện náo nhiệt này nhanh chóng bị khuấy động khi một tay lái bí ẩn mang biệt danh “Quái Xế Đen” bất ngờ xuất hiện. Hắn phóng xe với tốc độ kinh hoàng, lao vọt lên nóc chiếc xe chở nhóm Conan rồi biến mất trong chớp mắt, khiến ngay cả nữ cảnh sát giao thông nổi tiếng với danh xưng “Nữ Thần Gió” của Sở Cảnh sát Kanagawa - Hagiwara Chihaya - cũng không thể truy đuổi kịp. Trong khi cuộc săn lùng vẫn rơi vào bế tắc, tại hội trường lễ hội lại diễn ra màn ra mắt mẫu moto công nghệ cao màu trắng mang tên “Angel”. Điều đáng ngờ là chiếc xe của “Quái Xế Đen” lại sở hữu thiết kế gần như giống hệt mẫu xe này. Bỗng dưng, nữ cảnh sát Chihaya chợt nhớ về những ký ức tưởng chừng đã ngủ yên về người em trai quá cố Hagiwara Kenji và người bạn thân cùng khóa của anh, Matsuda Jinpei. Danh tính thực sự của kẻ cầm lái và mục đích đằng sau những cuộc rượt đuổi đầy nguy hiểm ấy kéo Conan và nữ cảnh sát Chihaya vào một cuộc đấu trí, khơi dậy một vụ án của nhiều năm trước.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "20:00",
+        "seats_available": 80,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "C3",
+            "E5"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "22:00",
+        "seats_available": 0,
+        "seat_map": null
+      }
+    ]
+  },
+  {
+    "film_name": "Minions & Quái Vật",
+    "poster_path": "/assets/posters/minions-quai-vat.jpg",
+    "genre": "Hoạt Hình",
+    "duration_min": 90,
+    "rating": "P",
+    "rating_description": "P - PHIM ĐƯỢC PHÉP PHỔ BIẾN ĐẾN NGƯỜI XEM Ở MỌI ĐỘ TUỔI.",
+    "director": "Pierre Coffin",
+    "cast": null,
+    "synopsis": "Minions & Quái Vật là câu chuyện vừa náo loạn, vừa ngớ ngẩn nhưng “hoàn toàn có thật” về cách Minions chinh phục Hollywood, trở thành ngôi sao điện ảnh, rồi mất tất cả, vô tình thả quái vật ra khắp thế giới và sau đó phải cùng nhau hợp sức để cứu lấy hành tinh khỏi chính mớ hỗn loạn mà mình tạo ra.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "22:00",
+        "seats_available": 81,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "B6"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Hành Trình Của Moana",
+    "poster_path": "/assets/posters/hanh-trinh-cua-moana.jpg",
+    "genre": "Gia đình, Hài, Hành Động, Phiêu Lưu",
+    "duration_min": 116,
+    "rating": "K",
+    "rating_description": "K - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM DƯỚI 13 TUỔI VÀ CÓ NGƯỜI BẢO HỘ ĐI KÈM",
+    "director": "Thomas Kail",
+    "cast": "Catherine Laga'aia, Dwayne Johnson, John Tui",
+    "synopsis": "Trong Moana, phiên bản live-action tái hiện lại cuộc phiêu lưu hoạt hình được yêu mến và từng được đề cử Oscar® của Disney, Moana (Catherine Lagaʻaia) đáp lại tiếng gọi của đại dương và lần đầu tiên rời xa rạn san hô bao quanh hòn đảo Motunui để lên đường cùng á thần huyền thoại Maui (Dwayne Johnson) trong một hành trình phi thường nhằm khôi phục sự thịnh vượng cho dân tộc mình. Bộ phim được đạo diễn bởi Thomas Kail, người từng giành giải Emmy® và Tony Award® (Hamilton); sản xuất bởi Dwayne Johnson, Dany Garcia, Beau Flynn, Hiram Garcia và Lin-Manuel Miranda; đồng thời được điều hành sản xuất bởi Kail, Scott Sheldon, Charles Newirth và Auliʻi Cravalho – người từng lồng tiếng cho Moana trong hai phần phim hoạt hình Moana và Moana 2. Moana quy tụ các ca khúc gốc do Lin-Manuel Miranda, Opetaia Foaʻi và Mark Mancina sáng tác, cùng phần nhạc nền nguyên bản do Mark Mancina đảm nhiệm. Khán giả sẽ được đắm mình trong những khung hình mãn nhãn, âm thanh sống động và các giai điệu cuốn hút của Moana, độc quyền tại các rạp chiếu phim từ ngày 10 tháng 7 năm 2026",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "20:15",
+        "seats_available": 0,
+        "seat_map": null
+      }
+    ]
+  },
+  {
+    "film_name": "Thanh Âm Vượt Đại Dương",
+    "poster_path": "/assets/posters/thanh-am-vuot-dai-duong.jpg",
+    "genre": "Lịch Sử",
+    "duration_min": 117,
+    "rating": "T13",
+    "rating_description": "T13 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 13 TUỔI TRỞ LÊN (13+)",
+    "director": "Đào Duy Phúc, Nguyễn Mạnh Hà",
+    "cast": "NSND Bùi Bài Bình, NSƯT Đặng Tất Bình, Nguyễn Quang Thuận, Nguyễn Thùy Dương, Nguyễn Vĩnh Xương, Lê Như Nguyên Thành, Maurise Nash, Martin Kruger, Charlie Win",
+    "synopsis": "Thanh âm vượt đại dương tái hiện những đau thương, ám ảnh nhưng cũng đầy khí phách của các chiến sĩ cách mạng bị giam giữ tại Nhà tù Côn Đảo trong giai đoạn 1945–1954. Bộ phim khắc họa chân thực cuộc đấu tranh kiên cường của những người tù chính trị trước sự tra tấn khốc liệt của chế độ thực dân, đồng thời tôn vinh ý chí bất khuất, tinh thần đoàn kết và khát vọng độc lập, tự do của các thế hệ cha anh. Với sự đầu tư nghiêm túc về nội dung và hình ảnh, tác phẩm không chỉ mang giá trị lịch sử, giáo dục sâu sắc mà còn góp phần lan tỏa lòng yêu nước, niềm tự hào dân tộc và sự tri ân đối với những người đã hy sinh vì độc lập, tự do của Tổ quốc.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "21:30",
+        "seats_available": 78,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "C1",
+            "C3",
+            "E12",
+            "H6"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Công Viên Giải Thoát",
+    "poster_path": "/assets/posters/cong-vien-giai-thoat.jpg",
+    "genre": "Hài, Kinh Dị",
+    "duration_min": 111,
+    "rating": "T16",
+    "rating_description": "T16 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 16 TUỔI TRỞ LÊN (16+)",
+    "director": "Phontharis Chotkijsadarsopon",
+    "cast": "Fourth Nattawat Jirochtikul, Yorch Yongsin Wongpanitnont, Zen Jaturawit Cheawprasit, Garto Pannawit Phattanasiri, Jay Sorathon Chaloemlapsombut, Euro Waratthip Kittisiripaisan, Toey Worapat Pakphatphornpob",
+    "synopsis": "Một nhóm học sinh thách nhau chơi trốn tìm bên trong công viên nước bỏ hoang mang tên Kijsada Paradise. Bi kịch bắt đầu khi Jod, một cậu bé mắc chứng tự kỷ, đột ngột biến mất không để lại bất kỳ dấu vết nào. Tack, thủ lĩnh của nhóm và cũng là người khởi xướng trò chơi đêm hôm đó, buộc phải cùng Ohm - bạn thân của Jod, lên đường tìm kiếm cậu bé. Khi nỗi kinh hoàng dần bao trùm, cả hai liên tục bị truy đuổi bởi một hồn ma bí ẩn khoác chiếc áo mưa màu đỏ. Từ những người đi tìm, Tack, Ohm và những người bạn của mình trở thành con mồi. Họ buộc phải dựa vào nhau để sống sót trước những nỗi kinh hoàng không thể diễn tả đang ẩn mình trong công viên nước bỏ hoang, đồng thời khám phá sự thật đen tối đằng sau Kijsada Paradise, một sự thật sẽ ám ảnh họ mãi mãi.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "20:15",
+        "seats_available": 75,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A3",
+            "B1",
+            "B5",
+            "C12",
+            "D5",
+            "F5",
+            "H2"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Cảm Ơn Người Đã Thức Cùng Tôi",
+    "poster_path": "/assets/posters/cam-on-nguoi-da-thuc-cung-toi.jpg",
+    "genre": "Gia đình, Tình cảm",
+    "duration_min": 137,
+    "rating": "K",
+    "rating_description": "K - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM DƯỚI 13 TUỔI VÀ CÓ NGƯỜI BẢO HỘ ĐI KÈM",
+    "director": "Chung Chí Công",
+    "cast": "Võ Phan Kim Khánh, Trần Doãn Hoàng, Nguyễn Hùng",
+    "synopsis": "Cảm Ơn Người Đã Thức Cùng Tôi là một hành trình cảm xúc của những người trẻ đi tìm đáp án cho câu hỏi “Ước mơ của bạn là gì?”, để rồi chính họ khi bước vào thế giới trưởng thành dần nhận ra câu hỏi quan trọng nhất là “Mình muốn thực hiện ước mơ đó cùng ai?”",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "21:30",
+        "seats_available": 75,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A5",
+            "B12",
+            "C6",
+            "D8",
+            "E11",
+            "E6",
+            "F4"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "20:00",
+        "seats_available": 80,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A5",
+            "G1"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Lời Nguyền Huyết Tộc",
+    "poster_path": "/assets/posters/loi-nguyen-huyet-toc.jpg",
+    "genre": "Kinh Dị",
+    "duration_min": 112,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "Nurhanisham Muhammad",
+    "cast": "Zul Ariffin, Shasha Abedul, Sofia Jane, Aila Azizul.",
+    "synopsis": "Là một trong những phim có doanh thu cao nhất nội địa Malaysia, bộ phim lấy bối cảnh những năm 1980 và lấy nguồn cảm hứng từ văn hoá dân gian Malaysia, đặc biệt là puja pantai (nghi lễ lâu đời ở các vùng ven biển Nusantara) vốn được thực hiện để xoa dịu linh hồn biển cả cầu mong bình an và thịnh vượng. Câu chuyện phim theo chân nhân vật Mawar. Cuộc sống của Mawar đảo lộn sau cái chết của chị gái và sự xuất hiện của các thế lực siêu nhiên ma quái. Cô cùng cha phải đối mặt với thế lực hắc ám để phơi bày bí mật đen tối và giải thoát khỏi lời nguyền gia tộc.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "21:30",
+        "seats_available": 76,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A2",
+            "A8",
+            "B3",
+            "C8",
+            "E4",
+            "E9"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Đêm Truy Sát",
+    "poster_path": "/assets/posters/dem-truy-sat.jpg",
+    "genre": "Hành Động, Hồi hộp",
+    "duration_min": 91,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "Adrian Grunberg",
+    "cast": "Milla Jovovich; Isabel Myers; Shane Williams",
+    "synopsis": "Cuộc sống yên bình của cựu chiến binh sụp đổ khi cô con gái duy nhất bị một băng nhóm tội phạm bắt cóc. Để đưa con trở về, Nikki buộc phải lao vào thế giới ngầm đầy bạo lực, đối đầu với đường dây buôn người khét tiếng đang bị cả cảnh sát và quân đội săn lùng. Khi mọi giới hạn bị phá vỡ, một người mẹ sẽ trở thành cơn ác mộng của những kẻ dám động đến con mình.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "18:30",
+        "seats_available": 82,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": []
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Huyết Ngải Ái Tình",
+    "poster_path": "/assets/posters/huyet-ngai-ai-tinh.jpg",
+    "genre": "Hồi hộp, Kinh Dị, Tâm Lý",
+    "duration_min": 98,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "Razka Robby Ertanto",
+    "cast": "Anjasmara, Lulu Tobing, Carissa Perusset",
+    "synopsis": "Angel, vợ lẻ trong gia đình tỉ phú Burhan, vì ghen tị với vợ chính là Vivian mà lên kế hoạch phá hoại cả gia đình Burhan. Angel bắt cóc Leo, bạn trai cũ của ả, và uy hiếp mẹ của anh là thầy pháp Sumi phải luyện bùa ngải để phục vụ cho mục đích bệnh hoạn. Lần lượt, từng thành viên trong nhà Burhan gặp những sự việc quái dị. Cháu trai của Burhan bị ả dùng bùa yêu mà quay lưng với Vivan; Burhan bị chơi ngải đến hóa điên như thú vật, còn Vivian thì bị Sumi chơi ngải khiến cho cô bị quỷ nhập xác mà sẵn sàng giết đứa con ruột của mình....",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "18:30",
+        "seats_available": 74,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "B6",
+            "B7",
+            "D11",
+            "D7",
+            "E7",
+            "F5",
+            "G12",
+            "H1"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "19:30",
+        "seats_available": 78,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "B8",
+            "B9",
+            "C3",
+            "D2"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Quỷ Bắt Hồn",
+    "poster_path": "/assets/posters/quy-bat-hon.jpg",
+    "genre": "Hành Động, Kinh Dị",
+    "duration_min": 103,
+    "rating": "T16",
+    "rating_description": "T16 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 16 TUỔI TRỞ LÊN (16+)",
+    "director": "Hải Bùi",
+    "cast": "Quang Tuấn, Anh Phạm, Đinh Y Nhung, bé Huy Anh, bé Gia Phong, La Thành, Uy Trần, Sỹ Toàn, Quốc Tân, bé Minh Anh, Ngân Quỳnh, Thanh Châu, Phương Linh",
+    "synopsis": "Quang Tuấn tái xuất trong phim kinh dị Quỷ Bắt Hồn, nơi một gia đình tưởng chừng bình thường dần bị bao vây bởi những hiện tượng quỷ dị. Khi nỗi sợ không còn dừng lại ở cảm giác… mà trở thành thứ có thể nghe thấy, có thể gọi tên: “Đúng tháng đúng ngày, hồn về theo quỷ”.",
     "showtimes": [
       {
         "cinema": "CGV Vincom Bà Triệu",
@@ -33,7 +1003,7 @@
                 "C"
               ],
               "price": 60000,
-              "note": "Ngồi gần màn hình chiếu"
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
             },
             {
               "zone": "VIP - Trung tâm",
@@ -44,7 +1014,7 @@
               ],
               "cols": "3-10",
               "price": 95000,
-              "note": "Khu vực trung tâm, góc nhìn đẹp nhất"
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
             },
             {
               "zone": "Thường - Cạnh loa",
@@ -56,48 +1026,127 @@
               ],
               "cols": "1-2,11-12",
               "price": 70000,
-              "note": "Gần hệ thống loa hai bên sườn"
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
             },
             {
               "zone": "Sweetbox - Ghế đôi",
               "rows": [
                 "H"
               ],
+              "cols": "1-6",
               "price": 150000,
-              "note": "Ghế đôi lãng mạn ở hàng cuối, phù hợp cho cặp đôi"
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
             }
           ],
           "booked_seats": [
-            "D5",
-            "D6",
-            "A1",
-            "A2",
-            "A3",
-            "A4"
+            "A5",
+            "A6",
+            "B7",
+            "E11",
+            "F6",
+            "F8"
           ]
         }
-      },
-      {
-        "cinema": "CGV Landmark 81",
-        "date": "2026-07-28",
-        "time": "20:15",
-        "seats_available": 0,
-        "seat_map": null
       }
     ]
   },
   {
-    "film_name": "Moana",
-    "poster_path": "/assets/moana.jpg",
-    "genre": "Phiêu lưu, Giả tưởng, Nhạc kịch",
-    "duration_min": 125,
-    "rating": "P",
-    "synopsis": "Phiên bản Live-Action chuyển thể từ siêu phẩm hoạt hình đình đám của Disney, đưa người xem vào cuộc hành trình đầy cảm hứng của cô gái trẻ Moana vượt đại dương bao la cùng vị á thần Maui đầy kiêu ngạo để cứu lấy hòn đảo quê hương Te Fiti.",
+    "film_name": "Ám Ảnh",
+    "poster_path": "/assets/posters/am-anh.jpg",
+    "genre": "Hồi hộp, Kinh Dị",
+    "duration_min": 108,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "Curry Barker",
+    "cast": "Michael Johnston, Inde Navarrette, Cooper Tomlinson, Megan Lawless, Andy Richter",
+    "synopsis": "Bear, một chàng trai si tình, đã bẻ gãy món đồ chơi bí ẩn mang tên \"Liễu Ước Nguyện\" để đổi lấy tình yêu của cô gái mình thầm thương. Điều ước nhanh chóng trở thành hiện thực, nhưng hạnh phúc mà anh hằng mong đợi lại dần biến thành cơn ác mộng. Bear dần nhận ra một sự thật rùng rợn: cái giá phải trả cho món quà kỳ diệu đó kinh hoàng và đen tối hơn bất cứ điều gì anh có thể tưởng tượng.",
     "showtimes": [
       {
-        "cinema": "CGV Vincom Bà Triệu",
+        "cinema": "CGV Landmark 81",
         "date": "2026-07-28",
-        "time": "18:00",
+        "time": "21:15",
+        "seats_available": 78,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A10",
+            "D5",
+            "D8",
+            "G1"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Ma Nữ Oán Tình",
+    "poster_path": "/assets/posters/ma-nu-oan-tinh.jpg",
+    "genre": "Hài, Kinh Dị, Tâm Lý",
+    "duration_min": 96,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "KrisPond Witthayakhajorndet, KruNing Bhanbhassa Dhubthien, Ping Lumpraploeng",
+    "cast": "Engfa Waraha, Apo Nattawin, Freen Sarocha, Jes Jespipat",
+    "synopsis": "Mang theo những ám ảnh từ quá khứ, Malee - do Engfa thủ vai, trở về khu căn hộ gắn liền với tuổi thơ và tìm thấy tình yêu bên Pran – một nhà thực vật học đam mê nghệ thuật pha trà. Thế nhưng, sự xuất hiện của những mối quan hệ xung quanh Pran cùng những bí mật tưởng đã bị chôn vùi từ lâu dần làm xáo trộn mọi thứ. Khi một cái chết bất ngờ xảy ra, những sự thật đen tối dần dần được phơi bày.",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "21:00",
         "seats_available": 80,
         "seat_map": {
           "rows": [
@@ -119,8 +1168,8 @@
                 "B",
                 "C"
               ],
-              "price": 65000,
-              "note": "Ngồi gần màn hình"
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
             },
             {
               "zone": "VIP - Trung tâm",
@@ -130,8 +1179,8 @@
                 "F"
               ],
               "cols": "3-10",
-              "price": 110000,
-              "note": "Trung tâm rạp, âm thanh vòm đỉnh cao"
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
             },
             {
               "zone": "Thường - Cạnh loa",
@@ -142,33 +1191,30 @@
                 "G"
               ],
               "cols": "1-2,11-12",
-              "price": 80000,
-              "note": "Góc sườn gần loa hiệu ứng"
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
             },
             {
               "zone": "Sweetbox - Ghế đôi",
               "rows": [
                 "H"
               ],
-              "price": 180000,
-              "note": "Hàng ghế đôi sofa lãng mạn cuối phòng"
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
             }
           ],
           "booked_seats": [
-            "A1",
-            "A2",
-            "H1",
-            "H2",
-            "H3",
-            "H4"
+            "B8",
+            "D2"
           ]
         }
       },
       {
-        "cinema": "CGV Landmark 81",
+        "cinema": "CGV Vincom Bà Triệu",
         "date": "2026-07-28",
-        "time": "21:00",
-        "seats_available": 30,
+        "time": "21:30",
+        "seats_available": 74,
         "seat_map": {
           "rows": [
             "A",
@@ -189,8 +1235,8 @@
                 "B",
                 "C"
               ],
-              "price": 70000,
-              "note": "Ngồi gần màn hình"
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
             },
             {
               "zone": "VIP - Trung tâm",
@@ -200,8 +1246,8 @@
                 "F"
               ],
               "cols": "3-10",
-              "price": 120000,
-              "note": "Khu vực VIP đẹp nhất"
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
             },
             {
               "zone": "Thường - Cạnh loa",
@@ -212,41 +1258,49 @@
                 "G"
               ],
               "cols": "1-2,11-12",
-              "price": 90000,
-              "note": "Biên phòng gần hệ thống loa sườn"
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
             },
             {
               "zone": "Sweetbox - Ghế đôi",
               "rows": [
                 "H"
               ],
-              "price": 200000,
-              "note": "Hàng đôi Sweetbox"
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
             }
           ],
           "booked_seats": [
-            "D1",
-            "D2",
-            "E3",
-            "E4"
+            "A6",
+            "A7",
+            "C1",
+            "D11",
+            "E1",
+            "F10",
+            "F12",
+            "F5"
           ]
         }
       }
     ]
   },
   {
-    "film_name": "Minions & Quái Vật",
-    "poster_path": "/assets/minions.jpg",
-    "genre": "Hoạt hình, Hài hước, Gia đình",
-    "duration_min": 95,
+    "film_name": "Câu Chuyện Đồ Chơi 5",
+    "poster_path": "/assets/posters/cau-chuyen-do-choi-5.jpg",
+    "genre": "Hoạt Hình, Phiêu Lưu",
+    "duration_min": 102,
     "rating": "P",
-    "synopsis": "Các chú Minion màu vàng dễ thương và tinh nghịch vô tình giải phóng một quái vật cổ xưa khổng lồ trong hầm ngục. Cả nhóm phải bắt tay nhau tìm mọi cách để xoa dịu quái thú trước khi nó quậy tung cả thành phố.",
+    "rating_description": "P - PHIM ĐƯỢC PHÉP PHỔ BIẾN ĐẾN NGƯỜI XEM Ở MỌI ĐỘ TUỔI.",
+    "director": "Kenna Harris, Andrew Stanton",
+    "cast": "Keanu Reeves, Tom Hanks, Annie Potts, ...",
+    "synopsis": "Các món đồ chơi đã trở lại trong Toy Story 5 của Disney và Pixar, và lần này sẽ là cuộc đối đầu giữa đồ chơi và công nghệ. Buzz, Woody, Jessie cùng cả nhóm sẽ phải đối mặt với thử thách khó khăn hơn gấp bội khi chạm trán một mối đe dọa hoàn toàn mới đối với niềm vui vui chơi. Bộ phim được đạo diễn bởi Andrew Stanton, đồng đạo diễn bởi Kenna Harris và sản xuất bởi Lindsey Collins. Toy Story 5 sẽ khởi chiếu tại rạp vào ngày 19 tháng 6 năm 2026.",
     "showtimes": [
       {
         "cinema": "CGV Landmark 81",
         "date": "2026-07-28",
-        "time": "19:30",
-        "seats_available": 60,
+        "time": "20:15",
+        "seats_available": 78,
         "seat_map": {
           "rows": [
             "A",
@@ -267,8 +1321,8 @@
                 "B",
                 "C"
               ],
-              "price": 70000,
-              "note": "Ngồi gần màn hình"
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
             },
             {
               "zone": "VIP - Trung tâm",
@@ -278,8 +1332,8 @@
                 "F"
               ],
               "cols": "3-10",
-              "price": 120000,
-              "note": "Khu vực VIP trung tâm"
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
             },
             {
               "zone": "Thường - Cạnh loa",
@@ -290,26 +1344,565 @@
                 "G"
               ],
               "cols": "1-2,11-12",
-              "price": 90000,
-              "note": "Cạnh loa hai bên"
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
             },
             {
               "zone": "Sweetbox - Ghế đôi",
               "rows": [
                 "H"
               ],
-              "price": 200000,
-              "note": "Sweetbox hàng cuối"
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
             }
           ],
           "booked_seats": [
-            "G1",
-            "G2",
-            "G3",
-            "G4",
-            "H11",
-            "H12"
+            "D1",
+            "D12",
+            "E4",
+            "E9"
           ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Backrooms: Thực Thể Quỷ Quyệt",
+    "poster_path": "/assets/posters/backrooms-thuc-the-quy-quyet.jpg",
+    "genre": "Hồi hộp, Khoa Học Viễn Tưởng, Kinh Dị",
+    "duration_min": 110,
+    "rating": "T16",
+    "rating_description": "T16 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 16 TUỔI TRỞ LÊN (16+)",
+    "director": "Kane Parsons",
+    "cast": "Chiwetel Ejiofor, Renate Reinsve, Mark Duplass",
+    "synopsis": "Phim điện ảnh Backrooms (2026) (do hãng A24 sản xuất) theo chân Clark (Chiwetel Ejiofor), một chủ cửa hàng nội thất, vô tình phát hiện cánh cửa bí ẩn dưới tầng hầm. Bước qua đó, anh bị cuốn vào một chiều không gian vô tận với những căn phòng màu vàng méo mó, liên tục lặp lại. Khi Clark ngày càng lún sâu và ám ảnh, nhà trị liệu tâm lý của anh là Mary (Renate Reinsve) quyết định bước vào không gian đó để tìm và giải cứu anh.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "19:00",
+        "seats_available": 76,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "B6",
+            "B9",
+            "C12",
+            "D10",
+            "E4",
+            "F8"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Colony: Bầy Xác Sống",
+    "poster_path": "/assets/posters/colony-bay-xac-song.jpg",
+    "genre": "Hành Động, Hồi hộp, Khoa Học Viễn Tưởng",
+    "duration_min": 122,
+    "rating": "T16",
+    "rating_description": "T16 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 16 TUỔI TRỞ LÊN (16+)",
+    "director": "YEON Sang-ho",
+    "cast": "Gianna JUN, KOO Kyo-hwan, JI Chang-wook, Shin Hyun-been, KIM Shin-rock, and GO Soo",
+    "synopsis": "Siêu phẩm zombie từ Đạo diễn đã tạo nên huyền thoại Train to Busan. Khi một dịch bệnh bí ẩn bùng phát tại tòa cao ốc giữa trung tâm Seoul, những người sống sót bị mắc kẹt và buộc phải chiến đấu để thoát thân. Những người đã nhiễm bệnh không chỉ là những xác sống mất não thông thường - chúng đang tiến hóa và săn mồi theo bầy đàn có tổ chức. Hy vọng duy nhất của những người sống sót phụ thuộc vào một gã đàn ông tự nhận đang mang trong mình loại vắc-xin có thể chấm dứt đại dịch. Trong cuộc chạy trốn nghẹt thở lên sân thượng, ranh giới giữa con người và quái vật dần sụp đổ.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "20:15",
+        "seats_available": 77,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "A5",
+            "C8",
+            "D1",
+            "F1",
+            "H4"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Lầu Chú Hỏa",
+    "poster_path": "/assets/posters/lau-chu-hoa.jpg",
+    "genre": "Bí ẩn, Kinh Dị",
+    "duration_min": 94,
+    "rating": "T18",
+    "rating_description": "T18 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 18 TUỔI TRỞ LÊN (18+)",
+    "director": "HÙNG TRẦN",
+    "cast": "TRẦN KỲ ANH, NGUYỄN MINH THỜI, NGỌC CHI BẢO, PHỤNG HOÀNG, NGUYỄN CÔNG NƯƠNG, DŨNG HÀ",
+    "synopsis": "Lầu Chú Hỏa theo chân một nhóm streamer trẻ đột nhập vào căn biệt thự bỏ hoang gắn với truyền thuyết “con ma nhà họ Hứa”. Sự xâm phạm vào “vùng đất cấm” của họ đã vô tình đánh thức ác linh bị trấn yểm suốt hơn 100 năm. Với phong cách found footage tạo cảm giác như đang xem lại đoạn băng cuối cùng của nạn nhân, bộ phim hứa hẹn biến mỗi góc tối trong căn nhà cổ thành chuỗi bi kịch kinh hoàng và đẫm máu nhất mùa hè năm nay.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "20:30",
+        "seats_available": 80,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "F6",
+            "H6"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Phim Điện Ảnh Doraemon: Nobita và Lâu Đài Dưới Đáy Biển (Phiên bản mới)",
+    "poster_path": "/assets/posters/phim-dien-anh-doraemon-nobita-va-lau-dai-duoi-day-bien-phien-ban-moi.jpg",
+    "genre": "Hoạt Hình, Phiêu Lưu",
+    "duration_min": 101,
+    "rating": "P",
+    "rating_description": "P - PHIM ĐƯỢC PHÉP PHỔ BIẾN ĐẾN NGƯỜI XEM Ở MỌI ĐỘ TUỔI.",
+    "director": "Tetsuo Yajima",
+    "cast": "Wasabi Mizuta, Megumi Oohara, Yumi Kakazu, Subaru Kimura, Tomokazu Seki,...",
+    "synopsis": "Bước vào kì nghỉ hè, Nobita và các bạn tranh cãi chí chóe về địa điểm cắm trại. Theo đề xuất của Doraemon, cả nhóm quyết định cắm trại giữa lòng đại dương! Sử dụng bảo bối thần kì “xe Buggy chạy dưới nước” và “đèn pin thích nghi”, 5 bạn nhỏ tận hưởng chuyến cắm trại dưới đáy biển, gặp gỡ vô vàn sinh vật lí thú trên đường đi. Sau khi phát hiện một chiếc tàu đắm, nhóm bạn đã gặp chàng thanh niên bí ẩn El. Thật bất ngờ, anh ta lại là cư dân đáy biển, sống tại “liên bang Mu”, một vùng biển rộng lớn! Vốn căm ghét người mặt đất, cư dân đáy biển không thể nào tin tưởng Nobita và các bạn. Đúng lúc đó, lời thông báo “lâu đài quỷ... đã bắt đầu phục sinh!!” được truyền tới. “Lâu đài quỷ” khiến cư dân đáy biển khiếp sợ, rốt cuộc là gì? Đặt trọn niềm tin vào bè bạn trong lồng ngực, chuyến phiêu lưu vĩ đại quyết định số phận của trái đất, bắt đầu!",
+    "showtimes": [
+      {
+        "cinema": "CGV Landmark 81",
+        "date": "2026-07-28",
+        "time": "21:30",
+        "seats_available": 81,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "D4"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "19:30",
+        "seats_available": 78,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "C4",
+            "D5",
+            "E8",
+            "F11"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "film_name": "Tên Cậu Là Gì.",
+    "poster_path": "/assets/posters/ten-cau-la-gi.jpg",
+    "genre": "Hoạt Hình",
+    "duration_min": 107,
+    "rating": "T13",
+    "rating_description": "T13 - PHIM ĐƯỢC PHỔ BIẾN ĐẾN NGƯỜI XEM TỪ ĐỦ 13 TUỔI TRỞ LÊN (13+)",
+    "director": "Shinkai Makoto",
+    "cast": "Kamiki Ryunosuke, Kamishiraishi Mone, Narita Ryo",
+    "synopsis": "Hai nhân vật chính: một nam sinh thành thị (Taki Tachibana) với cuộc sống nhộn nhịp, và một nữ sinh vùng quê (Mitsuha Miyamizu), vô tình bị hoán đổi thân thể cho nhau liên tục qua những giấc mơ. Chàng trai cố gắng giúp cô gái thoát khỏi thảm họa, còn cô gái giúp chàng trai hẹn hò với mối tình đơn phương bấy lâu nay. Để rồi chính ngôi sao chổi, thảm họa những tưởng cướp đi mạng sống của cả ngôi làng, hóa ra lại chính là vận may giúp họ nhận ra rằng đâu mới là nửa kia đích thực của cuộc đời mình.",
+    "showtimes": [
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "19:30",
+        "seats_available": 79,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": [
+            "D12",
+            "D3",
+            "G12"
+          ]
+        }
+      },
+      {
+        "cinema": "CGV Vincom Bà Triệu",
+        "date": "2026-07-28",
+        "time": "21:30",
+        "seats_available": 82,
+        "seat_map": {
+          "rows": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H"
+          ],
+          "cols_per_row": 12,
+          "zones": [
+            {
+              "zone": "Thường - Gần màn hình",
+              "rows": [
+                "A",
+                "B",
+                "C"
+              ],
+              "price": 60000,
+              "note": "Ngồi gần, phải ngước nhìn màn hình"
+            },
+            {
+              "zone": "VIP - Trung tâm",
+              "rows": [
+                "D",
+                "E",
+                "F"
+              ],
+              "cols": "3-10",
+              "price": 95000,
+              "note": "Vị trí đẹp nhất, hình & âm thanh cân bằng"
+            },
+            {
+              "zone": "Thường - Cạnh loa",
+              "rows": [
+                "D",
+                "E",
+                "F",
+                "G"
+              ],
+              "cols": "1-2,11-12",
+              "price": 70000,
+              "note": "Gần loa surround hai bên, âm thanh to hơn"
+            },
+            {
+              "zone": "Sweetbox - Ghế đôi",
+              "rows": [
+                "H"
+              ],
+              "cols": "1-6",
+              "price": 150000,
+              "note": "Ghế đôi liền kề, không tay vịn giữa, số lượng giới hạn"
+            }
+          ],
+          "booked_seats": []
         }
       }
     ]
