@@ -19,35 +19,22 @@
       {
         "name": "get_rental_detail",
         "description": "Trích xuất thông tin chi tiết một căn hộ cụ thể",
-        "parameters": [
-          "rental_id"
-        ]
+        "parameters": ["rental_id"]
       },
       {
         "name": "check_landlord_calendar",
         "description": "Kiểm tra các khung giờ rảnh của chủ nhà",
-        "parameters": [
-          "rental_id",
-          "date"
-        ]
+        "parameters": ["rental_id", "date"]
       },
       {
         "name": "book_viewing_appointment",
         "description": "Tạo lịch hẹn xem nhà trên hệ thống",
-        "parameters": [
-          "rental_id",
-          "user_name",
-          "phone",
-          "datetime"
-        ]
+        "parameters": ["rental_id", "user_name", "phone", "datetime"]
       },
       {
         "name": "send_confirmation_notification",
         "description": "Gửi tin nhắn/thông báo xác nhận lịch hẹn cho khách hàng",
-        "parameters": [
-          "phone",
-          "booking_details"
-        ]
+        "parameters": ["phone", "booking_details"]
       }
     ]
   },
