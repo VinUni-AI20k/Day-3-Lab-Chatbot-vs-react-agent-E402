@@ -1,32 +1,74 @@
 [
   {
     "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟢 Đơn giản (Chỉ cần LLM - FAQ)",
+    "question": "Chính sách đổi trả hàng bên cửa hàng của bạn quy định thời hạn áp dụng là bao nhiêu ngày?",
+    "expected_behavior": "Chatbot trả lời trực tiếp về thời hạn và quy định đổi trả tổng quan từ kiến thức có sẵn."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "category": "🟢 Đơn giản (Chỉ cần LLM - FAQ)",
+    "question": "Khi hoàn lại tiền cho đơn hàng trả thành công, shop sẽ trả qua hình thức nào?",
+    "expected_behavior": "Chatbot trả lời trực tiếp thông tin phương thức hoàn tiền (chuyển khoản ngân hàng hoặc ví điện tử)."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "category": "🟢 Đơn giản (Chỉ cần LLM - FAQ)",
+    "question": "Sản phẩm như thế nào thì được coi là đủ điều kiện để chấp nhận đổi trả?",
+    "expected_behavior": "Chatbot nêu rõ các điều kiện (còn nguyên tem mạc, chưa qua sử dụng/giặt tẩy, có video bóc hàng)."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "category": "🟢 Đơn giản (Chỉ cần LLM - FAQ)",
+    "question": "Địa chỉ trung tâm tiếp nhận trả hàng trực tiếp của cửa hàng ở đâu?",
+    "expected_behavior": "Chatbot cung cấp thông tin địa chỉ kho/trung tâm hỗ trợ xử lý trả hàng."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "category": "🟡 Multi-step (Cần 1 Tool - Tra cứu đơn hàng)",
+    "question": "Kiểm tra giúp tôi đơn hàng mã #DH1001 hiện tại đang ở trạng thái nào và dự kiến bao giờ giao?",
+    "expected_behavior": "Agent gọi tool lookup_order('DH1001') để tra cứu vị trí và lịch trình vận chuyển."
+  },
+  {
+    "id": 6,
+    "category": "🟡 Multi-step (Cần 1 Tool - Kiểm tra thanh toán)",
+    "question": "Đơn hàng mã #DH1002 của tôi đã được hệ thống xác nhận thanh toán thành công chưa?",
+    "expected_behavior": "Agent gọi tool lookup_order('DH1002') kiểm tra trạng thái thanh toán và xác nhận cho khách."
+  },
+  {
+    "id": 7,
+    "category": "🟡 Multi-step (Cần 1 Tool - Chi tiết đơn hàng)",
+    "question": "Tôi muốn kiểm tra lại danh sách các mặt hàng và tổng tiền trong đơn #DH1003.",
+    "expected_behavior": "Agent gọi tool lookup_order('DH1003') để trích xuất thông tin các món hàng và tổng tiền."
+  },
+  {
+    "id": 8,
+    "category": "🧡 Multi-step (Cần gọi 2-3 Tools - Đổi size/mẫu)",
+    "question": "Tôi muốn đổi chiếc áo trong đơn hàng #DH1004 từ size M sang size L do mặc chật. Hãy kiểm tra đơn và tạo mã đổi hàng giúp tôi.",
+    "expected_behavior": "Agent gọi lookup_order('DH1004') ➔ check_return_policy ➔ create_return_request để cấp mã đổi hàng."
+  },
+  {
+    "id": 9,
+    "category": "🧡 Multi-step (Cần gọi 2-3 Tools - Trả hàng hoàn tiền)",
+    "question": "Đơn hàng #DH1005 vừa nhận bị lỗi rách đường may, tôi muốn trả hàng và hoàn tiền lại. Vui lòng xác minh và tạo ticket hoàn tiền.",
+    "expected_behavior": "Agent gọi lookup_order('DH1005') ➔ check_return_policy ➔ create_refund_ticket để đăng ký ticket hoàn tiền."
+  },
+  {
+    "id": 10,
+    "category": "🧡 Multi-step (Cần gọi 2-3 Tools - Hủy đơn hàng)",
+    "question": "Tôi muốn hủy đơn hàng mã #DH1006 do đặt nhầm địa chỉ, hãy kiểm tra nếu chưa giao thì hủy đơn giúp tôi.",
+    "expected_behavior": "Agent gọi lookup_order('DH1006') kiểm tra trạng thái ➔ cancel_order để hủy đơn."
+  },
+  {
+    "id": 11,
+    "category": "🔴 Edge Case (Bẫy Guardrail - Mã đơn không tồn tại)",
+    "question": "Tra cứu giúp tôi vị trí đơn hàng mã #DH9999999.",
+    "expected_behavior": "Tool tra cứu trả về lỗi 'Đơn hàng không tồn tại'. Guardrail ngắt an toàn và trả lời lịch sự."
+  },
+  {
+    "id": 12,
+    "category": "🔴 Edge Case (Bẫy Guardrail - Đổi trả quá hạn)",
+    "question": "Tôi muốn yêu cầu trả lại sản phẩm trong đơn hàng #DH8888 đã mua từ 8 tháng trước do giờ tôi không thích mẫu này nữa.",
+    "expected_behavior": "Tool check_return_policy trả về vi phạm thời hạn (>7 ngày). Agent ngắt an toàn và giải thích từ chối từ tốn theo quy định."
   }
 ]
