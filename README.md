@@ -71,3 +71,46 @@ timeline
 
 > 🚀 **BẮT ĐẦU LÀM BÀI**:
 > Vui lòng mở sổ tay thực hành 👉 **[PHAN_CONG_CONG_VIEC.md](file:///c:/Users/Admin/Documents/VinUni/LabCoachVin/LabKeyCoach/Day-3-Lab-Chatbot-vs-react-agent-E402/docs/PHAN_CONG_CONG_VIEC.md)** để xem phân vai và checklist công việc cụ thể cho từng thành viên!
+
+## 🌐 Web UI
+
+Dự án bao gồm **Web UI hiện đại** để tương tác với ReAct Agent qua trình duyệt web.
+
+### ✨ Tính năng
+
+- 💬 **Giao diện Chat hiện đại**: Thiết kế đẹp mắt với gradient và animations
+- 🔄 **Real-time Streaming**: Xem từng bước suy luận của Agent ngay khi nó đang nghĩ
+- 📱 **Responsive**: Hoạt động tốt trên cả desktop và mobile
+- 🎨 **Trực quan**: Mỗi bước (Thought/Action/Observation/Final Answer) được tô màu khác nhau
+
+### 🚀 Cách sử dụng
+
+1. **Cài đặt dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+2. **Khởi động Web Server:**
+```bash
+python web_ui/server.py
+```
+
+3. **Mở trình duyệt:**
+```
+http://localhost:8000
+```
+
+### 📖 Hướng dẫn chi tiết
+
+Xem [web_ui/README.md](web_ui/README.md) để biết thêm chi tiết về:
+- Cách sử dụng các tính năng
+- API WebSocket
+- Troubleshooting
+- Tùy chỉnh giao diện
+
+### 🎯 Ví dụ câu hỏi
+
+- "Mình chưa biết gì, muốn học Python, ngân sách thấp"
+- "Chi tiết khóa học ML301"
+- "Mình biết Python và OOP, có thể học ML không?"
+

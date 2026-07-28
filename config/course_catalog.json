@@ -1,0 +1,526 @@
+{
+  "time_rules": {
+    "low": {
+      "max_hours_per_week": 4
+    },
+    "medium": {
+      "max_hours_per_week": 8
+    },
+    "high": {
+      "max_hours_per_week": 12
+    }
+  },
+  "budget_rank": {
+    "low": 1,
+    "medium": 2,
+    "high": 3
+  },
+  "courses": {
+    "PY101": {
+      "title": "Python nhập môn",
+      "category": "python_foundation",
+      "minimum_profile_level": "beginner",
+      "goals": [
+        "foundation",
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [],
+      "prerequisites": [],
+      "required_skills": [],
+      "skills_gained": [
+        "biến và kiểu dữ liệu",
+        "câu lệnh điều kiện",
+        "vòng lặp",
+        "list và dictionary",
+        "hàm cơ bản"
+      ],
+      "duration_weeks": 6,
+      "hours_per_week": 4,
+      "time_level": "low",
+      "budget_level": "low",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "chương trình quản lý danh sách sinh viên",
+      "description": "Khóa nhập môn cho người chưa biết Python, học từ cú pháp cơ bản và thực hành ngay bằng bài tập ngắn.",
+      "aliases": [
+        "python",
+        "python cơ bản",
+        "python nhập môn",
+        "học python",
+        "python beginner",
+        "python fundamentals"
+      ]
+    },
+    "PY102": {
+      "title": "Python nền tảng qua bài tập và project",
+      "category": "python_foundation",
+      "minimum_profile_level": "basic",
+      "goals": [
+        "foundation",
+        "exercises_project",
+        "internship"
+      ],
+      "specializations": [],
+      "prerequisites": [
+        "PY101"
+      ],
+      "required_skills": [
+        "biến và kiểu dữ liệu",
+        "điều kiện",
+        "vòng lặp",
+        "hàm cơ bản"
+      ],
+      "skills_gained": [
+        "tách hàm",
+        "xử lý file",
+        "exception cơ bản",
+        "debugging",
+        "làm project nhỏ"
+      ],
+      "duration_weeks": 6,
+      "hours_per_week": 6,
+      "time_level": "medium",
+      "budget_level": "low",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "ứng dụng quản lý chi tiêu cá nhân",
+      "description": "Khóa củng cố nền tảng bằng nhiều bài tập, lab và một project nhỏ; phù hợp với sinh viên biết cú pháp nhưng chưa vững.",
+      "aliases": [
+        "python project",
+        "python thực hành",
+        "python nền tảng",
+        "bài tập python",
+        "python practice"
+      ]
+    },
+    "PY201": {
+      "title": "Lập trình hướng đối tượng và cấu trúc dữ liệu với Python",
+      "category": "python_advanced",
+      "minimum_profile_level": "basic",
+      "goals": [
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [],
+      "prerequisites": [
+        "PY101"
+      ],
+      "required_skills": [
+        "hàm",
+        "list và dictionary",
+        "xử lý file cơ bản"
+      ],
+      "skills_gained": [
+        "oop",
+        "class và object",
+        "kế thừa",
+        "stack và queue",
+        "tổ chức mã nguồn"
+      ],
+      "duration_weeks": 8,
+      "hours_per_week": 6,
+      "time_level": "medium",
+      "budget_level": "medium",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "ứng dụng quản lý khóa học theo mô hình OOP",
+      "description": "Cầu nối từ Python cơ bản lên nâng cao, tập trung vào OOP, cấu trúc dữ liệu và cách tổ chức chương trình.",
+      "aliases": [
+        "oop",
+        "python oop",
+        "lập trình hướng đối tượng",
+        "cấu trúc dữ liệu python",
+        "data structures python"
+      ]
+    },
+    "PY202": {
+      "title": "Advanced Python và phát triển project",
+      "category": "python_advanced",
+      "minimum_profile_level": "intermediate",
+      "goals": [
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [],
+      "prerequisites": [
+        "PY201"
+      ],
+      "required_skills": [
+        "python cơ bản",
+        "oop",
+        "cấu trúc dữ liệu",
+        "đã làm ít nhất một project nhỏ"
+      ],
+      "skills_gained": [
+        "decorator",
+        "generator",
+        "context manager",
+        "type hints",
+        "unit testing",
+        "clean code"
+      ],
+      "duration_weeks": 8,
+      "hours_per_week": 8,
+      "time_level": "medium",
+      "budget_level": "medium",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "ứng dụng Python hoàn chỉnh có test",
+      "description": "Khóa nâng cao dành cho sinh viên đã vững nền tảng và OOP, hướng tới project thực tế và chuẩn bị thực tập.",
+      "aliases": [
+        "advanced python",
+        "python nâng cao",
+        "clean code python",
+        "unit test python",
+        "python project nâng cao"
+      ]
+    },
+    "MATH101": {
+      "title": "Toán nền tảng cho AI",
+      "category": "ai_foundation",
+      "minimum_profile_level": "basic",
+      "goals": [
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "ai_ml",
+        "deep_learning"
+      ],
+      "prerequisites": [],
+      "required_skills": [],
+      "skills_gained": [
+        "đại số tuyến tính cơ bản",
+        "xác suất",
+        "thống kê",
+        "đạo hàm cơ bản"
+      ],
+      "duration_weeks": 8,
+      "hours_per_week": 4,
+      "time_level": "low",
+      "budget_level": "low",
+      "practice_level": "medium",
+      "has_projects": false,
+      "project_type": null,
+      "description": "Kiến thức toán cần thiết trước khi học Machine Learning.",
+      "aliases": [
+        "toán ai",
+        "toán cho ai",
+        "math for ai",
+        "đại số tuyến tính",
+        "xác suất thống kê",
+        "ai mathematics"
+      ]
+    },
+    "DATA201": {
+      "title": "Xử lý dữ liệu với NumPy và Pandas",
+      "category": "data",
+      "minimum_profile_level": "basic",
+      "goals": [
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "data",
+        "ai_ml"
+      ],
+      "prerequisites": [
+        "PY101"
+      ],
+      "required_skills": [
+        "python cơ bản"
+      ],
+      "skills_gained": [
+        "numpy",
+        "pandas",
+        "làm sạch dữ liệu",
+        "phân tích dữ liệu"
+      ],
+      "duration_weeks": 5,
+      "hours_per_week": 5,
+      "time_level": "medium",
+      "budget_level": "low",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "phân tích một bộ dữ liệu nhỏ",
+      "description": "Bước chuyển từ Python sang xử lý dữ liệu cho AI.",
+      "aliases": [
+        "numpy",
+        "pandas",
+        "xử lý dữ liệu",
+        "data processing",
+        "data analysis",
+        "phân tích dữ liệu"
+      ]
+    },
+    "ML301": {
+      "title": "Machine Learning căn bản",
+      "category": "machine_learning",
+      "minimum_profile_level": "intermediate",
+      "goals": [
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "ai_ml"
+      ],
+      "prerequisites": [
+        "PY201",
+        "MATH101",
+        "DATA201"
+      ],
+      "required_skills": [
+        "python và oop",
+        "xác suất thống kê cơ bản",
+        "xử lý dữ liệu"
+      ],
+      "skills_gained": [
+        "regression",
+        "classification",
+        "clustering",
+        "model evaluation",
+        "scikit-learn"
+      ],
+      "duration_weeks": 10,
+      "hours_per_week": 7,
+      "time_level": "medium",
+      "budget_level": "medium",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "project dự đoán với scikit-learn",
+      "description": "Khóa nhập môn Machine Learning sau Python và dữ liệu.",
+      "aliases": [
+        "ml",
+        "machine learning",
+        "học máy",
+        "học machine learning",
+        "machine learning căn bản",
+        "ai ml"
+      ]
+    },
+    "DL401": {
+      "title": "Deep Learning căn bản",
+      "category": "deep_learning",
+      "minimum_profile_level": "intermediate",
+      "goals": [
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "deep_learning"
+      ],
+      "prerequisites": [
+        "ML301"
+      ],
+      "required_skills": [
+        "machine learning căn bản",
+        "python",
+        "đại số tuyến tính"
+      ],
+      "skills_gained": [
+        "neural network",
+        "backpropagation",
+        "pytorch",
+        "cnn cơ bản"
+      ],
+      "duration_weeks": 10,
+      "hours_per_week": 8,
+      "time_level": "medium",
+      "budget_level": "medium",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "mô hình phân loại ảnh bằng PyTorch",
+      "description": "Bước tiếp theo sau Machine Learning cho người học AI.",
+      "aliases": [
+        "dl",
+        "deep learning",
+        "học sâu",
+        "mạng nơ-ron",
+        "neural network",
+        "pytorch"
+      ]
+    },
+    "NLP501": {
+      "title": "Xử lý ngôn ngữ tự nhiên",
+      "category": "nlp",
+      "minimum_profile_level": "intermediate",
+      "goals": [
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "nlp",
+        "generative_ai"
+      ],
+      "prerequisites": [
+        "DL401"
+      ],
+      "required_skills": [
+        "deep learning căn bản",
+        "python",
+        "pytorch"
+      ],
+      "skills_gained": [
+        "text preprocessing",
+        "word embeddings",
+        "transformer cơ bản",
+        "text classification"
+      ],
+      "duration_weeks": 9,
+      "hours_per_week": 8,
+      "time_level": "medium",
+      "budget_level": "high",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "ứng dụng phân loại văn bản",
+      "description": "Khóa NLP thực hành trước khi học Generative AI.",
+      "aliases": [
+        "nlp",
+        "natural language processing",
+        "xử lý ngôn ngữ tự nhiên",
+        "chatbot",
+        "transformer"
+      ]
+    },
+    "GENAI601": {
+      "title": "Generative AI và ứng dụng LLM",
+      "category": "generative_ai",
+      "minimum_profile_level": "intermediate",
+      "goals": [
+        "exercises_project",
+        "internship",
+        "advanced"
+      ],
+      "specializations": [
+        "generative_ai",
+        "ai_agent"
+      ],
+      "prerequisites": [
+        "NLP501"
+      ],
+      "required_skills": [
+        "python",
+        "deep learning",
+        "transformer cơ bản"
+      ],
+      "skills_gained": [
+        "prompt engineering",
+        "rag",
+        "tool calling",
+        "ai agent"
+      ],
+      "duration_weeks": 8,
+      "hours_per_week": 7,
+      "time_level": "medium",
+      "budget_level": "medium",
+      "practice_level": "high",
+      "has_projects": true,
+      "project_type": "ứng dụng LLM có RAG hoặc tool calling",
+      "description": "Khóa chuyên sâu về LLM, RAG và AI Agent.",
+      "aliases": [
+        "genai",
+        "gen ai",
+        "generative ai",
+        "ai agent",
+        "llm",
+        "rag",
+        "tool calling",
+        "prompt engineering"
+      ]
+    }
+  },
+  "learning_tracks": {
+    "ai_ml": {
+      "title": "Lộ trình AI/Machine Learning",
+      "aliases": [
+        "ai",
+        "ml",
+        "machine learning",
+        "học máy",
+        "học ai từ đầu",
+        "ai ml",
+        "thực tập ai/ml"
+      ],
+      "description": "Lộ trình từ Python, toán và xử lý dữ liệu đến Machine Learning căn bản.",
+      "course_sequence": [
+        "PY101",
+        "PY201",
+        "MATH101",
+        "DATA201",
+        "ML301"
+      ]
+    },
+    "deep_learning": {
+      "title": "Lộ trình Deep Learning",
+      "aliases": [
+        "dl",
+        "deep learning",
+        "học sâu",
+        "mạng nơ-ron",
+        "neural network"
+      ],
+      "description": "Lộ trình từ nền tảng Python và Machine Learning đến Deep Learning với PyTorch.",
+      "course_sequence": [
+        "PY101",
+        "PY201",
+        "MATH101",
+        "DATA201",
+        "ML301",
+        "DL401"
+      ]
+    },
+    "nlp": {
+      "title": "Lộ trình NLP",
+      "aliases": [
+        "nlp",
+        "natural language processing",
+        "xử lý ngôn ngữ tự nhiên",
+        "chatbot"
+      ],
+      "description": "Lộ trình từ nền tảng AI đến xử lý ngôn ngữ tự nhiên và Transformer.",
+      "course_sequence": [
+        "PY101",
+        "PY201",
+        "MATH101",
+        "DATA201",
+        "ML301",
+        "DL401",
+        "NLP501"
+      ]
+    },
+    "generative_ai": {
+      "title": "Lộ trình Generative AI và AI Agent",
+      "aliases": [
+        "genai",
+        "gen ai",
+        "generative ai",
+        "ai agent",
+        "llm",
+        "rag",
+        "tool calling"
+      ],
+      "description": "Lộ trình đầy đủ để học LLM, RAG và xây dựng AI Agent.",
+      "course_sequence": [
+        "PY101",
+        "PY201",
+        "MATH101",
+        "DATA201",
+        "ML301",
+        "DL401",
+        "NLP501",
+        "GENAI601"
+      ]
+    }
+  },
+  "metadata": {
+    "scope": "AI learning path advisor",
+    "language": "vi",
+    "notes": "Các trường aliases hỗ trợ truy vấn viết tắt như ML, DL, NLP, GenAI. Tool tìm kiếm cần quét cả title, category, description, specializations và aliases."
+  }
+}
