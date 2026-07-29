@@ -6,8 +6,35 @@ Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằ
 import os
 import sys
 import json
+from pathlib import Path
 import requests
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv():
+        """Load the repository .env file when python-dotenv is unavailable."""
+        env_path = Path(__file__).resolve().parent.parent / ".env"
+        try:
+            lines = env_path.read_text(encoding="utf-8").splitlines()
+        except OSError:
+            return False
+
+        for raw_line in lines:
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            if line.startswith("export "):
+                line = line[7:].lstrip()
+
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip()
+            if value[:1] == value[-1:] and value[:1] in {"'", '"'}:
+                value = value[1:-1]
+            if key:
+                os.environ.setdefault(key, value)
+        return True
 
 # Đảm bảo in ra Tiếng Việt và Emojis không bị lỗi trên Windows Console
 if sys.stdout.encoding != 'utf-8':
@@ -29,14 +56,43 @@ class GeminiProvider(BaseLLMProvider):
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
-        
+
+    def _generate_via_rest(self, contents: str) -> str:
+        """Use the Gemini REST endpoint when the optional SDK is not installed."""
+        endpoint = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{self.model_name}:generateContent"
+        )
+        payload = {"contents": [{"parts": [{"text": contents}]}]}
+
+        try:
+            res = requests.post(
+                endpoint,
+                params={"key": self.api_key},
+                json=payload,
+                timeout=30,
+            )
+            if res.status_code != 200:
+                return f"[Gemini API Error {res.status_code}]: {res.text}"
+
+            parts = res.json().get("candidates", [{}])[0].get("content", {}).get("parts", [])
+            text = "".join(part.get("text", "") for part in parts)
+            return text or "[Gemini Error]: API không trả về nội dung phản hồi."
+        except Exception as e:
+            return f"[Gemini Exception]: {str(e)}"
+
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         if not self.api_key or self.api_key == "your_gemini_api_key_here":
             return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
+
+        contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
         try:
             from google import genai
+        except ImportError:
+            return self._generate_via_rest(contents)
+
+        try:
             client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
             response = client.models.generate_content(
                 model=self.model_name,
                 contents=contents
@@ -135,6 +191,34 @@ class MockProvider(BaseLLMProvider):
     """Offline Mock Provider (Cho bài test không cần kết nối API)"""
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         text = prompt.lower()
+        system_text = system_prompt.lower()
+
+        if "khai quật nhân cách" in system_text:
+            crisis_signals = (
+                "tự tử",
+                "muốn chết",
+                "không muốn sống",
+                "kết thúc tất cả",
+                "tự hại",
+            )
+            if any(signal in text for signal in crisis_signals):
+                return (
+                    "Mình rất tiếc vì bạn đang phải chịu đựng cảm giác nặng nề này. "
+                    "Mình sẽ không tiếp tục phân tích tính cách lúc này. Nếu bạn có "
+                    "nguy cơ làm hại bản thân hoặc người khác, hãy liên hệ ngay dịch "
+                    "vụ khẩn cấp tại nơi bạn ở, một người bạn/người thân đáng tin cậy, "
+                    "hoặc cơ sở y tế gần nhất."
+                )
+
+            return (
+                "Cảm ơn bạn đã chia sẻ. Việc ban ngày thích kết nối nhưng ban đêm cần "
+                "ở một mình có thể đơn giản là hai nhu cầu cùng tồn tại: được gần gũi "
+                "và được nghỉ ngơi. Đây chỉ là góc nhìn để tự phản chiếu, không phải "
+                "chẩn đoán hay kết luận về một 'nhân cách thứ 2'. Bạn có thể thử ghi "
+                "lại điều gì khiến mình mệt nhất vào cuối ngày và điều gì giúp mình "
+                "nạp lại năng lượng."
+            )
+
         if "thời tiết" in text and "hà nội" in text:
             return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
         return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
