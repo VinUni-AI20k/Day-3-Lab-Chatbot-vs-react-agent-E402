@@ -1,0 +1,24 @@
+flowchart LR
+    U["User Query"] --> D{Is the question simple?}
+    D -- Yes --> C["Chatbot Path\n(1 LLM call, no tools)"]
+    D -- No --> A["ReAct Agent Path\n(Thought -> Action -> Observation loop)"]
+
+    A --> T1["Thought: parse user intent & decide action"]
+    T1 --> Act["Action: call tool(s) (search_rentals, get_viewing_slots, book_viewing, ...)"]
+    Act --> Obs["Observation: tool results (data or error)"]
+    Obs --> Eval["Evaluate: is info sufficient?"]
+    Eval -- No --> T1
+    Eval -- Yes --> Final["Final Answer: respond to user with grounding"]
+
+    %% Guardrail branch
+    T1 --> G{iterations >= MAX_ITERATIONS or tool error?}
+    G -- True --> Guard["Guardrail: stop loop, return safe refusal / ask for clarification"]
+    G -- False --> Act
+
+    C --> EndC["Baseline Answer (no grounding)\nAdvise user to use Agent for live data"]
+    C --> EndC
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#9ff,stroke:#333,stroke-width:2px
+    style Guard fill:#faa,stroke:#900,stroke-width:2px
+    style Final fill:#bfb,stroke:#080,stroke-width:2px

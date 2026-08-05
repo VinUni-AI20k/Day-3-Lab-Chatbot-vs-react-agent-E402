@@ -1,0 +1,6 @@
+id,name,email,role
+1,Nguyen Van A,nva@example.com,admin
+2,Tran Thi B,ttb@example.com,user
+3,Le Van C,lvc@example.com,user
+4,Duy Duc,ducdd020304@gmail.com,developer
+5,Pham Thi D,ptd@example.com,manager
