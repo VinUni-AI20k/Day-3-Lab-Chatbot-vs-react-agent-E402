@@ -1,164 +1,87 @@
-"""
-🔌 MULTI-PROVIDER LLM ADAPTER (OpenAI, Gemini, Anthropic, OpenRouter & Offline Mock)
-Hỗ trợ chuyển đổi linh hoạt giữa các nhà cung cấp AI chỉ bằng cách đổi biến môi trường LLM_PROVIDER.
-"""
-
 import os
 import sys
-import json
-import requests
 from dotenv import load_dotenv
-
-# Đảm bảo in ra Tiếng Việt và Emojis không bị lỗi trên Windows Console
-if sys.stdout.encoding != 'utf-8':
-    try:
-        sys.stdout.reconfigure(encoding='utf-8')
-    except Exception:
-        pass
 
 load_dotenv()
 
-class BaseLLMProvider:
-    """Interface cơ sở cho tất cả các LLM Provider"""
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        raise NotImplementedError
-
-
-class GeminiProvider(BaseLLMProvider):
-    """Google Gemini Provider"""
-    def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gemini-2.5-flash"
-        
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.api_key or self.api_key == "your_gemini_api_key_here":
-            return "[Gemini Error]: Chưa cấu hình GEMINI_API_KEY trong file .env!"
+class GroqProvider:
+    """Bộ chuyển đổi (Adapter) kết nối tới Groq Cloud API"""
+    def __init__(self, model_name=None, api_key=None):
         try:
-            from google import genai
-            client = genai.Client(api_key=self.api_key)
-            contents = f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
-            response = client.models.generate_content(
+            from groq import Groq
+        except ImportError:
+            print("⚠️ Thư viện groq chưa được cài. Vui lòng chạy: pip install groq")
+            sys.exit(1)
+        
+        self.api_key = api_key or os.getenv("GROQ_API_KEY")
+        if not self.api_key:
+            raise ValueError("Không tìm thấy GROQ_API_KEY trong file .env!")
+            
+        self.client = Groq(api_key=self.api_key)
+        # Sử dụng model được chỉ định hoặc mặc định là llama-3.3-70b-specdec
+        self.model_name = model_name or os.getenv("LLM_MODEL") or "llama-3.3-70b-specdec"
+
+    def generate(self, prompt: str, system_prompt: str = None) -> str:
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        try:
+            completion = self.client.chat.completions.create(
                 model=self.model_name,
-                contents=contents
+                messages=messages,
+                temperature=0.1,  # Nhiệt độ thấp giúp sinh SQL chuẩn xác, ít ngẫu nhiên
             )
+            return completion.choices[0].message.content
+        except Exception as e:
+            return f"[Groq Exception]: {e}"
+
+
+class GeminiProvider:
+    """Bộ chuyển đổi (Adapter) kết nối tới Google Gemini API (Sử dụng SDK cũ ổn định)"""
+    def __init__(self, model_name=None, api_key=None):
+        try:
+            import google.generativeai as genai
+        except ImportError:
+            print("⚠️ Thư viện google-generativeai chưa được cài. Vui lòng chạy: pip install google-generativeai")
+            sys.exit(1)
+
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if not self.api_key:
+            raise ValueError("Không tìm thấy GEMINI_API_KEY hoặc GOOGLE_API_KEY trong file .env!")
+            
+        genai.configure(api_key=self.api_key)
+        self.model_name = model_name or os.getenv("LLM_MODEL") or "gemini-2.0-flash"
+        self.model = genai.GenerativeModel(self.model_name)
+
+    def generate(self, prompt: str, system_prompt: str = None) -> str:
+        try:
+            # Nếu có system prompt, truyền vào phần cấu hình sinh nội dung
+            config = {}
+            if system_prompt:
+                # Cú pháp truyền system instruction cho SDK google-generativeai
+                self.model = genai.GenerativeModel(
+                    model_name=self.model_name,
+                    system_instruction=system_prompt
+                )
+            response = self.model.generate_content(prompt)
             return response.text
         except Exception as e:
-            return f"[Gemini Exception]: {str(e)}"
+            return f"[Gemini Exception]: {e}"
 
 
-class OpenAIProvider(BaseLLMProvider):
-    """OpenAI Provider (GPT-4o, GPT-3.5-turbo, etc.)"""
-    def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "gpt-4o-mini"
-        
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.api_key or self.api_key == "your_openai_api_key_here":
-            return "[OpenAI Error]: Chưa cấu hình OPENAI_API_KEY trong file .env!"
-        try:
-            import openai
-            client = openai.OpenAI(api_key=self.api_key)
-            messages = []
-            if system_prompt:
-                messages.append({"role": "system", "content": system_prompt})
-            messages.append({"role": "user", "content": prompt})
-            
-            response = client.chat.completions.create(
-                model=self.model_name,
-                messages=messages
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            return f"[OpenAI Exception]: {str(e)}"
+def get_llm_provider():
+    """Hàm nhà máy (Factory function) khởi tạo Provider dựa theo cấu hình .env"""
+    load_dotenv()
+    provider_name = os.getenv("LLM_PROVIDER", "gemini").lower()
+    model_name = os.getenv("LLM_MODEL")
 
-
-class AnthropicProvider(BaseLLMProvider):
-    """Anthropic Claude Provider (Claude 3.5 Sonnet, Claude 3 Haiku)"""
-    def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "claude-3-haiku-20240307"
-        
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.api_key or self.api_key == "your_anthropic_api_key_here":
-            return "[Anthropic Error]: Chưa cấu hình ANTHROPIC_API_KEY trong file .env!"
-        try:
-            import anthropic
-            client = anthropic.Anthropic(api_key=self.api_key)
-            kwargs = {
-                "model": self.model_name,
-                "max_tokens": 1000,
-                "messages": [{"role": "user", "content": prompt}]
-            }
-            if system_prompt:
-                kwargs["system"] = system_prompt
-                
-            response = client.messages.create(**kwargs)
-            return response.content[0].text
-        except Exception as e:
-            return f"[Anthropic Exception]: {str(e)}"
-
-
-class OpenRouterProvider(BaseLLMProvider):
-    """OpenRouter Provider (Hỗ trợ gọi mọi model qua OpenRouter API)"""
-    def __init__(self, api_key: str = None, model: str = None):
-        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
-        self.model_name = model or os.getenv("LLM_MODEL") or "google/gemini-2.5-flash"
-        
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        if not self.api_key or self.api_key == "your_openrouter_api_key_here":
-            return "[OpenRouter Error]: Chưa cấu hình OPENROUTER_API_KEY trong file .env!"
-        try:
-            headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json"
-            }
-            messages = []
-            if system_prompt:
-                messages.append({"role": "system", "content": system_prompt})
-            messages.append({"role": "user", "content": prompt})
-            
-            payload = {
-                "model": self.model_name,
-                "messages": messages
-            }
-            res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=30)
-            if res.status_code == 200:
-                data = res.json()
-                return data["choices"][0]["message"]["content"]
-            else:
-                return f"[OpenRouter API Error {res.status_code}]: {res.text}"
-        except Exception as e:
-            return f"[OpenRouter Exception]: {str(e)}"
-
-
-class MockProvider(BaseLLMProvider):
-    """Offline Mock Provider (Cho bài test không cần kết nối API)"""
-    def generate(self, prompt: str, system_prompt: str = "") -> str:
-        text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
-        return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
-
-
-def get_llm_provider(provider_name: str = None) -> BaseLLMProvider:
-    """Factory function tự chọn Provider từ biến môi trường LLM_PROVIDER"""
-    name = (provider_name or os.getenv("LLM_PROVIDER") or "mock").lower().strip()
-    
-    if name == "gemini":
-        return GeminiProvider()
-    elif name == "openai":
-        return OpenAIProvider()
-    elif name == "anthropic":
-        return AnthropicProvider()
-    elif name == "openrouter":
-        return OpenRouterProvider()
+    if provider_name == "groq":
+        return GroqProvider(model_name=model_name)
+    elif provider_name == "gemini":
+        return GeminiProvider(model_name=model_name)
     else:
-        return MockProvider()
-
-
-if __name__ == "__main__":
-    print("=== TEST MULTI-PROVIDER LLM ADAPTER ===")
-    provider = get_llm_provider()
-    print(f"✅ Provider đang dùng: {provider.__class__.__name__}")
-    print(f"🤖 User Query: Hello")
-    print(f"💬 Response  : {provider.generate('Hello')}")
+        # Dự phòng mặc định quay về Gemini nếu cấu hình sai tên
+        print(f"⚠️ Không nhận diện được Provider '{provider_name}'. Tự động chuyển về Gemini.")
+        return GeminiProvider(model_name=model_name)
